@@ -5,7 +5,7 @@ hosts = [line.strip() for line in open('hosts.txt').readlines()]
 ports = ["5000","5001"]
 
 for host in hosts:
-    print(f"{Colors.OKBLUE}attempting to access host: {host}{Colors.ENDC}")
+    print(f"{Color.OKBLUE}attempting to access host: {host}{Color.ENDC}")
     for port in ports:
         print(f"on port {port}")
         try:
