@@ -33,7 +33,7 @@ def get_blockchain(hostname='cat',port='5000'):
     blockchain = []
 
     try:
-        hash_to_next_block = retreive_head_hash(host=hostname,port=port)
+        hash_to_next_block = retrieve_head_hash(host=hostname,port=port)
     except ConnectionException as c:
         raise BlockChainRetrievalError(str(c))
 
@@ -41,7 +41,7 @@ def get_blockchain(hostname='cat',port='5000'):
     # Continue grabbing new blocks until the genesis block is reached
     while not hash_to_next_block == '':
         try:
-            next_block_as_JSON = retreive_block_from_hash(hash_to_next_block,host=hostname,port=port)
+            next_block_as_JSON = retrieve_block_from_hash(hash_to_next_block,host=hostname,port=port)
         except ConnectionException as c:
             print(c)
             return
@@ -53,7 +53,7 @@ def get_blockchain(hostname='cat',port='5000'):
             return
         blockchain.insert(0,(hash_to_next_block,next_block))
         try:
-            hash_to_next_block = retreive_block_hash(next_block_as_JSON)
+            hash_to_next_block = retrieve_block_hash(next_block_as_JSON)
         except HashRetrievalException as h:
             print(h)
             print(f"Blockchain download failed")
