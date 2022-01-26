@@ -35,8 +35,11 @@ def retrieve_block_hash(block_as_JSON):
         return
 
     # Check length requirements - can be 64 or 0 (for genesis block)
-    if not len(block['prev_hash']) in [0,64]:
-        raise HashRetrievalException(f"Error: JSON decode of '{block['prev_hash'][:70]}'... not a valid hash'")
+    try:
+        if not len(block['prev_hash']) in [0,64]:
+            raise HashRetrievalException(f"Error: JSON decode of '{block['prev_hash'][:70]}'... not a valid hash'")
+    except KeyError:
+        raise HashRetrievalException(f"Error: JSON decode of '{str(block)[:70]}'... not a valid block'")
     return block['prev_hash']
 
 
