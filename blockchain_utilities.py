@@ -43,21 +43,16 @@ def get_blockchain(hostname='cat',port='5000'):
         try:
             next_block_as_JSON = retrieve_block(hash_to_next_block,host=hostname,port=port)
         except ConnectionException as c:
-            print(c)
-            return
+            raise BlockChainRetrievalError(str(c))
         try:
             next_block = JSON_to_block(next_block_as_JSON)
         except DecodeException as d:
-            print(d)
-            #print(f"Blockchain download failed")
-            return
+            raise BlockChainRetrievalError(str(d))
         blockchain.insert(0,(hash_to_next_block,next_block))
         try:
             hash_to_next_block = retrieve_block_hash(next_block_as_JSON)
         except HashRetrievalException as h:
-            print(h)
-            #print(f"Blockchain download failed")
-            return
+            raise BlockChainRetrievalError(str(h))
     return blockchain
 
 
