@@ -66,7 +66,7 @@ def get_blockchain(hostname='cat',port='5000'):
 # a list of tuples starting with the genesis block
 def verify_blockchain(blockchain):
     if not isinstance(blockchain,list):
-        raise BlockChainVerifyError(f"Error: improper encoding of blockchain: expected list, got: {type(blockchain)}")
+        raise BlockChainVerifyError(f"{Color.FAIL}Error: improper encoding of blockchain: expected list, got: {type(blockchain)}{Color.ENDC}")
         return
     blockchain = list(reversed(blockchain))
     dinq_list = []
@@ -83,7 +83,7 @@ def verify_blockchain(blockchain):
 
         # Add any blocks that do not validate to the dinq_list
         if not check_fields(block,allowed_hashes=[prev_hash]):
-            raise BlockChainVerifyError(f"Error: bad block found in position {index}")
+            raise BlockChainVerifyError(f"{Color.FAIL}Error: bad block found in position {index}{Color.ENDC}")
 
     # If the dinq_list is not empty, then the blockain verification went wrong
     if dinq_list:
