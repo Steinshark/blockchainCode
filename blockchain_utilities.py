@@ -49,14 +49,14 @@ def get_blockchain(hostname='cat',port='5000'):
             next_block = JSON_to_block(next_block_as_JSON)
         except DecodeException as d:
             print(d)
-            print(f"Blockchain download failed")
+            #print(f"Blockchain download failed")
             return
         blockchain.insert(0,(hash_to_next_block,next_block))
         try:
             hash_to_next_block = retrieve_block_hash(next_block_as_JSON)
         except HashRetrievalException as h:
             print(h)
-            print(f"Blockchain download failed")
+            #print(f"Blockchain download failed")
             return
     return blockchain
 
@@ -69,7 +69,6 @@ def verify_blockchain(blockchain):
         raise BlockChainVerifyError(f"{Color.RED}Error: improper encoding of blockchain: expected list, got: {type(blockchain)}{Color.END}")
         return
     blockchain = list(reversed(blockchain))
-    dinq_list = []
 
     # Check all blocks
     for index, block in enumerate(blockchain):
@@ -84,13 +83,7 @@ def verify_blockchain(blockchain):
         # Add any blocks that do not validate to the dinq_list
         if not check_fields(block,allowed_hashes=[prev_hash]):
             raise BlockChainVerifyError(f"{Color.RED}Error: bad block found in position {index}{Color.END}")
-
-    # If the dinq_list is not empty, then the blockain verification went wrong
-    if dinq_list:
-        print(f"found {len(dinq_list)} bad blocks")
-        return False
-
-    return dinq_list
+    return True
 
 
 
