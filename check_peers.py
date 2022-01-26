@@ -1,4 +1,4 @@
-from blockchain_utilities import *
+from BlockchainUtilities import *
 from BlockchainErrors import *
 
 hosts = [line.strip() for line in open('hosts.txt').readlines()]
@@ -17,8 +17,8 @@ for host in hosts:
 
 
         try:
-            verify_blockchain(blockchain_download)
-            print(f"{Color.GREEN}blockchain verified!{Color.END}\n")
+            size = verify_blockchain(blockchain_download)
+            print(f"{Color.GREEN}blockchain verified!/n{size} nodes in chain{Color.END}\n")
         except BlockChainVerifyError as b:
             print(b)
             continue
