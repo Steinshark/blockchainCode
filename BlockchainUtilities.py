@@ -49,8 +49,6 @@ def get_blockchain(hostname='cat',port='5000'):
             hash_to_next_block = retrieve_block_hash(next_block_as_JSON)
         except HashRetrievalException as h:
             raise BlockChainRetrievalError(str(h))
-    if hostname == 'kangaroo':
-        print(blockchain)
     return blockchain
 
 
