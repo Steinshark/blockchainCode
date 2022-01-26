@@ -11,7 +11,7 @@ from requests import get, post,Timeout
 #########################################################################################
 
 
-def retreive_head_hash(host="cat",port="5000",timeout=5):
+def retrieve_head_hash(host="cat",port="5000",timeout=5):
     url = f"http://{host}:{port}/head"
 
     try:
@@ -25,10 +25,12 @@ def retreive_head_hash(host="cat",port="5000",timeout=5):
 
 
 # yields a block's prev_hash field, given a block in JSON format
-def retreive_block_hash(block_as_JSON):
+def retrieve_block_hash(block_as_JSON):
     try:
         block = JSON_to_block(block_as_JSON)
     except DecodeException as d:
+        print(d)
+        raise HashRetrievalException(f"Error: JSON decode of '{block['prev_hash'][:70]}' unsuccessful")
         return
 
     # Check length requirements - can be 64 or 0 (for genesis block)
@@ -51,7 +53,7 @@ def block_to_JSON(block):
 
 
 # Takes a hash and makes a request to the given URL to return the block with that hash
-def retreive_block(hash_decoded,host="cat",port="5000",timeout=5):
+def retrieve_block(hash_decoded,host="cat",port="5000",timeout=5):
     url = f"http://{host}:{port}/fetch/{hash_decoded}"
     try:
         return get(url,timeout=timeout).content.decode()
