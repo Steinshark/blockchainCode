@@ -79,7 +79,7 @@ def verify_blockchain(blockchain):
         if index == len(blockchain) - 1:
             prev_hash = ''
         else:
-            prev_hash = hash('hex',JSON_to_block(blockchain[index+1][1]).encode())
+            prev_hash = hash('hex',block_to_JSON(blockchain[index+1][1]).encode())
 
         # Add any blocks that do not validate to the dinq_list
         if not check_fields(block,allowed_hashes=[prev_hash]):
