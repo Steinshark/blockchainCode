@@ -18,7 +18,7 @@ for host in hosts:
 
         try:
             size = verify_blockchain(blockchain_download)
-            print(f"{Color.GREEN}blockchain verified!\n{size} nodes in chain{Color.END}\n")
+            print(f"{Color.GREEN}blockchain verified!\n{size} blocks in chain{Color.END}\n")
         except BlockChainVerifyError as b:
             print(b)
             continue
