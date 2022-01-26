@@ -7,7 +7,7 @@ ports = ["5000","5001"]
 for host in hosts:
     print(f"{Color.BLUE}attempting to access host: {host}{Color.END}")
     for port in ports:
-        print(f"on port {port}")
+        print(f"{Color.TAN}on port {port}{Color.END}")
         try:
             blockchain_download = get_blockchain(host,port)
         except BlockChainError as b:

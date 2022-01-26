@@ -7,6 +7,7 @@ class Color:
     GREEN = '\033[92m'
     RED = '\033[91m'
     END = '\033[0m'
+    TAN = '\033[93m'
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
