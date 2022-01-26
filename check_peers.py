@@ -17,7 +17,7 @@ for host in hosts:
 
         try:
             verify_blockchain(blockchain_download)
-            print(f"{Colors.OKBLUE}blockchain verified!{Colors.ENDC}")
+            print(f"{Color.OKBLUE}blockchain verified!{Color.ENDC}")
         except BlockChainVerifyError as b:
             print(b)
             continue
