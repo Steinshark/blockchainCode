@@ -6,11 +6,12 @@ from json import loads, dumps, JSONDecodeError
 from requests import get, post,Timeout, RequestException
 
 
+
 #########################################################################################
 ############################ FUNCTIONS FOR PROCESSING BLOCKS ############################
 #########################################################################################
 
-
+# Make a request to where the head hash should be
 def retrieve_head_hash(host="cat",port="5000",timeout=5):
     url = f"http://{host}:{port}/head"
 
@@ -25,7 +26,7 @@ def retrieve_head_hash(host="cat",port="5000",timeout=5):
         raise ConnectionException(f"{Color.RED}Error: something went wrong connecting to {url}{Color.END}")
 
 
-# yields a block's prev_hash field, given a block in JSON format
+# Yields a block's 'prev_hash' field, given a block in JSON format
 def retrieve_block_hash(block_as_JSON):
     try:
         block = JSON_to_block(block_as_JSON)
@@ -43,7 +44,7 @@ def retrieve_block_hash(block_as_JSON):
     return block['prev_hash']
 
 
-# JSON representation of a block to python dictionary representation of a block
+# Convert JSON representation of a block to python dictionary representation of a block
 def JSON_to_block(JSON_text):
     try:
         return loads(JSON_text)
@@ -51,7 +52,7 @@ def JSON_to_block(JSON_text):
         raise DecodeException(f"{Color.RED}Error Decoding JSON: '{JSON_text[:50]}' as block{Color.END}")
 
 
-# python dictionary representation of a block to JSON representation of a block
+# Convert python dictionary representation of a block to JSON representation of a block
 def block_to_JSON(block):
     return dumps(block)
 
@@ -77,6 +78,18 @@ def http_post(url,payload,timeout=5000):
         raise ConnectionException(f"{Color.RED}error: timeout requesting response from {url}")
     except RequestException:
         raise ConnectionException(f"{Color.RED}Error: something went wrong connecting to {url}{Color.END}")
+
+
+# builds a block given the three fields and returns as JSON
+def build_block(prev_hash,payload,ver):
+    new_block = {   'prev_hash'     : prev_hash,
+                    'payload'       : payload,
+                    'version'       : ver}
+    try:
+        encoded_block = block_to_JSON(new_block)
+        return encoded_block
+    except JSONEncodeException as j:
+        raise BlockCreationException(j)
 
 
 

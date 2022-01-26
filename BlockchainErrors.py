@@ -1,5 +1,5 @@
 #########################################################################################
-####################################  NETWORK ERRORS  ###################################
+###############################  ERROR MESSAGE FORMATTING  ##############################
 #########################################################################################
 class Color:
     HEADER = '\033[95m'
@@ -12,6 +12,10 @@ class Color:
     UNDERLINE = '\033[4m'
 
 
+
+#########################################################################################
+####################################  NETWORK ERRORS  ###################################
+#########################################################################################
 class ConnectionException(Exception):
     def __init__(self,msg):
         l = super()
@@ -27,6 +31,14 @@ class DecodeException(Exception):
         super().__init__(msg)
 
 class HashRetrievalException(Exception):
+    def __init__(self,msg):
+        super().__init__(msg)
+
+class JSONEncodeException(Exception):
+    def __init__(self,msg):
+        super().__init__(msg)
+
+class BlockCreationException(Exception):
     def __init__(self,msg):
         super().__init__(msg)
 

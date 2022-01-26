@@ -1,3 +1,6 @@
+#########################################################################################
+#######################################  IMPORTS  #######################################
+#########################################################################################
 from hashlib import sha256, sha3_256
 from json import loads, dumps, JSONDecodeError
 from requests import get, post, Timeout, RequestException, ConnectionError
@@ -5,6 +8,9 @@ from BlockTools import *
 from BlockchainErrors import *
 
 
+#########################################################################################
+############################### FUNCTIONS FOR CRYPTOGRAPHY ##############################
+#########################################################################################
 
 # hash function wrapper
 def hash(format,bytes):
@@ -15,16 +21,6 @@ def hash(format,bytes):
         return digest.hex()
     elif format == 'bytes':
         return digest
-
-
-
-# builds a block given the three fields and returns as JSON
-def build_block(prev_hash,payload,ver):
-    new_block = {   'prev_hash'     : prev_hash,
-                    'payload'       : payload,
-                    'version'       : ver}
-    return block_to_JSON(new_block)
-
 
 
 # encodes the blockchain found at a given hostname and port into a list
@@ -56,7 +52,6 @@ def get_blockchain(hostname='cat',port='5000'):
     return blockchain
 
 
-
 # Used to verify the entire blockchain at once. 'blockchain' is
 # a list of tuples starting with the genesis block
 def verify_blockchain(blockchain):
@@ -79,18 +74,3 @@ def verify_blockchain(blockchain):
         if not check_fields(block,allowed_hashes=[prev_hash]):
             raise BlockChainVerifyError(f"{Color.RED}Error: bad block found in position {index}{Color.END}")
     return len(blockchain)
-
-
-
-if __name__ == '__main__':
-    try:
-        bl = get_blockchain()
-    except BlockChainRetrievalError as b:
-        print(b)
-        exit()
-    try:
-        v = verify_blockchain(bl)
-    except BlockChainVerifyError as b:
-        print(b)
-        exit()
-        hmm
