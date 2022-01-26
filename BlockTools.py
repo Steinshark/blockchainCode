@@ -64,9 +64,9 @@ def retrieve_block(hash_decoded,host="cat",port="5000",timeout=5):
     except Timeout:
         raise ConnectionException(f"Error: timeout requesting response from {url}")
     except RequestException:
-        raise ConnectionException(f"Error: something went wrong connecting to {url}")
+        raise ConnectionException(f"{Color.WARNING}Error: something went wrong connecting to {url}{Color.ENDC}")
     except ConnectionError:
-        raise ConnectionException(f"Error: something went wrong connecting to {url}")
+        raise ConnectionException(f"{Color.WARNING}Error: something went wrong connecting to {url}{Color.ENDC}")
 
 
 # Wrapper function for post
