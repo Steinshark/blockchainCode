@@ -12,7 +12,7 @@ for host in hosts:
             blockchain_download = get_blockchain(host,port)
         except BlockChainError as b:
             print(b)
-            print(f"Error Downloading Blockchain: Terminated")
+            print(f"Error Downloading Blockchain: Terminated\n")
             continue
 
 
