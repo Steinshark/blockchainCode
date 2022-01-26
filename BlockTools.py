@@ -18,11 +18,11 @@ def retrieve_head_hash(host="cat",port="5000",timeout=5):
         return get(url,timeout=timeout).content.decode()
         #print(f"recieved {}")
     except Timeout:
-        raise ConnectionException(f"{Color.FAIL}Error: timeout requesting response from {url}")
+        raise ConnectionException(f"{Color.RED}Error: timeout requesting response from {url}")
     except RequestException:
-        raise ConnectionException(f"{Color.FAIL}{Color.BOLD}Error: something went wrong connecting to {url}{Color.ENDC}")
+        raise ConnectionException(f"{Color.RED}{Color.BOLD}Error: something went wrong connecting to {url}{Color.END}")
     except ConnectionError:
-        raise ConnectionException(f"{Color.FAIL}Error: something went wrong connecting to {url}{Color.ENDC}")
+        raise ConnectionException(f"{Color.RED}Error: something went wrong connecting to {url}{Color.END}")
 
 
 # yields a block's prev_hash field, given a block in JSON format
@@ -31,15 +31,15 @@ def retrieve_block_hash(block_as_JSON):
         block = JSON_to_block(block_as_JSON)
     except DecodeException as d:
         print(d)
-        raise HashRetrievalException(f"{Color.FAIL}Error: JSON decode of '{block['prev_hash'][:70]}' unsuccessful{Color.ENDC}")
+        raise HashRetrievalException(f"{Color.RED}Error: JSON decode of '{block['prev_hash'][:70]}' unsuccessful{Color.END}")
         return
 
     # Check length requirements - can be 64 or 0 (for genesis block)
     try:
         if not len(block['prev_hash']) in [0,64]:
-            raise HashRetrievalException(f"{Color.FAIL}Error: JSON decode of '{block['prev_hash'][:70]}'... not a valid hash'{Color.ENDC}")
+            raise HashRetrievalException(f"{Color.RED}Error: JSON decode of '{block['prev_hash'][:70]}'... not a valid hash'{Color.END}")
     except KeyError:
-        raise HashRetrievalException(f"{Color.FAIL}Error: JSON decode of '{str(block)[:70]}'... not a valid block'{Color.ENDC}")
+        raise HashRetrievalException(f"{Color.RED}Error: JSON decode of '{str(block)[:70]}...' uninterpretable as valid block'{Color.END}")
     return block['prev_hash']
 
 
@@ -48,7 +48,7 @@ def JSON_to_block(JSON_text):
     try:
         return loads(JSON_text)
     except JSONDecodeError:
-        raise DecodeException(f"{Color.FAIL}Error Decoding JSON: '{JSON_text[:50]}' as block{Color.ENDC}")
+        raise DecodeException(f"{Color.RED}Error Decoding JSON: '{JSON_text[:50]}' as block{Color.END}")
 
 
 # python dictionary representation of a block to JSON representation of a block
@@ -62,11 +62,11 @@ def retrieve_block(hash_decoded,host="cat",port="5000",timeout=5):
     try:
         return get(url,timeout=timeout).content.decode()
     except Timeout:
-        raise ConnectionException(f"{Color.FAIL}Error: timeout requesting response from {url}{Color.ENDC}")
+        raise ConnectionException(f"{Color.RED}Error: timeout requesting response from {url}{Color.END}")
     except RequestException:
-        raise ConnectionException(f"{Color.FAIL}Error: something went wrong connecting to {url}{Color.ENDC}")
+        raise ConnectionException(f"{Color.RED}Error: something went wrong connecting to {url}{Color.END}")
     except ConnectionError:
-        raise ConnectionException(f"{Color.FAIL}Error: something went wrong connecting to {url}{Color.ENDC}")
+        raise ConnectionException(f"{Color.RED}Error: something went wrong connecting to {url}{Color.END}")
 
 
 # Wrapper function for post
@@ -74,9 +74,9 @@ def http_post(url,payload,timeout=5000):
     try:
         post(url,payload,timeout=timeout)
     except Timeout:
-        raise ConnectionException(f"{Color.FAIL}error: timeout requesting response from {url}")
+        raise ConnectionException(f"{Color.RED}error: timeout requesting response from {url}")
     except RequestException:
-        raise ConnectionException(f"{Color.FAIL}Error: something went wrong connecting to {url}{Color.ENDC}")
+        raise ConnectionException(f"{Color.RED}Error: something went wrong connecting to {url}{Color.END}")
 
 
 
