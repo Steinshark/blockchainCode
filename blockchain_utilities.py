@@ -83,7 +83,7 @@ def verify_blockchain(blockchain):
 
         # Add any blocks that do not validate to the dinq_list
         if not check_fields(block,allowed_hashes=[prev_hash]):
-            dinq_list.append(block)
+            raise BlockChainVerifyError(f"Error: bad block found in position {index}")
 
     # If the dinq_list is not empty, then the blockain verification went wrong
     if dinq_list:
