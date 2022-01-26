@@ -3,7 +3,7 @@
 #########################################################################################
 from BlockchainErrors import *
 from json import loads, dumps, JSONDecodeError
-from requests import get, post,Timeout
+from requests import get, post,Timeout, RequestException
 
 
 #########################################################################################
