@@ -20,9 +20,9 @@ def retrieve_head_hash(host="cat",port="5000",timeout=5):
     except Timeout:
         raise ConnectionException(f"Error: timeout requesting response from {url}")
     except RequestException:
-        raise ConnectionException(f"Error: something went wrong connecting to {url}")
+        raise ConnectionException(f"{Color.WARNING}Error: something went wrong connecting to {url}{Color.ENDC}")
     except ConnectionError:
-        raise ConnectionException(f"Error: something went wrong connecting to {url}")
+        raise ConnectionException(f"{Color.WARNING}Error: something went wrong connecting to {url}{Color.ENDC}")
 
 
 # yields a block's prev_hash field, given a block in JSON format
@@ -76,7 +76,7 @@ def http_post(url,payload,timeout=5000):
     except Timeout:
         raise ConnectionException(f"error: timeout requesting response from {url}")
     except RequestException:
-        raise ConnectionException(f"error: something went wrong connecting to {url}")
+        raise ConnectionException(f"{Color.WARNING}Error: something went wrong connecting to {url}{Color.ENDC}")
 
 
 
