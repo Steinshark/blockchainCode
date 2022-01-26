@@ -20,7 +20,7 @@ def retrieve_head_hash(host="cat",port="5000",timeout=5):
     except Timeout:
         raise ConnectionException(f"Error: timeout requesting response from {url}")
     except RequestException:
-        raise ConnectionException(f"{Color.WARNING}Error: something went wrong connecting to {url}{Color.ENDC}")
+        raise ConnectionException(f"{Color.WARNING}{Color.BOLD}Error: something went wrong connecting to {url}{Color.ENDC}")
     except ConnectionError:
         raise ConnectionException(f"{Color.WARNING}Error: something went wrong connecting to {url}{Color.ENDC}")
 
