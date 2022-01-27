@@ -16,6 +16,9 @@ def retrieve_head_hash(host="cat",port="5000",timeout=5):
     url = f"http://{host}:{port}/head"
 
     try:
+        if hostname == 'lion':
+            print(f"askign for {url}")
+            print(f"got {get(url,timeout=timeout).content}")
         return get(url,timeout=timeout).content.decode()
         #print(f"recieved {}")
     except Timeout:
