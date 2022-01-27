@@ -53,7 +53,7 @@ class Server:
         self.app.run(host=host,port=port)
 
 if __name__ == '__main__':
-    host = input('run on host: ')
-    port = input('run on port: ')
+    h = input('run on host: ')
+    p = int(input('run on port: '))
     s = Server()
-    s.run(host=host, port=port)
+    s.run(host=h, port=p)
