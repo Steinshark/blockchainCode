@@ -28,7 +28,7 @@ def retrieve_head_hash(host="cat",port="5000",timeout=3):
 
 
 # Yields a block's 'prev_hash' field, given a block in JSON format
-def retrieve_block_hash(block_as_JSON):
+def retrieve_prev_hash(block_as_JSON):
     try:
         block = JSON_to_block(block_as_JSON)
     except DecodeException as d:

@@ -47,9 +47,15 @@ def get_blockchain(hostname='cat',port='5000'):
             # Acquire the necessary items
             this_block_as_JSON = retrieve_block(this_hash,host=hostname,port=port)
             this_block = JSON_to_block(this_block_as_JSON)
-            next_hash = retrieve_block_hash(this_block_as_JSON)
+            next_hash = retrieve_prev_hash(this_block_as_JSON)
             if next_hash == '':
-                break
+                if check_fields(this_block,allowed_hashes=['',next_hash]):
+                    blockchain.insert(0,(this_hash,next_block))
+                    return blockchain
+                else:
+                    print(f"bad block: {this_block}")
+                    raise BlockChainVerifyError(f"{Color.RED}Error: bad block found in position {index}{Color.END}")
+
             next_block = JSON_to_block(retrieve_block(next_hash,host=hostname,port=port))
 
             # Ensure that this block is valid
