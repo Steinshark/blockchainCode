@@ -1,4 +1,4 @@
-from blockchain_utilities import get_blockchain, verify_blockchain
+from BlockchainUtilities import get_blockchain, verify_blockchain
 import argparse
 
 if __name__ == '__main__':
