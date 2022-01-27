@@ -1,6 +1,6 @@
 from BlockchainUtilities import *
 from BlockTools import *
-from BlockChainErrors import *
+from BlockchainErrors import *
 from server import *
 from argparse import *
 
