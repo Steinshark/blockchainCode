@@ -45,15 +45,15 @@ class Server:
             else:
                 return f'command {command} not understood by server', 269
 
-    def run(host='lion',port=5000):
+    def run(hostname='lion',p=5000):
         if not self.blocks:
             block = build_block('',{'chat' : 'my very own blockchain!'})
             block_hash = hash('hex',block)
             self.blocks[block_hash] = block
-        self.app.run(host=host,port=port)
+        self.app.run(host=host,port=p)
 
 if __name__ == '__main__':
     h = input('run on host: ')
     p = int(input('run on port: '))
     s = Server()
-    s.run(host=h, port=p)
+    s.run(host=h, p=p)
