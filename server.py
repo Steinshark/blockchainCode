@@ -13,7 +13,7 @@ class Server:
 
         @self.app.route('/head')
         def head():
-            return list(self.blocks.values())[-1]
+            return list(self.blocks.keys())[-1]
 
         @self.app.route('/fetch/<digest>')
         def fetch(digest):
