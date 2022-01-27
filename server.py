@@ -60,3 +60,4 @@ if __name__ == '__main__':
         s.run()
     else:
         s.run(host=host,port=int(port))
+    print(f"head is now {list(self.blocks.keys())[-1]}")
