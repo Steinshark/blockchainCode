@@ -33,7 +33,7 @@ class Server:
             if arguments[0] == "add":
                 if arguments[1] == "block":
                     block = arguments[2]
-                    block_hash = hash('hex',block.encode())
+                    block_hash = hash('hex',block.encode()).hexdigest()
                     self.blocks[block_hash] = block
 
             # Allow for block removal
@@ -48,7 +48,7 @@ class Server:
     def run(self,host='lion',port=5000):
         if not self.blocks:
             block = build_block('',{'chat' : 'my very own blockchain!'},0)
-            block_hash = hash('hex',block.encode())
+            block_hash = hash('hex',block.encode()).hexdigest()
             self.blocks[block_hash] = block
         self.app.run(host=host,port=port)
 
