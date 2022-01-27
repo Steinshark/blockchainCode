@@ -16,7 +16,6 @@ def retrieve_head_hash(host="cat",port="5000",timeout=3):
     url = f"http://{host}:{port}/head"
 
     try:
-        print(f"retreived: {get(url,timeout=timeout).content.decode()}")
         return get(url,timeout=timeout).content.decode()
         #print(f"recieved {}")
     except Timeout:
