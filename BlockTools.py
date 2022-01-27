@@ -12,10 +12,11 @@ from requests import get, post,Timeout, RequestException
 #########################################################################################
 
 # Make a request to where the head hash should be
-def retrieve_head_hash(host="cat",port="5000",timeout=5):
+def retrieve_head_hash(host="cat",port="5000",timeout=3):
     url = f"http://{host}:{port}/head"
 
     try:
+        print(f"retreived: {get(url,timeout=timeout).content.decode()}")
         return get(url,timeout=timeout).content.decode()
         #print(f"recieved {}")
     except Timeout:
@@ -58,7 +59,7 @@ def block_to_JSON(block):
 
 
 # Takes a hash and makes a request to the given URL to return the block with that hash
-def retrieve_block(hash_decoded,host="cat",port="5000",timeout=5):
+def retrieve_block(hash_decoded,host="cat",port="5000",timeout=3):
     url = f"http://{host}:{port}/fetch/{hash_decoded}"
     try:
         return get(url,timeout=timeout).content.decode()
@@ -71,7 +72,7 @@ def retrieve_block(hash_decoded,host="cat",port="5000",timeout=5):
 
 
 # Wrapper function for post
-def http_post(url,payload,timeout=5000):
+def http_post(url,payload,timeout=5):
     try:
         post(url,payload,timeout=timeout)
     except Timeout:
