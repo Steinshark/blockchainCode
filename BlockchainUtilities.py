@@ -58,6 +58,8 @@ def get_blockchain(hostname='cat',port='5000'):
                 raise BlockChainVerifyError(f"{Color.RED}Error: bad block found in position {index}{Color.END}")
 
             # If everything checks out, then add this block and continue
+            if (this_hash,next_block) in blockchain:
+                raise BlockChainVerifyError(f"{Color.RED}Error: duplicate block found in position {index}{Color.END}")
             blockchain.insert(0,(this_hash,next_block))
             this_hash = next_hash
 
