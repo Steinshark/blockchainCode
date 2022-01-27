@@ -16,7 +16,7 @@ from BlockchainErrors import *
 def hash(format,bytes):
     hasher = sha3_256()
     hasher.update(bytes)
-    digest = hasher.digest()
+    digest = hasher.hexdigest()
     if format == 'hex':
         return digest.hex()
     elif format == 'bytes':

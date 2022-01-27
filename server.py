@@ -48,7 +48,7 @@ class Server:
     def run(self,host='lion',port=5000):
         if not self.blocks:
             block = build_block('',{'chat' : 'my very own blockchain!'},0)
-            block_hash = hash('hex',block.encode()).hexdigest()
+            block_hash = hash('hex',block.encode())
             self.blocks[block_hash] = block
         self.app.run(host=host,port=port)
 
