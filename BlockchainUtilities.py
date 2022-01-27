@@ -57,20 +57,18 @@ def get_blockchain(hostname='cat',port='5000'):
 def verify_blockchain(blockchain):
     if not isinstance(blockchain,list):
         raise BlockChainVerifyError(f"{Color.RED}Error: improper encoding of blockchain: expected list, got: {type(blockchain)}{Color.END}")
-        return
     blockchain = list(reversed(blockchain))
 
     # Check all blocks
     for index, block in enumerate(blockchain):
         # Define the current block and the prev_hash (or empty hash for genesis block)
         block = block[1]
-
         if index == len(blockchain) - 1:
             prev_hash = ''
         else:
             prev_hash = hash('hex',block_to_JSON(blockchain[index+1][1]).encode())
 
-        # Add any blocks that do not validate to the dinq_list
+        # Check the fields of the block for errors
         if not check_fields(block,allowed_hashes=[prev_hash]):
             raise BlockChainVerifyError(f"{Color.RED}Error: bad block found in position {index}{Color.END}")
     return len(blockchain)
