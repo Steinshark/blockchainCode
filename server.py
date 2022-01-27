@@ -45,8 +45,8 @@ class Server:
             else:
                 return f'command {command} not understood by server', 269
 
-    def run(self,host='lion',port=5000,override=False):
-        if not self.blocks and not override:
+    def run(self,host='lion',port=5000,gen_block=None):
+        if not self.blocks and gen_block is None:
             block = build_block('',{'chat' : 'my very own blockchain!'},0)
             block_hash = hash('hex',block.encode())
             self.blocks[block_hash] = block
@@ -54,10 +54,6 @@ class Server:
 
         self.app.run(host=host,port=port)
 
-    def insert_block(block_as_JSON):
-        block = block_as_JSON
-        block_hash = hash('hex',block.encode())
-        self.blocks[block_hash] = block
 
 if __name__ == '__main__':
     host = input('run on host: ').strip()
