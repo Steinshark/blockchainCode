@@ -50,6 +50,8 @@ class Server:
             block = build_block('',{'chat' : 'my very own blockchain!'},0)
             block_hash = hash('hex',block.encode())
             self.blocks[block_hash] = block
+            print(f"head is now {list(self.blocks.keys())[-1]}")
+
         self.app.run(host=host,port=port)
 
 if __name__ == '__main__':
@@ -60,4 +62,3 @@ if __name__ == '__main__':
         s.run()
     else:
         s.run(host=host,port=int(port))
-    print(f"head is now {list(self.blocks.keys())[-1]}")
