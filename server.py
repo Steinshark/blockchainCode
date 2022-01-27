@@ -1,7 +1,7 @@
 import flask
 from collections import OrderedDict
 from BlockTools import build_block
-from BlockchainUtilties import hash
+from BlockchainUtilities import hash
 
 class Server:
     def __init__(self):
