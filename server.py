@@ -47,13 +47,16 @@ class Server:
 
     def run(self,host='lion',port=5000):
         if not self.blocks:
-            block = build_block('',{'chat' : 'my very own blockchain!'})
-            block_hash = hash('hex',block)
+            block = build_block('',{'chat' : 'my very own blockchain!'},0)
+            block_hash = hash('hex',block.encode())
             self.blocks[block_hash] = block
         self.app.run(host=host,port=port)
 
 if __name__ == '__main__':
     host = input('run on host: ').strip()
-    port = int(input('run on port: '))
+    port = input('run on port: ')
     s = Server()
-    s.run(host=host,port=port)
+    if not host and not port:
+        s.run()
+    else:
+        s.run(host=host,port=int(port))
