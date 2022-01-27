@@ -52,9 +52,9 @@ class Server:
             self.blocks[block_hash] = block
         self.app.run(host=host,port=port)
 
-    if __name__ == '__main__':
-        host = input('run on host: ')
-        port = input('run on port: ')
-        s = Server()
-        s.run(host='0.0.0.0', port=1234)
-        s.app.run(host='0.0.0.0', port=1234)
+if __name__ == '__main__':
+    host = input('run on host: ')
+    port = input('run on port: ')
+    s = Server()
+    s.run(host='0.0.0.0', port=1234)
+    s.app.run(host='0.0.0.0', port=1234)
