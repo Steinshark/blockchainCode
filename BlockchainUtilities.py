@@ -37,9 +37,10 @@ def get_blockchain(hostname='cat',port='5000'):
     except ConnectionException as c:
         raise BlockChainRetrievalError(str(c))
 
-
+    index = 0
     # Continue grabbing new blocks until the genesis block is reached
     while not this_hash == '':
+        index += 1
         # try the whole thing
         try:
             # Acquire the necessary items
@@ -56,7 +57,7 @@ def get_blockchain(hostname='cat',port='5000'):
             blockchain.insert(0,(this_hash,next_block))
             this_hash = next_hash
 
-            
+
         except ConnectionException as c:
             raise BlockChainRetrievalError(str(c))
         except DecodeException as d:
