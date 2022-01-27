@@ -17,6 +17,7 @@ if __name__ == '__main__':
 
     # Print the chat log
     if blockchain_failed:
+        print(blockchain)
         exit()
 
     for hash,block in blockchain:
