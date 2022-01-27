@@ -48,7 +48,7 @@ def get_blockchain(hostname='cat',port='5000'):
             this_block_as_JSON = retrieve_block(this_hash,host=hostname,port=port)
             this_block = JSON_to_block(this_block_as_JSON)
             next_hash = retrieve_block_hash(this_block_as_JSON)
-            next_block = retrieve_block(next_hash,host=hostname,port=port)
+            next_block = JSON_to_block(retrieve_block(next_hash,host=hostname,port=port))
 
             # Ensure that this block is valid
             if not check_fields(next_block,allowed_hashes=['',next_hash]):
