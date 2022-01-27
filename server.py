@@ -11,39 +11,39 @@ class Server:
 
     # Maps a block hash to the block itself
 
-    @self.app.route('/head')
-    def head():
-        return list(self.blocks.values())[-1]
+        @self.app.route('/head')
+        def head():
+            return list(self.blocks.values())[-1]
 
-    @self.app.route('/fetch/<digest>')
-    def fetch(digest):
-        try:
-            return self.blocks[digest]
+        @self.app.route('/fetch/<digest>')
+        def fetch(digest):
+            try:
+                return self.blocks[digest]
 
-        except KeyError:
-            # HTTP code 400 indicates a bad request error
-            return 'hash digest not found', 400
+            except KeyError:
+                # HTTP code 400 indicates a bad request error
+                return 'hash digest not found', 400
 
-    @self.app.route('/<command>')
-    def maintain(command):
-        # Grab the commands
-        arguments = [c.strip() for c in command.split(" ")]
+        @self.app.route('/<command>')
+        def maintain(command):
+            # Grab the commands
+            arguments = [c.strip() for c in command.split(" ")]
 
-        # Allow for block addition
-        if arguments[0] == "add":
-            if arguments[1] == "block":
-                block = arguments[2]
-                block_hash = hash('hex',block.encode())
-                self.blocks[block_hash] = block
+            # Allow for block addition
+            if arguments[0] == "add":
+                if arguments[1] == "block":
+                    block = arguments[2]
+                    block_hash = hash('hex',block.encode())
+                    self.blocks[block_hash] = block
 
-        # Allow for block removal
-        elif arguments[0] == "remove":
-            if arguments[1] == "head":
-                self.blocks.popitem()
+            # Allow for block removal
+            elif arguments[0] == "remove":
+                if arguments[1] == "head":
+                    self.blocks.popitem()
 
-        # Error case
-        else:
-            return f'command {command} not understood by server', 269
+            # Error case
+            else:
+                return f'command {command} not understood by server', 269
 
     def run(host, port):
         if not self.blocks:
