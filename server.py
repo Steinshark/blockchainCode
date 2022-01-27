@@ -45,7 +45,7 @@ class Server:
             else:
                 return f'command {command} not understood by server', 269
 
-    def run(host, port):
+    def run(host='lion',port=5000):
         if not self.blocks:
             block = build_block('',{'chat' : 'my very own blockchain!'})
             block_hash = hash('hex',block)
