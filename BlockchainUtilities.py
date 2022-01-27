@@ -35,7 +35,7 @@ def get_blockchain(hostname='cat',port='5000'):
     try:
         this_hash = retrieve_head_hash(host=hostname,port=port)
     except ConnectionException as c:
-        raise BlockChainRetrievalError(f"Error retrieving head hash\n{c}"
+        raise BlockChainRetrievalError(f"Error retrieving head hash\n{c}")
 
 
     # Continue grabbing new blocks until the genesis block is reached
