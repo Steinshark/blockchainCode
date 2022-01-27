@@ -56,7 +56,7 @@ class Server:
 
     def insert_block(block_as_JSON):
         block = block_as_JSON
-        block_hash = hash('hex',block.encode()).hexdigest()
+        block_hash = hash('hex',block.encode())
         self.blocks[block_hash] = block
 
 if __name__ == '__main__':
