@@ -28,27 +28,42 @@ def hash(format,bytes):
 def get_blockchain(hostname='cat',port='5000'):
     blockchain = []
 
+    this_block = None
+    next_block = None
+    this_hash = None
+    next_hash = None
     try:
-        hash_to_next_block = retrieve_head_hash(host=hostname,port=port)
+        this_hash = retrieve_head_hash(host=hostname,port=port)
     except ConnectionException as c:
         raise BlockChainRetrievalError(str(c))
 
 
     # Continue grabbing new blocks until the genesis block is reached
-    while not hash_to_next_block == '':
+    while not this_hash == '':
+        # try the whole thing
         try:
-            next_block_as_JSON = retrieve_block(hash_to_next_block,host=hostname,port=port)
+            # Acquire the necessary items
+            this_block_as_JSON = retrieve_block(this_hash,host=hostname,port=port)
+            this_block = JSON_to_block(this_block_as_JSON)
+            next_hash = retrieve_block_hash(this_block_as_JSON)
+            next_block = retrieve_block(next_hash,host=hostname,port=port)
+
+            # Ensure that this block is valid
+            if not check_fields(next_block,allowed_hashes=['',next_hash]):
+                raise BlockChainVerifyError(f"{Color.RED}Error: bad block found in position {index}{Color.END}")
+
+            # If everything checks out, then add this block and continue
+            blockchain.insert(0,(this_hash,next_block))
+            this_hash = next_hash
+
+            
         except ConnectionException as c:
             raise BlockChainRetrievalError(str(c))
-        try:
-            next_block = JSON_to_block(next_block_as_JSON)
         except DecodeException as d:
             raise BlockChainRetrievalError(str(d))
-        blockchain.insert(0,(hash_to_next_block,next_block))
-        try:
-            hash_to_next_block = retrieve_block_hash(next_block_as_JSON)
         except HashRetrievalException as h:
             raise BlockChainRetrievalError(str(h))
+
     return blockchain
 
 
