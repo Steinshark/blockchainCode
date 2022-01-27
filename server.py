@@ -11,11 +11,11 @@ class Server:
 
     # Maps a block hash to the block itself
 
-    @app.route('/head')
+    @self.app.route('/head')
     def head():
         return list(self.blocks.values())[-1]
 
-    @app.route('/fetch/<digest>')
+    @self.app.route('/fetch/<digest>')
     def fetch(digest):
         try:
             return self.blocks[digest]
@@ -24,7 +24,7 @@ class Server:
             # HTTP code 400 indicates a bad request error
             return 'hash digest not found', 400
 
-    @app.route('/<command>')
+    @self.app.route('/<command>')
     def maintain(command):
         # Grab the commands
         arguments = [c.strip() for c in command.split(" ")]
