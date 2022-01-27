@@ -50,7 +50,6 @@ def get_blockchain(hostname='cat',port='5000'):
             next_hash = retrieve_block_hash(this_block_as_JSON)
             if next_hash == '':
                 break
-            print(f"next hash is: {next_hash}")
             next_block = JSON_to_block(retrieve_block(next_hash,host=hostname,port=port))
 
             # Ensure that this block is valid
