@@ -30,6 +30,8 @@ def get_blockchain(hostname='cat',port='5000'):
 
     try:
         hash_to_next_block = retrieve_head_hash(host=hostname,port=port)
+        if hostname == 'lion':
+            print(f"askign for {hash_to_next_block}")
     except ConnectionException as c:
         raise BlockChainRetrievalError(str(c))
 
