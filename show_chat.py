@@ -32,7 +32,7 @@ class ChatService:
             return
 
         for hash,block in self.blockchain_download:
-            print(f"{block['payload']}")
+            print(f"{block['payload']['chat']}")
 
 
 
