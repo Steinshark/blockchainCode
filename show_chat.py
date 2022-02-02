@@ -26,12 +26,13 @@ class ChatService:
             self.blockchain_check = False
 
 
-    def verify_blockchain(self):
+    def print_blockchain(self):
         if self.blockchain_download is None:
-            print(f"{Color.RED}No blockchain found{Color.END}")
             return
+
         try:
-            self.blockchain_len = verify_blockchain(self.blockchain_download)
+            for block,hash in self.blockchain_download:
+                print(f"{block['payload']['chat'][:20]}")
         except BlockChainVerifyError as b:
             print(b)
             print(f"{Color.RED}Error Verifying Blockchain{Color.END}")
