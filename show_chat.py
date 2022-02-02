@@ -33,7 +33,7 @@ class ChatService:
     def fetch_blockchain(self):
         try:
             # Download the blockchain and get info
-            self.blockchain_download = get_blockchain(self.host,self.port,caching=True,endhash=self.last_hash)
+            self.blockchain_download = get_blockchain(self.host,self.port,caching=True,last_verified=self.last_hash)
             blockchain_len = len(self.blockchain_download)
             head_hash = self.blockchain_download[0][0]
 
