@@ -49,6 +49,7 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
         print(f"pulling block {this_hash[:20]}")
         index += 1
         filename = f"{cache_location}/{this_hash}.json"
+        print(f"created: {filename}")
         file_exists = isfile(filename)
         # try the whole thing
         try:
