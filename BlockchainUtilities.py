@@ -6,7 +6,7 @@ from json import loads, dumps, JSONDecodeError
 from requests import get, post, Timeout, RequestException, ConnectionError
 from BlockTools import *
 from BlockchainErrors import *
-
+from os.path import *
 
 #########################################################################################
 ############################### FUNCTIONS FOR CRYPTOGRAPHY ##############################
@@ -25,7 +25,12 @@ def hash(format,bytes):
 
 # encodes the blockchain found at a given hostname and port into a list
 # of tuples: (hash, blockAsPythonDict)
-def get_blockchain(hostname='cat',port='5000'):
+def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cache'):
+    if caching:
+        if not isdir(cache_location):
+            mkdir(cache_location)
+
+
     blockchain = []
     this_block = None
     next_block = None
