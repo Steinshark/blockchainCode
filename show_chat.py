@@ -1,8 +1,10 @@
 from BlockchainUtilities import *
 from BlockchainErrors import *
-from json import dumps
+from json import dumps, loads
+from os.path import isfile
 import argparse
 
+CHECKPOINT_FILE = 'cache/current.json'
 class ChatService:
     def __init__(self):
         self.format_parser()
@@ -10,21 +12,30 @@ class ChatService:
         self.port = self.args.port
         self.blockchain_check = True
 
+        self.last_hash = ''
+
     def format_parser(self):
         self.parser = argparse.ArgumentParser(description='Specify your own hostname and port',prefix_chars='-')
         self.parser.add_argument('--host',metavar='host',required=False, type=str,help='specify a hostname',default="http://cat")
         self.parser.add_argument('--port',metavar='port',required=False, type=str,help='specify a port',default='5000')
         self.args = self.parser.parse_args()
 
+    def check_for_head(self):
+        if isfile(CHECKPOINT_FILE):
+            with open(CHECKPOINT_FILE) as file :
+                info = loads(file.read())
+                self.blockchain_len = info['length']
+                self.last_hash = info['head']
+
+
+
 
     def fetch_blockchain(self):
         try:
             # Download the blockchain and get info
-            self.blockchain_download = get_blockchain(self.host,self.port,caching=True)
+            self.blockchain_download = get_blockchain(self.host,self.port,caching=True,endhash=self.last_hash)
             blockchain_len = len(self.blockchain_download)
             head_hash = self.blockchain_download[0][0]
-
-            print(f"len: {blockchain_len}, head hash: {head_hash}")
 
             # save info and write to file
             self.info = {   'head'  : head_hash,\
@@ -32,7 +43,7 @@ class ChatService:
             with open('cache/current.json','w') as file:
                 file.write(dumps(self.info))
 
-            # done 
+            # done
         except BlockChainError as b:
             print(b)
             print(f"{Color.RED}Error Downloading Blockchain: Terminated{Color.END}")
@@ -60,6 +71,7 @@ if __name__ == '__main__':
     instance.format_parser()
 
     # Try to download the blockchain and verify at the same time
+    self.check_for_head()
     instance.fetch_blockchain()
 
 
