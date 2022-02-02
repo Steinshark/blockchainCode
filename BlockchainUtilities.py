@@ -6,8 +6,8 @@ from json import loads, dumps, JSONDecodeError
 from requests import get, post, Timeout, RequestException, ConnectionError
 from BlockTools import *
 from BlockchainErrors import *
-from os.path import *
-from os import *
+from os.path import isfile, isdir
+from os import mkdir
 
 #########################################################################################
 ############################### FUNCTIONS FOR CRYPTOGRAPHY ##############################
