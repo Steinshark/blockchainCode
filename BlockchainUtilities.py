@@ -64,7 +64,7 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
             print(f"block : {block}")
             block = loads(block)
         else:
-            block = retrieve_block(host=hostname,port=port,hash)
+            block = retrieve_block(hash,host=hostname,port=port)
             print(f"block : {block}")
             block = loads(block)
 
