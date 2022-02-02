@@ -1,5 +1,6 @@
 from BlockchainUtilities import *
 from BlockchainErrors import *
+from json import dumps
 import argparse
 
 class ChatService:
@@ -18,7 +19,20 @@ class ChatService:
 
     def fetch_blockchain(self):
         try:
+            # Download the blockchain and get info
             self.blockchain_download = get_blockchain(self.host,self.port,caching=True)
+            blockchain_len = len(self.blockchain_download)
+            head_hash = self.blockchain_download[0][0]
+
+            print(f"len: {blockchain_len}, head hash: {head_hash}")
+
+            # save info and write to file
+            self.info = {   'head'  : head_hash,\
+                            'length': blockchain_len}
+            with open('cache/current.json','w') as file:
+                file.write(dumps(self.info))
+
+            # done 
         except BlockChainError as b:
             print(b)
             print(f"{Color.RED}Error Downloading Blockchain: Terminated{Color.END}")
@@ -47,5 +61,6 @@ if __name__ == '__main__':
 
     # Try to download the blockchain and verify at the same time
     instance.fetch_blockchain()
+
 
     instance.print_blockchain()
