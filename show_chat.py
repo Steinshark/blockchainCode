@@ -20,7 +20,7 @@ class ChatService:
         try:
             self.blockchain_download = get_blockchain(self.host,self.port)
         except BlockChainError as b:
-            print(dir(b))
+            print(b)
             print(f"{Color.RED}Error Downloading Blockchain: Terminated{Color.END}")
             self.blockchain_download = None
             self.blockchain_check = False
