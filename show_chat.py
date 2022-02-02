@@ -31,12 +31,9 @@ class ChatService:
             print("no blockain")
             return
 
-        try:
-            for block,hash in self.blockchain_download:
-                print(f"{block['payload']['chat'][:20]}")
-        except BlockChainVerifyError as b:
-            print(b)
-            print(f"{Color.RED}Error Verifying Blockchain{Color.END}")
+        for block,hash in self.blockchain_download:
+            print(f"{block['payload']['chat'][:20]}")
+
 
 
 
@@ -50,3 +47,5 @@ if __name__ == '__main__':
 
     # Try to download the blockchain and verify at the same time
     instance.download_blockchain()
+
+    instance.print_blockchain()
