@@ -42,6 +42,7 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
     # Grab the hash
     try:
         hash = retrieve_head_hash(host=hostname,port=port)
+        print(f"head hash is: {hash}")
     except ConnectionException as c:
         raise BlockChainRetrievalError(f"Error retrieving head hash\n{c}")
 
