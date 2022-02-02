@@ -3,7 +3,7 @@ from BlockchainErrors import *
 import argparse
 
 class ChatService:
-    def __init__():
+    def __init__(self):
         format_parser()
         self.host = self.args.host
         self.port = self.args.port
