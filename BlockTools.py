@@ -122,7 +122,9 @@ def verify_block(block,next_hash,trusting_blocks,allowed_versions=[0],allowed_ha
 
 # given a processed block (python dictionary), check the block for keys, then check
 # key values using the named parameters
-def check_fields(block,allowed_versions=[0],allowed_hashes=['']):
+def check_fields(block,allowed_versions=[0],allowed_hashes=[''],trust=False):
+    if trust:
+        return True
     # Ensure 'version' field checks out
     if (not 'version' in block) or\
        (not block['version'] in allowed_versions):
