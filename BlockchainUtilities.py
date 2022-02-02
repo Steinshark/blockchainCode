@@ -52,7 +52,7 @@ def get_blockchain(hostname='cat',port='5000'):
                     blockchain.insert(0,(this_hash,this_block))
                     return blockchain
                 else:
-                    print(f"bad block: {this_block}")
+                    print(f"bad block")
                     raise BlockChainVerifyError(f"{Color.RED}Error: bad block found in position {index}{Color.END}")
 
             next_block = JSON_to_block(retrieve_block(next_hash,host=hostname,port=port))
