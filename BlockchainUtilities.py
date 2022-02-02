@@ -61,11 +61,11 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
         if block_exists:
             block = open(block_filename,'r').read()
             print(f"block : {block}")
-            block = loads()
+            block = loads(block)
         else:
             block = retrieve_block(hash)
             print(f"block : {block}")
-            block = loads()
+            block = loads(block)
 
         # verify the block
         if check_fields(block,allowed_versions=[0],allowed_hashes=['',hash],trust=trust):
