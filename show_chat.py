@@ -4,7 +4,7 @@ import argparse
 
 class ChatService:
     def __init__(self):
-        format_parser()
+        self.format_parser()
         self.host = self.args.host
         self.port = self.args.port
         self.blockchain_check = True
