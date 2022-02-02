@@ -16,9 +16,9 @@ class ChatService:
         self.args = self.parser.parse_args()
 
 
-    def download_blockchain(self):
+    def fetch_blockchain(self):
         try:
-            self.blockchain_download = get_blockchain(self.host,self.port)
+            self.blockchain_download = get_blockchain(self.host,self.port,caching=True)
         except BlockChainError as b:
             print(b)
             print(f"{Color.RED}Error Downloading Blockchain: Terminated{Color.END}")
@@ -46,6 +46,6 @@ if __name__ == '__main__':
     instance.format_parser()
 
     # Try to download the blockchain and verify at the same time
-    instance.download_blockchain(caching=True)
+    instance.fetch_blockchain()
 
     instance.print_blockchain()
