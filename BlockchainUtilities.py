@@ -26,7 +26,7 @@ def hash(format,bytes):
 
 # encodes the blockchain found at a given hostname and port into a list
 # of tuples: (hash, blockAsPythonDict)
-def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cache', endhash=''):
+def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cache', last_verified=''):
     if caching:
         if not isdir(cache_location):
             mkdir(cache_location)
@@ -45,12 +45,14 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
 
     # Continue grabbing new blocks until the genesis block is reached
     index = 0
-    while not this_hash == endhash:
+    while not this_hash == '':
         print(f"pulling block {this_hash[:20]}")
         index += 1
         filename = f"{cache_location}/{this_hash}.json"
         print(f"created: {filename}")
         file_exists = isfile(filename)
+
+        
         # try the whole thing
         try:
             # Acquire the necessary items
@@ -64,7 +66,7 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
             next_hash = retrieve_prev_hash(this_block_as_JSON)
 
 
-            if next_hash == endhash:
+            if next_hash == '':
                 if check_fields(this_block,allowed_hashes=['',next_hash]):
                     if not file_exists:
                         with open(filename,'w') as file:
