@@ -46,8 +46,5 @@ if __name__ == '__main__':
     # Format the arguments
     instance.format_parser()
 
-    # Try to download the blockchain
+    # Try to download the blockchain and verify at the same time
     instance.download_blockchain()
-
-    # Attempt to verify the blockchain
-    instance.verify_blockchain()
