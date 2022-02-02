@@ -59,9 +59,13 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
 
         # get the block in python form
         if block_exists:
-            block = loads(open(block_filename,'r').read())
+            block = open(block_filename,'r').read()
+            print(f"block : {block}")
+            block = loads()
         else:
-            block = loads(retrieve_block(hash))
+            block = retrieve_block(hash)
+            print(f"block : {block}")
+            block = loads()
 
         # verify the block
         if check_fields(block,allowed_versions=[0],allowed_hashes=['',hash],trust=trust):

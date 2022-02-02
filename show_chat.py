@@ -28,8 +28,6 @@ class ChatService:
                 self.last_hash = info['head']
 
 
-
-
     def fetch_blockchain(self):
         try:
             # Download the blockchain and get info
@@ -43,7 +41,7 @@ class ChatService:
             with open('cache/current.json','w') as file:
                 file.write(dumps(self.info))
 
-            # done
+        # done
         except BlockChainError as b:
             print(b)
             print(f"{Color.RED}Error Downloading Blockchain: Terminated{Color.END}")
