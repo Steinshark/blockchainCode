@@ -4,7 +4,8 @@
 from BlockchainErrors import *
 from json import loads, dumps, JSONDecodeError
 from requests import get, post,Timeout, RequestException
-
+from os.path import isfile, isdir, join
+from os import mkdir
 
 
 #########################################################################################
@@ -26,21 +27,14 @@ def retrieve_head_hash(host="cat",port="5000",timeout=3):
         raise ConnectionException(f"{Color.RED}Error: something went wrong connecting to {url}{Color.END}")
 
 
-# Yields a block's 'prev_hash' field, given a block in JSON format
-def retrieve_prev_hash(block_as_JSON):
-    try:
-        block = JSON_to_block(block_as_JSON)
-    except DecodeException as d:
-        print(d)
-        raise HashRetrievalException(f"{Color.RED}Error: JSON decode of '{block['prev_hash'][:70]}' unsuccessful{Color.END}")
-        return
-
+# Yields a block's 'prev_hash' field, given a block
+def retrieve_prev_hash(block):
     # Check length requirements - can be 64 or 0 (for genesis block)
     try:
         if not len(block['prev_hash']) in [0,64]:
-            raise HashRetrievalException(f"{Color.RED}Error: JSON decode of '{block['prev_hash'][:70]}'... not a valid hash'{Color.END}")
+            raise HashRetrievalException(f"{Color.RED}Error: fetching of '{block['prev_hash'][:70]}'... not a valid hash'{Color.END}")
     except KeyError:
-        raise HashRetrievalException(f"{Color.RED}Error: JSON decode of '{str(block)[:70]}...' uninterpretable as valid block'{Color.END}")
+        raise HashRetrievalException(f"{Color.RED}Error: fetching of '{str(block)[:70]}...' missing 'prev_hash' key'{Color.END}")
     return block['prev_hash']
 
 
@@ -96,6 +90,35 @@ def build_block(prev_hash,payload,ver):
 #########################################################################################
 ########################## FUNCTIONS FOR PROCESSING BLOCKCHAIN ##########################
 #########################################################################################
+
+
+
+def verify_block(block,next_hash,trusting_blocks,allowed_versions=[0],allowed_hashes=[''],filename=None):
+    # Check if we trust the blocks
+    if trusting_blocks:
+        # Check that the block was downloaded
+        if not isfile(filename):
+            with open(filename) as file:
+                file.write(dumps(block))
+
+    # Verify the block
+    if next_hash == '':
+        if check_fields(this_block,allowed_hashes=['']):
+            if not file_exists:
+                with open(filename,'w') as file:
+                    file.write(this_block_as_JSON)
+            return 0,(this_hash,this_block)
+        else:
+            raise BlockChainVerifyError(f"{Color.RED}Error: bad block found in position {index}{Color.END}")
+
+    next_block = JSON_to_block(retrieve_block(next_hash,host=hostname,port=port))
+
+    # Ensure that this block is valid
+    if not check_fields(this_block,allowed_hashes=['',next_hash]):
+        print(f"bad block")
+        raise BlockChainVerifyError(f"{Color.RED}Error: bad block found in position {index}{Color.END}")
+
+
 
 # given a processed block (python dictionary), check the block for keys, then check
 # key values using the named parameters

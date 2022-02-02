@@ -27,80 +27,52 @@ def hash(format,bytes):
 # encodes the blockchain found at a given hostname and port into a list
 # of tuples: (hash, blockAsPythonDict)
 def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cache', last_verified=''):
+
+    # if caching, then check if the folder exists, and create if not
     if caching:
         if not isdir(cache_location):
             mkdir(cache_location)
 
 
+    # init all variables we will use
     blockchain = []
-    this_block = None
-    next_block = None
-    this_hash = None
-    next_hash = None
+    trust = False
+    hash = None
+
+    # Grab the hash
     try:
-        this_hash = retrieve_head_hash(host=hostname,port=port)
+        hash = retrieve_head_hash(host=hostname,port=port)
     except ConnectionException as c:
         raise BlockChainRetrievalError(f"Error retrieving head hash\n{c}")
 
 
     # Continue grabbing new blocks until the genesis block is reached
     index = 0
-    while not this_hash == '':
-        print(f"pulling block {this_hash[:20]}")
-        index += 1
-        filename = f"{cache_location}/{this_hash}.json"
-        print(f"created: {filename}")
-        file_exists = isfile(filename)
+    while not hash == '':
+        # First check if this block has been verified
+        if hash == last_verified:
+            trust = True
 
-        
-        # try the whole thing
-        try:
-            # Acquire the necessary items
-            if not file_exists:
-                this_block_as_JSON = retrieve_block(this_hash,host=hostname,port=port)
-            else:
-                with open(filename,'r') as file:
-                    this_block_as_JSON = file.read()
+        # check if this block exists in cache
+        block_filename  = f"{cache_location}/{hash}.json"
+        block_exists    = isfile(block)
 
-            this_block = JSON_to_block(this_block_as_JSON)
-            next_hash = retrieve_prev_hash(this_block_as_JSON)
+        # get the block in python form
+        if block_exists:
+            block = loads(open(block_filename,'r').read())
+        else:
+            block = loads(retrieve_block(hash))
 
+        # verify the block
+        if check_fields(block,allowed_versions=[0],allowed_hashes=['',hash],trust=trust):
+            # add it to the chain
+            blockchain.insert(0,(hash,block))
+            #if not already, write the block to file
+            if not block_exists:
+                open(block_filename,'w').write(dumps(block))
 
-            if next_hash == '':
-                if check_fields(this_block,allowed_hashes=['',next_hash]):
-                    if not file_exists:
-                        with open(filename,'w') as file:
-                            file.write(this_block_as_JSON)
-                    blockchain.insert(0,(this_hash,this_block))
-                    return blockchain
-                else:
-                    print(f"bad block")
-                    raise BlockChainVerifyError(f"{Color.RED}Error: bad block found in position {index}{Color.END}")
+        hash = retrieve_prev_hash(block)
 
-            next_block = JSON_to_block(retrieve_block(next_hash,host=hostname,port=port))
-
-            # Ensure that this block is valid
-            if not check_fields(this_block,allowed_hashes=['',next_hash]):
-                print(f"bad block")
-                raise BlockChainVerifyError(f"{Color.RED}Error: bad block found in position {index}{Color.END}")
-
-            # If everything checks out, then add this block and continue
-            if (this_hash,this_block) in blockchain:
-                raise BlockChainVerifyError(f"{Color.RED}Error: duplicate block found in position {index}{Color.END}")
-
-            if not file_exists:
-                with open(filename,'w') as file:
-                    file.write(this_block_as_JSON)
-            blockchain.insert(0,(this_hash,this_block))
-            this_hash = next_hash
-
-
-        except ConnectionException as c:
-            raise BlockChainRetrievalError(str(c))
-        except DecodeException as d:
-            raise BlockChainRetrievalError(str(d))
-        except HashRetrievalException as h:
-            raise BlockChainRetrievalError(str(h))
 
     return blockchain
 
