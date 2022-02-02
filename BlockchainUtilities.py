@@ -6,7 +6,7 @@ from json import loads, dumps, JSONDecodeError
 from requests import get, post, Timeout, RequestException, ConnectionError
 from BlockTools import *
 from BlockchainErrors import *
-from os.path import isfile, isdir
+from os.path import isfile, isdir, join
 from os import mkdir
 
 #########################################################################################
@@ -47,7 +47,7 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
     index = 0
     while not this_hash == '':
         index += 1
-        filename = f"{this_hash}.json"
+        filename = f"{cache_location}/{this_hash}.json"
         file_exists = isfile(filename)
         # try the whole thing
         try:
