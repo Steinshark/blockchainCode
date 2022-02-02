@@ -7,6 +7,7 @@ from requests import get, post, Timeout, RequestException, ConnectionError
 from BlockTools import *
 from BlockchainErrors import *
 from os.path import *
+from os import *
 
 #########################################################################################
 ############################### FUNCTIONS FOR CRYPTOGRAPHY ##############################
