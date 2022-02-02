@@ -46,6 +46,6 @@ if __name__ == '__main__':
     instance.format_parser()
 
     # Try to download the blockchain and verify at the same time
-    instance.download_blockchain()
+    instance.download_blockchain(caching=True)
 
     instance.print_blockchain()
