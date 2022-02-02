@@ -71,7 +71,7 @@ if __name__ == '__main__':
     instance.format_parser()
 
     # Try to download the blockchain and verify at the same time
-    self.check_for_head()
+    instance.check_for_head()
     instance.fetch_blockchain()
 
 
