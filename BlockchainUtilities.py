@@ -47,14 +47,26 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
     index = 0
     while not this_hash == '':
         index += 1
+        block_filename = f"{this_hash}.json"
+        file_exists = os.isfile(filename)
         # try the whole thing
         try:
             # Acquire the necessary items
-            this_block_as_JSON = retrieve_block(this_hash,host=hostname,port=port)
+            if not file_exists:
+                this_block_as_JSON = retrieve_block(this_hash,host=hostname,port=port)
+            else:
+                with open(filename,'r') as file:
+                    this_block_as_JSON = file.read()
+
             this_block = JSON_to_block(this_block_as_JSON)
             next_hash = retrieve_prev_hash(this_block_as_JSON)
+
+
             if next_hash == '':
                 if check_fields(this_block,allowed_hashes=['',next_hash]):
+                    if not file_exists:
+                        with open(filename,'w') as file:
+                            file.write(this_block_as_JSON)
                     blockchain.insert(0,(this_hash,this_block))
                     return blockchain
                 else:
@@ -71,6 +83,10 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
             # If everything checks out, then add this block and continue
             if (this_hash,this_block) in blockchain:
                 raise BlockChainVerifyError(f"{Color.RED}Error: duplicate block found in position {index}{Color.END}")
+
+            if not file_exists:
+                with open(filename,'w') as file:
+                    file.write(this_block_as_JSON)
             blockchain.insert(0,(this_hash,this_block))
             this_hash = next_hash
 
