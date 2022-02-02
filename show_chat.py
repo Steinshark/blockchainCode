@@ -31,7 +31,7 @@ class ChatService:
             print("no blockain")
             return
 
-        for block,hash in self.blockchain_download:
+        for hash,block in self.blockchain_download:
             print(f"{block['payload']}")
 
 
