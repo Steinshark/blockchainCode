@@ -11,7 +11,7 @@ for host in hosts:
         try:
             blockchain_download = get_blockchain(host,port)
         except BlockChainError as b:
-            print(b)
+            #print(b)
             print(f"Error Downloading Blockchain: Terminated\n")
             continue
 
@@ -20,7 +20,7 @@ for host in hosts:
             size = verify_blockchain(blockchain_download)
             print(f"{Color.GREEN}blockchain verified!\n{size} blocks in chain{Color.END}\n")
         except BlockChainVerifyError as b:
-            print(b)
+            #print(b)
             print(f"Error Verifying Blockchain\n")
 
             continue
