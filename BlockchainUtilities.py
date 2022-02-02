@@ -55,7 +55,7 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
 
         # check if this block exists in cache
         block_filename  = f"{cache_location}/{hash}.json"
-        block_exists    = isfile(block)
+        block_exists    = isfile(block_filename)
 
         # get the block in python form
         if block_exists:
