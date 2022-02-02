@@ -78,6 +78,8 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
                 print(f"wrote block {hash[:20]}")
             else:
                 print(f"block {hash[:20]} exists")
+        else:
+            print(":i dont trust this block")
 
         hash = retrieve_prev_hash(block)
 
