@@ -28,6 +28,7 @@ class ChatService:
 
     def print_blockchain(self):
         if self.blockchain_download is None:
+            print("no blockain")
             return
 
         try:
