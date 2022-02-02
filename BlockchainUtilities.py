@@ -47,8 +47,8 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
     index = 0
     while not this_hash == '':
         index += 1
-        block_filename = f"{this_hash}.json"
-        file_exists = isfile(block_filename)
+        filename = f"{this_hash}.json"
+        file_exists = isfile(filename)
         # try the whole thing
         try:
             # Acquire the necessary items
