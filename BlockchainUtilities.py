@@ -27,7 +27,6 @@ def hash(format,bytes):
 # of tuples: (hash, blockAsPythonDict)
 def get_blockchain(hostname='cat',port='5000'):
     blockchain = []
-
     this_block = None
     next_block = None
     this_hash = None
