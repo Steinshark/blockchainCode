@@ -104,6 +104,8 @@ class DynamicServer:
             # assuming block is JSON with 'block' key
             try:
                 block = JSON_to_block(received_data['block'])
+                print(f"{Color.TAN}\tdecoded to '{str(block)[:35]} ... {str(block)[-20:]}'{Color.END}")
+
             except JSONDecodeError as j:
                 print(f"{Color.RED}\terror decoding sent block{Color.END}")
 
