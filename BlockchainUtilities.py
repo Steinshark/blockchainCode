@@ -59,8 +59,9 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
 
         # get the block in python form
         if block_exists:
-            block = open(block_filename,'r').read()
-            block = loads(block)
+            with open(block_filename, 'r') as file:
+                flock(file,LOCK_SH)
+                block = loads(file.read())
         else:
             block = retrieve_block(block_hash,host=hostname,port=port)
             block = loads(block)
@@ -73,7 +74,10 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
             blockchain.insert(0,(block_hash,block))
             #if not already, write the block to file
             if not block_exists:
-                open(block_filename,'w').write(dumps(block))
+                with open(block_filename,'w') as file:
+                    flock(file,LOCK_EX)
+                    file.write(dumps(block))
+                    flock(file,LOCK_UN)
         block_hash = retrieve_prev_hash(block)
 
 

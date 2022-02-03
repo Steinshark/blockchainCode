@@ -3,6 +3,8 @@ from BlockchainErrors import *
 from json import dumps, loads
 from os.path import isfile
 import argparse
+from fcntl import flock, LOCK_SH,LOCK_EX
+
 
 CHECKPOINT_FILE = 'cache/current.json'
 class ChatService:
@@ -23,9 +25,11 @@ class ChatService:
     def check_for_head(self):
         if isfile(CHECKPOINT_FILE):
             with open(CHECKPOINT_FILE) as file :
+                flock(file,LOCK_SH)
                 info = loads(file.read())
                 self.blockchain_len = info['length']
                 self.last_hash = info['head']
+                flock(file,LOCK_UN)
 
 
     def fetch_blockchain(self):
