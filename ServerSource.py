@@ -73,6 +73,7 @@ class DynamicServer:
 
         @self.app.route('/head')
         def head():
+            print(f"{Color.TAN}\thead request recieved\n\n\n{Color.END}")
             with open('cache/current.json') as file :
                 flock(file,LOCK_SH)
                 info = loads(file.read())
