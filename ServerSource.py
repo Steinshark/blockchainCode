@@ -5,7 +5,6 @@ from os.path import isfile
 from fcntl import flock, LOCK_SH,LOCK_EX, LOCK_UN
 from json import dumps, loads
 import argparse
-from fcntl import flock, LOCK_SH,LOCK_EX, LOCK_UN
 
 class StaticServer:
     def __init__(self):
@@ -106,7 +105,7 @@ class DynamicServer:
 if __name__ == '__main__':
     host = input('run on host: ').strip()
     port = input('run on port: ')
-    s = Server()
+    s = DynamicServer()
     if not host and not port:
         s.run()
     else:

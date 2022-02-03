@@ -7,13 +7,14 @@ from fcntl import flock, LOCK_SH,LOCK_EX, LOCK_UN
 
 
 CHECKPOINT_FILE = 'cache/current.json'
+
+
 class ChatService:
     def __init__(self):
         self.format_parser()
         self.host = self.args.host
         self.port = self.args.port
         self.blockchain_check = True
-
         self.last_hash = ''
 
     def format_parser(self):
@@ -21,6 +22,7 @@ class ChatService:
         self.parser.add_argument('--host',metavar='host',required=False, type=str,help='specify a hostname',default="http://cat")
         self.parser.add_argument('--port',metavar='port',required=False, type=str,help='specify a port',default='5000')
         self.args = self.parser.parse_args()
+
 
     def check_for_head(self):
         if isfile(CHECKPOINT_FILE):
@@ -45,6 +47,7 @@ class ChatService:
             with open('cache/current.json','w') as file:
                 file.write(dumps(self.info))
 
+
         # done
         except BlockChainError as b:
             print(b)
@@ -54,16 +57,19 @@ class ChatService:
 
 
     def print_blockchain(self):
+        # Dont try to print an empty blockchain
         if self.blockchain_download is None:
             print("no blockain")
             return
 
-        seen = False
-        for hash,block in self.blockchain_download:
-            if hash == self.last_hash:
-                seen = True
-            if not seen:
-                print(f"{block['payload']['chat']}")
+        # Print the blockchain
+        else:
+            seen = False
+            for hash,block in self.blockchain_download:
+                if hash == self.last_hash:
+                    seen = True
+                    if not seen:
+                        print(f"{block['payload']['chat']}")
 
 
 
@@ -80,5 +86,5 @@ if __name__ == '__main__':
     instance.check_for_head()
     instance.fetch_blockchain()
 
-
+    # Print the newest chats
     instance.print_blockchain()

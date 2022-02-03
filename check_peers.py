@@ -13,10 +13,10 @@ for host in hosts:
             size = len(blockchain_download)
             print(f"{Color.GREEN}blockchain verified!\n{size} blocks in chain{Color.END}\n")
 
+
         except BlockChainError as b:
-            #print(b)
             print(f"Error Downloading Blockchain: Terminated\n\n")
             continue
+            
         except BlockChainVerifyError as b:
-            #print(b)
             print(f"Error Verifying Blockchain\n\n")

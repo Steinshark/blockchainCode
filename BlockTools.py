@@ -92,34 +92,6 @@ def build_block(prev_hash,payload,ver):
 #########################################################################################
 
 
-
-def verify_block(block,next_hash,trusting_blocks,allowed_versions=[0],allowed_hashes=[''],filename=None):
-    # Check if we trust the blocks
-    if trusting_blocks:
-        # Check that the block was downloaded
-        if not isfile(filename):
-            with open(filename) as file:
-                file.write(dumps(block))
-
-    # Verify the block
-    if next_hash == '':
-        if check_fields(this_block,allowed_hashes=['']):
-            if not file_exists:
-                with open(filename,'w') as file:
-                    file.write(this_block_as_JSON)
-            return 0,(this_hash,this_block)
-        else:
-            raise BlockChainVerifyError(f"{Color.RED}Error: bad block found in position {index}{Color.END}")
-
-    next_block = JSON_to_block(retrieve_block(next_hash,host=hostname,port=port))
-
-    # Ensure that this block is valid
-    if not check_fields(this_block,allowed_hashes=['',next_hash]):
-        print(f"bad block")
-        raise BlockChainVerifyError(f"{Color.RED}Error: bad block found in position {index}{Color.END}")
-
-
-
 # given a processed block (python dictionary), check the block for keys, then check
 # key values using the named parameters
 def check_fields(block,allowed_versions=[0],allowed_hashes=[''],trust=False):
