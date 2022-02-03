@@ -80,8 +80,6 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
             #if not already, write the block to file
             if not block_exists:
                 open(block_filename,'w').write(dumps(block))
-            else:
-
         block_hash = retrieve_prev_hash(block)
 
 
