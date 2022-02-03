@@ -105,8 +105,11 @@ class DynamicServer:
             print(f"{type(block)}")
             if not check_fields(block,allowed_versions = [0],allowed_hashes=['']+grab_cached_hashes(cache_location='cache')):
                 print("bad block")
+                return "block rejected", 400
+
             else:
-                return "good to go", 200
+                print("accepted")
+                return "block accepted", 200
 
     def run(self,host='lion',port=5002):
         self.app.run(host=host,port=port)
