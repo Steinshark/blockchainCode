@@ -113,6 +113,7 @@ class DynamicServer:
                 return f"{Color.GREEN}block accepted!{Color.END}", 200
 
     def run(self,host='lion',port=5002):
+        print(f'\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n{Color.GREEN}SERVER STARTED{Color.END}')
         self.app.run(host=host,port=port)
 
 if __name__ == '__main__':
