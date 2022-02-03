@@ -37,25 +37,25 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
     # init all variables we will use
     blockchain = []
     trust = False
-    hash = None
+    block_hash= None
 
     # Grab the hash
     try:
-        hash = retrieve_head_hash(host=hostname,port=port)
-        print(f"head hash is: {hash}")
+        block_hash= retrieve_head_hash(host=hostname,port=port)
+        print(f"head block_hashis: {block_hash}")
     except ConnectionException as c:
         raise BlockChainRetrievalError(f"Error retrieving head hash\n{c}")
 
 
     # Continue grabbing new blocks until the genesis block is reached
     index = 0
-    while not hash == '':
+    while not block_hash== '':
         # First check if this block has been verified
-        if hash == last_verified:
+        if block_hash== last_verified:
             trust = True
 
         # check if this block exists in cache
-        block_filename  = f"{cache_location}/{hash}.json"
+        block_filename  = f"{cache_location}/{block_hash}.json"
         block_exists    = isfile(block_filename)
 
         # get the block in python form
@@ -64,28 +64,28 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
             print(f"block : {block}")
             block = loads(block)
         else:
-            block = retrieve_block(hash,host=hostname,port=port)
+            block = retrieve_block(block_hash,host=hostname,port=port)
             print(f"block : {block}")
             block = loads(block)
 
         # verify the block
-        print(f"checking {hash[:10]} on {block}")
+        print(f"checking {block_hash[:10]} on {block}")
         hashed_to = hash('hex',retrieve_block(retrieve_prev_hash(block),host=hostname,port=port).encode())
         print(f"hashed to {hashed_to}")
-        check = check_fields(block,hash,allowed_versions=[0],allowed_hashes=['',hash],trust=trust)
+        check = check_fields(block,hash,allowed_versions=[0],allowed_hashes=['',block_hash],trust=trust)
         if check:
             # add it to the chain
             blockchain.insert(0,(hash,block))
             #if not already, write the block to file
             if not block_exists:
                 open(block_filename,'w').write(dumps(block))
-                print(f"wrote block {hash[:20]}")
+                print(f"wrote block {block_hash[:20]}")
             else:
-                print(f"block {hash[:20]} exists")
+                print(f"block {block_hash[:20]} exists")
         else:
             print(":i dont trust this block")
 
-        hash = retrieve_prev_hash(block)
+        block_hash= retrieve_prev_hash(block)
 
 
     return blockchain
