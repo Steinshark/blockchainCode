@@ -99,7 +99,7 @@ class DynamicServer:
         @self.app.route('/push', methods=['POST'])
         def push_block():
             received_data = flask.request.form
-            print(f"{Color.TAN}\trecieved '{str(received_data)[:20]} ... {str(received_data)[-20:]}'{Color.END}")
+            print(f"{Color.TAN}\trecieved '{str(received_data)[:35]} ... {str(received_data)[-20:]}'{Color.END}")
 
             # assuming block is JSON with 'block' key
             try:
