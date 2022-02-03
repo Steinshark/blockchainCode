@@ -98,11 +98,15 @@ class DynamicServer:
         @self.app.route('/push', methods=['POST'])
         def push_block():
             received_data = flask.request.form
-            print(f"{Color.TAN}recieved{received_data}{Color.END}")
+            print(f"{Color.TAN}recieved{received_data[:20]}...{received_data[10:]}{Color.END}")
 
             # assuming block is JSON with 'block' key
-            block = JSON_to_block(received_data['block'])
-            print(f"{type(block)}")
+            try:
+                block = JSON_to_block(received_data['block'])
+            except JSONDecodeError as j:
+                print(f"{Color.RED}error decoding sent block{Color.END}")
+
+
             if not check_fields(block,allowed_versions = [0],allowed_hashes=['']+grab_cached_hashes(cache_location='cache')):
                 print(f"{Color.RED}rejected block{Color.END}")
 
