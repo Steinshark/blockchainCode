@@ -85,6 +85,7 @@ class DynamicServer:
 
         @self.app.route('/fetch/<digest>')
         def fetch(digest):
+            print(f"request made: {digest}")
             filename = f'cache/{digest}.json'
             if not isfile(filename):
                 return f'{filename} not found in cache', 400
