@@ -96,7 +96,10 @@ class DynamicServer:
                     flock(file,LOCK_UN)
                     return block, 200
 
-
+        @app.rout('/push', methods=['POST'])
+        def push_block():
+            received_data = flask.request.form
+            print(f"recieved block of keys {received_data.keys()}")
     def run(self,host='lion',port=5002):
         self.app.run(host=host,port=port)
 
