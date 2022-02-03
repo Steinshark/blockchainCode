@@ -19,9 +19,7 @@ if not __name__ == "__main__":
 
 
 else:
-    import textwrap
     msg = 'hello world'
-    sends = textwrap.wrap(msg, 50)
 
 
     URL = 'http://lion:5002'
@@ -36,6 +34,7 @@ else:
 
         # Build a new block and send it to the blockchain
         json_encoded_block = build_block(head_hash.decode(),{'chat' : message},0)
+        print(f"sending {json_encoded_block} of type {type(json_encoded_block)}")
         push_data = {'block' : json_encoded_block}
         post = http_post(URL+'/push',push_data)
         print(post.status_code)
