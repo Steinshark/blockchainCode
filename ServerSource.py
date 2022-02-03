@@ -1,6 +1,6 @@
 import flask
-from BlockTools import build_block
-from BlockchainUtilities import hash
+from BlockTools import *
+from BlockchainUtilities import *
 from os.path import isfile
 from fcntl import flock, LOCK_SH,LOCK_EX, LOCK_UN
 from json import dumps, loads
