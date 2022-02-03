@@ -50,6 +50,7 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
     # Continue grabbing new blocks until the genesis block is reached
     index = 0
     while not block_hash== '':
+        index += 1
         # First check if this block has been verified
         if block_hash== last_verified:
             trust = True
@@ -90,6 +91,8 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
                     flock(file,LOCK_EX)
                     file.write(dumps(block))
                     flock(file,LOCK_UN)
+        else:
+            raise BlockChainVerifyError(f"{Color.RED}bad block at position {index}{Color.END}")
         block_hash = retrieve_prev_hash(block)
 
 
