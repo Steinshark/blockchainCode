@@ -88,7 +88,9 @@ def build_block(prev_hash,payload,ver):
 
 # returns a list of all the allowed hashes
 def grab_cached_hashes(cache_location='cache'):
-    return [file for file in getdir(cache_location) if file.split('.')[-1] == 'json']
+    allowed_hashes = [file for file in listdir(cache_location) if file.split('.')[-1] == 'json']
+    print(f"''.join(allowed_hashes)")
+    return allowed_hashes
 #########################################################################################
 ########################## FUNCTIONS FOR PROCESSING BLOCKCHAIN ##########################
 #########################################################################################
