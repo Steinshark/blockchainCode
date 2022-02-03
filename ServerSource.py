@@ -103,7 +103,7 @@ class DynamicServer:
             # assuming block is JSON with 'block' key
             block = JSON_to_block(received_data)['block']
 
-            if not check_fields(block,allowed_versions = [0],allowed_hashes=['',grab_cached_hashes(cache_location='cache')]):
+            if not check_fields(block,allowed_versions = [0],allowed_hashes=['']+grab_cached_hashes(cache_location='cache')):
 
     def run(self,host='lion',port=5002):
         self.app.run(host=host,port=port)
