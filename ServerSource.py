@@ -98,7 +98,7 @@ class DynamicServer:
         @self.app.route('/push', methods=['POST'])
         def push_block():
             received_data = flask.request.form
-            print(f"\n\n\n{Color.TAN}\trecieved '{str(received_data)[:20]} ... {str(received_data)[-20:]}'{Color.END}")
+            print(f"{Color.TAN}\trecieved '{str(received_data)[:20]} ... {str(received_data)[-20:]}'{Color.END}")
 
             # assuming block is JSON with 'block' key
             try:
@@ -109,11 +109,12 @@ class DynamicServer:
 
             if not check_fields(block,allowed_versions = [0],allowed_hashes=['']+grab_cached_hashes(cache_location='cache')):
                 print(f"{Color.RED}\trejected block{Color.END}")
-
+                print('\n\n\n')
                 return f"{Color.RED}\tblock rejected!{Color.END}", 400
 
             else:
                 print(f"{Color.GREEN}\taccepted block{Color.END}")
+                print('\n\n\n')
                 return f"{Color.GREEN}\tblock accepted!{Color.END}", 200
 
     def run(self,host='lion',port=5002):
