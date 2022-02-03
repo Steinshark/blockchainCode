@@ -64,8 +64,12 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
                 flock(file,LOCK_SH)
                 block = loads(file.read())
         else:
-            block = retrieve_block(block_hash,host=hostname,port=port)
-            block = loads(block)
+            try:
+                block = retrieve_block(block_hash,host=hostname,port=port)
+                block = loads(block)
+            except JSONDecodeError as j:
+                print(j)
+                raise BlockChainError(j)
 
         # verify the block
         hashed_to = hash('hex',retrieve_block(retrieve_prev_hash(block),host=hostname,port=port).encode())
