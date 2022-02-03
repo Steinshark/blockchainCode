@@ -24,7 +24,7 @@ else:
     sends = textwrap.wrap(msg, 50)
 
 
-    URL = 'http://cat:5000'
+    URL = 'http://lion:5002'
 
     # Get user message
     for m in sends:
