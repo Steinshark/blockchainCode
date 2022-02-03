@@ -15,8 +15,8 @@ for host in hosts:
 
         except BlockChainError as b:
             #print(b)
-            print(f"Error Downloading Blockchain: Terminated\n")
+            print(f"Error Downloading Blockchain: Terminated\n\n")
             continue
         except BlockChainVerifyError as b:
             #print(b)
-            print(f"Error Verifying Blockchain\n")
+            print(f"Error Verifying Blockchain\n\n")
