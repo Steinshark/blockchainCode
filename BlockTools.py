@@ -80,7 +80,7 @@ def build_block(prev_hash,payload,ver):
                     'payload'       : payload,
                     'version'       : ver}
     try:
-        encoded_block = block_to_JSON(new_block)
+        encoded_block = dumps(new_block)
         return encoded_block
     except JSONEncodeException as j:
         raise BlockCreationException(j)
