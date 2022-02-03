@@ -18,6 +18,3 @@ if __name__ == "__main__":
     push_data = {'block' : json_encoded_block}
     post = http_post(URL+'/push',push_data)
     print(post.status_code)
-
-ta)
-        print(post.status_code)
