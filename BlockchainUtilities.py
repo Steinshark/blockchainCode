@@ -75,17 +75,14 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
         check = check_fields(block,block_hash,allowed_versions=[0],allowed_hashes=['',hashed_to],trust=trust)
         if check:
             # add it to the chain
+            print(f"added{(hash,block)}")
             blockchain.insert(0,(hash,block))
             #if not already, write the block to file
             if not block_exists:
                 open(block_filename,'w').write(dumps(block))
-                print(f"wrote block {block_hash[:20]}")
             else:
-                print(f"block {block_hash[:20]} exists")
-        else:
-            print(":i dont trust this block")
 
-        block_hash= retrieve_prev_hash(block)
+        block_hash = retrieve_prev_hash(block)
 
 
     return blockchain
