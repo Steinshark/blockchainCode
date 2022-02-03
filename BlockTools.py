@@ -5,7 +5,7 @@ from BlockchainErrors import *
 from json import loads, dumps, JSONDecodeError
 from requests import get, post,Timeout, RequestException
 from os.path import isfile, isdir, join
-from os import mkdir
+from os import mkdir, listdir
 
 
 #########################################################################################
@@ -86,7 +86,9 @@ def build_block(prev_hash,payload,ver):
         raise BlockCreationException(j)
 
 
-
+# returns a list of all the allowed hashes
+def grab_cached_hashes(cache_location='cache'):
+    return [file for file in getdir(cache_location) if file.split('.')[-1] == 'json']
 #########################################################################################
 ########################## FUNCTIONS FOR PROCESSING BLOCKCHAIN ##########################
 #########################################################################################
