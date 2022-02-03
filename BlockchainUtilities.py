@@ -75,7 +75,11 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
                 raise BlockChainError(h)
 
         # verify the block
-        hashed_to = hash('hex',retrieve_block(retrieve_prev_hash(block),host=hostname,port=port).encode())
+        try:
+            hashed_to = hash('hex',retrieve_block(retrieve_prev_hash(block),host=hostname,port=port).encode())
+            except HashRetrievalException as h:
+                print(h)
+                raise BlockChainError(h)
         check = check_fields(block,allowed_versions=[0],allowed_hashes=['',hashed_to],trust=trust)
         if check:
             # add it to the chain
