@@ -14,9 +14,9 @@ for host in hosts:
             print(f"{Color.GREEN}blockchain verified!\n{size} blocks in chain{Color.END}\n")
 
 
+        except BlockChainVerifyError as b:
+            print(f"Error Verifying Blockchain\n\n")
+            
         except BlockChainError as b:
             print(f"Error Downloading Blockchain: Terminated\n\n")
             continue
-            
-        except BlockChainVerifyError as b:
-            print(f"Error Verifying Blockchain\n\n")
