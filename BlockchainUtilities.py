@@ -61,21 +61,16 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
         # get the block in python form
         if block_exists:
             block = open(block_filename,'r').read()
-            print(f"block : {block}")
             block = loads(block)
         else:
             block = retrieve_block(block_hash,host=hostname,port=port)
-            print(f"block : {block}")
             block = loads(block)
 
         # verify the block
-        print(f"checking {block_hash[:10]} on {block}")
         hashed_to = hash('hex',retrieve_block(retrieve_prev_hash(block),host=hostname,port=port).encode())
-        print(f"hashed to {hashed_to}")
         check = check_fields(block,block_hash,allowed_versions=[0],allowed_hashes=['',hashed_to],trust=trust)
         if check:
             # add it to the chain
-            print(f"added{(block_hash,block)}")
             blockchain.insert(0,(block_hash,block))
             #if not already, write the block to file
             if not block_exists:

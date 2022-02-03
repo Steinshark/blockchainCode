@@ -54,8 +54,12 @@ class ChatService:
             print("no blockain")
             return
 
+        seen = False
         for hash,block in self.blockchain_download:
-            print(f"{block['payload']['chat']}")
+            if hash == self.last_hash:
+                seen = True
+            if not seen:
+                print(f"{block['payload']['chat']}")
 
 
 
