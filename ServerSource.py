@@ -101,7 +101,7 @@ class DynamicServer:
             print(f"recieved{received_data}")
 
             # assuming block is JSON with 'block' key
-            block = JSON_to_block(received_data)['block']
+            block =(received_data['block']
 
             if not check_fields(block,allowed_versions = [0],allowed_hashes=['']+grab_cached_hashes(cache_location='cache')):
                 print("bad block")
