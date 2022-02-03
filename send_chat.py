@@ -1,5 +1,5 @@
 from blockchain_utilities import http_get, http_post, build_block
-
+from json import dumps
 
 if __name__ == "__main__":
     URL = 'http://lion:5002'
