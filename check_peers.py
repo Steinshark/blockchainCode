@@ -2,7 +2,7 @@ from BlockchainUtilities import *
 from BlockchainErrors import *
 
 hosts = [line.strip() for line in open('hosts.txt').readlines()]
-ports = ["5000","5001"]
+ports = ["5000","5001","5002"]
 
 for host in hosts:
     print(f"{Color.BLUE}attempting to access host: {host}{Color.END}")
