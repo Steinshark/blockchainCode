@@ -3,7 +3,7 @@ from BlockchainErrors import *
 from json import dumps, loads
 from os.path import isfile
 import argparse
-from fcntl import flock, LOCK_SH,LOCK_EX
+from fcntl import flock, LOCK_SH,LOCK_EX, LOCK_UN
 
 
 CHECKPOINT_FILE = 'cache/current.json'

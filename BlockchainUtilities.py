@@ -8,6 +8,7 @@ from BlockTools import *
 from BlockchainErrors import *
 from os.path import isfile, isdir, join
 from os import mkdir
+from fcntl import flock, LOCK_SH,LOCK_EX, LOCK_UN
 
 #########################################################################################
 ############################### FUNCTIONS FOR CRYPTOGRAPHY ##############################
