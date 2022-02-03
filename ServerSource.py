@@ -98,7 +98,7 @@ class DynamicServer:
         @self.app.route('/push', methods=['POST'])
         def push_block():
             received_data = flask.request.form
-            print(f"recieved block of keys {received_data.keys()}")
+            print(f"recieved{received_data}")
 
             # assuming block is JSON with 'block' key
             block = JSON_to_block(received_data)['block']
