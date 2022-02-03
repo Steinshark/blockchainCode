@@ -70,7 +70,7 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
 
         # verify the block
         print(f"checking {block_hash[:10]} on {block}")
-        hashed_to = hash('hex',retrieve_block(retrieve_prev_hash(block),host=hostname,port=port).encode())
+        hashed_to = hash('hex',loads(retrieve_block(retrieve_prev_hash(block),host=hostname,port=port).encode()))
         print(f"hashed to {hashed_to}")
         check = check_fields(block,block_hash,allowed_versions=[0],allowed_hashes=['',block_hash],trust=trust)
         if check:
