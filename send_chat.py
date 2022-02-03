@@ -15,5 +15,5 @@ if __name__ == "__main__":
     json_encoded_block = build_block(head_hash.decode(),{'chat' : message},0)
     print(f"sending {json_encoded_block} of type {type(json_encoded_block)}")
     push_data = dumps({'block' : json_encoded_block})
-    post = http_post(URL+'/push',data=push_data)
+    post = http_post(URL+'/push',push_data)
     print(post.status_code)
