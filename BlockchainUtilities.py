@@ -75,8 +75,8 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
         check = check_fields(block,block_hash,allowed_versions=[0],allowed_hashes=['',hashed_to],trust=trust)
         if check:
             # add it to the chain
-            print(f"added{(hash,block)}")
-            blockchain.insert(0,(hash,block))
+            print(f"added{(block_hash,block)}")
+            blockchain.insert(0,(block_hash,block))
             #if not already, write the block to file
             if not block_exists:
                 open(block_filename,'w').write(dumps(block))
