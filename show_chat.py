@@ -10,10 +10,14 @@ CHECKPOINT_FILE = 'cache/current.json'
 
 
 class ChatService:
-    def __init__(self):
+    def __init__(self,host=None,port=-1):
         self.format_parser()
-        self.host = self.args.host
-        self.port = self.args.port
+        if (not host == None) and (not port == -1):
+            self.host = host
+            self.port = port
+        else:
+            self.host = self.args.host
+            self.port = self.args.port
         self.blockchain_check = True
         self.last_hash = ''
 
@@ -34,7 +38,7 @@ class ChatService:
                 flock(file,LOCK_UN)
 
 
-    def fetch_blockchain(self):
+    def fetch_blockchain(self,writing=True):
         try:
             # Download the blockchain and get info
             self.blockchain_download = get_blockchain(self.host,self.port,caching=True,last_verified=self.last_hash)
@@ -44,8 +48,10 @@ class ChatService:
             # save info and write to file
             self.info = {   'head'  : head_hash,\
                             'length': blockchain_len}
-            with open('cache/current.json','w') as file:
-                file.write(dumps(self.info))
+
+            if writing:
+                with open('cache/current.json','w') as file:
+                    file.write(dumps(self.info))
 
 
         # done

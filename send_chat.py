@@ -1,20 +1,38 @@
-from blockchain_utilities import http_get, http_post, build_block
+from BlockTools import http_get, http_post, build_block
 from json import dumps
+from show_chat import ChatService
+
+def send_chat(msg,host,port):
+    #Specify all the URLs
+    URL = { 'head' : f"http://{host}:{port}/head",
+            'push' : f"http://{host}:{port}/push"}
+
+    # Grab the current head hash
+    head_hash = http_get(URL['head']).content.decode()
+
+    # Create the block
+    json_encoded_block = build_block(head_hash,{'chat' : msg},0)
+
+    # Build format to send over HTTP
+    push_data = {'block' : json_encoded_block}
+
+    # Send it
+    post = http_post(URL['push'],push_data)
+
+def scan_chains():
+    head_hashes = {}
+    chain_len   = {}
+    # Compile a list of all the head_hashes
+    for host in open(hosts.txt).readlines():
+        head_hashes[host] = http_get(f"http://{host}:5002/head").content.decode()
+        chatter = ChatService(host=host,port=5002)
+        chatter.get_blockchain()
+        chain_len[host] = chatter.info['length']
+        print(f"host: {host} has longest chain of {chain_len[host]}")
+
 
 if __name__ == "__main__":
-    URL = 'http://lion:5002'
-
     # Get user message
     message = input("message: ")
 
-    # Get the head blocks hash
-    request_url = URL+'/head'
-    head_hash = http_get(request_url).content
-
-    # Build a new block and send it to the blockchain
-    json_encoded_block = build_block(head_hash.decode(),{'chat' : message},0)
-    print(f"{type(json_encoded_block)}")
-    push_data = {'block' : json_encoded_block}
-    print(f"sending {push_data} of type {type(push_data)}")
-    post = http_post(URL+'/push',push_data)
-    print(post.status_code)
+    send_chat(mesage,)
