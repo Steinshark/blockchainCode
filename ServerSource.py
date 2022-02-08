@@ -70,7 +70,7 @@ class DynamicServer:
     def __init__(self):
         self.app = flask.Flask(__name__)
         self.head_hash = None
-        self.all_chains = scan_chains()
+        self.all_chains = self.scan_chains()
     # Maps a block hash to the block itself
 
         @self.app.route('/head')
@@ -129,7 +129,7 @@ class DynamicServer:
         print(f'\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n{Color.GREEN}SERVER STARTED{Color.END}')
         self.app.run(host=host,port=port)
 
-    def scan_chains():
+    def scan_chains(self):
         hashes_to_prev_hash = {}
         for file in os.listdir():
             if file[-5] == '.json':
