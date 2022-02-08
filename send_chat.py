@@ -28,7 +28,7 @@ def scan_chains():
     for host in open('hosts.txt').readlines():
         try:
             head_hashes[host] = get(f"http://{host}:5002/head").content.decode()
-        except ConnectionError:
+        except:
             print(f"Error connecting to host: {host} on port 5002")
         chatter = ChatService(host=host,port=5002)
         chatter.get_blockchain()
