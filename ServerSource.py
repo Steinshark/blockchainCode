@@ -134,7 +134,7 @@ class DynamicServer:
         for file in listdir('cache/'):
             if file[-5:] == '.json':
                 hash = file[:-5].strip()
-                with open(file,'r') as f:
+                with open(f"cache/{file}",'r') as f:
                     prev_hash = loads(f.read().strip())['prev_hash']
                     print(f"hash {hash} maps to {prev_hash}")
 
