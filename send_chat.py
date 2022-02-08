@@ -2,6 +2,8 @@ from BlockTools import http_post, build_block
 from json import dumps
 from show_chat import ChatService
 from requests import get
+
+
 def send_chat(msg,host,port):
     #Specify all the URLs
     URL = { 'head' : f"http://{host}:{port}/head",
@@ -23,7 +25,7 @@ def scan_chains():
     head_hashes = {}
     chain_len   = {}
     # Compile a list of all the head_hashes
-    for host in open(hosts.txt).readlines():
+    for host in open('hosts.txt').readlines():
         head_hashes[host] = get(f"http://{host}:5002/head").content.decode()
         chatter = ChatService(host=host,port=5002)
         chatter.get_blockchain()
@@ -32,7 +34,4 @@ def scan_chains():
 
 
 if __name__ == "__main__":
-    # Get user message
-    message = input("message: ")
-
     scan_chains()
