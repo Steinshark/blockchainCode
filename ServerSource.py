@@ -144,6 +144,7 @@ class DynamicServer:
         for not_possible_end_hash in hashes_to_prev_hash.values():
             possible_hashes.pop(not_possible_end_hash)
         print(f"We ended with: {possible_hashes}")
+        input()
 
 if __name__ == '__main__':
     host = input('run on host: ').strip()
