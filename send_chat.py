@@ -39,3 +39,5 @@ def scan_chains():
 
 if __name__ == "__main__":
     scan_chains()
+
+    send_chat("hello world!",'lion',5002)

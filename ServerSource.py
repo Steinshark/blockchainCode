@@ -4,6 +4,7 @@ from BlockchainUtilities import *
 from os.path import isfile
 from fcntl import flock, LOCK_SH,LOCK_EX, LOCK_UN
 from json import dumps, loads
+from os import listdir
 import argparse
 
 class StaticServer:
@@ -69,11 +70,15 @@ class DynamicServer:
     def __init__(self):
         self.app = flask.Flask(__name__)
         self.head_hash = None
+        self.all_chains = scan_chains()
     # Maps a block hash to the block itself
 
         @self.app.route('/head')
         def head():
             print(f"{Color.TAN}\thead request recieved\n\n\n{Color.END}")
+
+
+
             with open('cache/current.json') as file :
                 flock(file,LOCK_SH)
                 info = loads(file.read())
@@ -123,6 +128,15 @@ class DynamicServer:
     def run(self,host='lion',port=5002):
         print(f'\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n{Color.GREEN}SERVER STARTED{Color.END}')
         self.app.run(host=host,port=port)
+
+    def scan_chains():
+        hashes_to_prev_hash = {}
+        for file in os.listdir():
+            if file[-5] == '.json':
+                hash = file[:-5].strip()
+                with open(file,'r') as f:
+                    prev_hash = loads(f.read().strip())['prev_hash']
+                    print(f"hash {hash} maps to {prev_hash}")
 
 if __name__ == '__main__':
     host = input('run on host: ').strip()
