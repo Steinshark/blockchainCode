@@ -131,7 +131,7 @@ class DynamicServer:
 
     def scan_chains(self):
         hashes_to_prev_hash = {}
-        for file in os.listdir():
+        for file in listdir():
             if file[-5] == '.json':
                 hash = file[:-5].strip()
                 with open(file,'r') as f:
