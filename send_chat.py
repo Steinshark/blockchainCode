@@ -28,12 +28,12 @@ def scan_chains():
     for host in open('hosts.txt').readlines():
         try:
             head_hashes[host] = get(f"http://{host}:5002/head").content.decode()
+            chatter = ChatService(host=host,port=5002)
+            chatter.fetch_blockchain()
+            chain_len[host] = chatter.info['length']
+            print(f"host: {host} has longest chain of {chain_len[host]}")
         except:
             print(f"Error connecting to host: {host} on port 5002")
-        chatter = ChatService(host=host,port=5002)
-        chatter.get_blockchain()
-        chain_len[host] = chatter.info['length']
-        print(f"host: {host} has longest chain of {chain_len[host]}")
 
 
 if __name__ == "__main__":
