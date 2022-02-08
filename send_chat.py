@@ -27,7 +27,7 @@ def scan_chains():
     # Compile a list of all the head_hashes
     for host in open('hosts.txt').readlines():
         try:
-            head_hashes[host] = get(f"http://{host}:5002/head", timeout=3).content.decode()
+            head_hashes[host] = get(f"http://{host.strip()}:5002/head", timeout=3).content.decode()
             chatter = ChatService(host=host,port=5002)
             chatter.fetch_blockchain()
             chain_len[host] = chatter.info['length']
