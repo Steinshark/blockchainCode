@@ -35,4 +35,4 @@ if __name__ == "__main__":
     # Get user message
     message = input("message: ")
 
-    send_chat(mesage,)
+    scan_chains()
