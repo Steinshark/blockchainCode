@@ -135,10 +135,12 @@ class DynamicServer:
         for file in listdir('cache/'):
             if file[-5:] == '.json' and not file == 'current.json':
                 hash = file[:-5].strip()
-                possible_hashes.append[hash]
+                possible_hashes.append(hash)
                 with open(f"cache/{file}",'r') as f:
                     prev_hash = loads(f.read().strip())['prev_hash']
                     print(f"hash {hash} maps to {prev_hash}")
+
+
         for not_possible_end_hash in hashes_to_prev_hash.values():
             possible_hashes.pop(not_possible_end_hash)
         print(f"We ended with: {possible_hashes}")
