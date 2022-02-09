@@ -70,7 +70,9 @@ class DynamicServer:
     def __init__(self):
         self.app = flask.Flask(__name__)
         self.head_hash = None
-        self.all_chains = self.scan_chains()
+        self.scan_chains()
+        print(self.chains)
+        input()
     # Maps a block hash to the block itself
 
         @self.app.route('/head')
@@ -144,7 +146,15 @@ class DynamicServer:
         for not_possible_end_hash in hashes_to_prev_hash.values():
             possible_hashes.pop(not_possible_end_hash)
         print(f"We ended with: {possible_hashes}")
-        input()
+
+        for hash in possible_hashes:
+            length = 0
+            cur_hash = hash
+            while not cur_hash == '':
+                length += 1
+                cur_hash = loads(open(f"cache/{cur_hash}.json",'r').read().strip())['prev_hash']
+                print(f"got next as {cur_hash}")
+            self.chains[hash] = len
 
 if __name__ == '__main__':
     host = input('run on host: ').strip()
