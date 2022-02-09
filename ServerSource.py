@@ -152,9 +152,12 @@ class DynamicServer:
             length = 0
             cur_hash = hash
             while not cur_hash == '':
-                length += 1
-                cur_hash = loads(open(f"cache/{cur_hash}.json",'r').read().strip())['prev_hash']
-                print(f"got next as {cur_hash}")
+                try:
+                    length += 1
+                    cur_hash = loads(open(f"cache/{cur_hash}.json",'r').read().strip())['prev_hash']
+                    print(f"got next as {cur_hash}")
+                except:
+                    break
             self.chains[hash] = len
 
 if __name__ == '__main__':
