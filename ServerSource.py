@@ -147,6 +147,7 @@ class DynamicServer:
             possible_hashes.pop(not_possible_end_hash)
         print(f"We ended with: {possible_hashes}")
 
+        self.chains = {}
         for hash in possible_hashes:
             length = 0
             cur_hash = hash
