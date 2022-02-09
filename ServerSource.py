@@ -158,7 +158,7 @@ class DynamicServer:
                     print(f"got next as {cur_hash}")
                 except:
                     break
-            self.chains[hash] = len
+            self.chains[hash] = length
 
 if __name__ == '__main__':
     host = input('run on host: ').strip()
