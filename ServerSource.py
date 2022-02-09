@@ -123,6 +123,8 @@ class DynamicServer:
                 return f"{Color.RED}\tblock rejected!{Color.END}", 400
 
             else:
+                came_from_chain = block['prev_hash']
+                self.chains['prev_hash'] += 1
                 print(f"{Color.GREEN}\taccepted block{Color.END}")
                 print('\n\n\n')
                 return f"{Color.GREEN}\tblock accepted!{Color.END}", 200
