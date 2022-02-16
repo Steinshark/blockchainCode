@@ -6,16 +6,6 @@ from requests import get
 from requests.exceptions import ConnectionError, ReadTimeout
 import sys
 
-# Package import to work on windows and linux
-# Allows for nice text writing
-try:
-    sys.path.append("C:\classes")
-    sys.path.append("D:\classes")
-    sys.path.append("/home/m226252/classes")
-    from Toolchain.terminal import *
-except ModuleNotFoundError:
-    print("Module import failed for Toolchain")
-
 
 class Node:
 
@@ -159,6 +149,8 @@ class Node:
             # Attempt to give it to the peer
             try:
                 return_code = http_post(peer, 5002, payload)
+                if return_code.status_code == 200:
+                printc(f"Block accepted! {len(stack)} left!",GREEN)
 
             # If their server isn't up, then forget it
             except ConnectionException:
@@ -219,12 +211,5 @@ class Node:
 
 if __name__ == "__main__":
     n = Node()
-    try:
-        if sys.argv[1] == 'c':
-            BlockTools.send_chat(input("msg: "), input("host: "), 5002,version=1)
-            n.update_peers()
-    except IndexError:
-        msg = input("msg: ")
-        host = input("host: ")
-        port = 5002
-        n.update_peers()
+    send_chat(input("msg: "), input("host: "), 5002,version=int(input("version: ")))
+    n.update_peers()
