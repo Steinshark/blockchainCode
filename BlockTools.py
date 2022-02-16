@@ -92,16 +92,20 @@ def build_block(prev_hash,payload,ver):
 
 # returns a list of all the allowed hashes
 def grab_cached_hashes(cache_location='cache',version=0):
-    allowed_hashes = []
+    allowed_hashes = ['']
 
     for fname in listdir(cache_location):
-        fname = fname.strip()
-        block_hash  = fname.split('.')[0]
-        ext   = fname.split('.')[-1]
 
-        if version == 1 and ext == 'json' and not block_hash == 'current' and block_hash[:6] =='000000':
-            allowed_hashes.append(block_hash)
-        elif version == 0 and ext == 'json' and not block_hash == 'current':
+        fname               = fname.strip()
+        block_hash          = fname.split('.')[0]
+        block_ext           = fname.split('.')[-1]
+        block_dictionary    = loads(open(fname,'r').read())
+
+        if version == 0:
+            if block_dictionary['version'] == 1:
+                continue
+
+        if not block_hash == 'current' and block_ext == 'json':
             allowed_hashes.append(block_hash)
 
     return allowed_hashes

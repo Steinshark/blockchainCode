@@ -14,12 +14,6 @@ from fcntl import flock, LOCK_SH,LOCK_EX, LOCK_UN
 ############################### FUNCTIONS FOR CRYPTOGRAPHY ##############################
 #########################################################################################
 
-# hash function wrapper
-def sha_256_hash(bytes):
-    hasher = sha3_256()
-    hasher.update(bytes)
-    digest = hasher.digest()
-    return digest.hex()
 
 
 # encodes the blockchain found at a given hostname and port into a list
