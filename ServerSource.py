@@ -50,7 +50,7 @@ class DynamicServer:
         @self.app.route('/head')
         def head():
 
-            pp(self.all_chains)
+            pp(self.max_chain['v1'])
 
             # Open, lock, read the head file, and send the info back
             with open('cache/current.json') as file :
