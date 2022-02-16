@@ -7,8 +7,8 @@ if __name__ == "__main__":
         host = sys.argv[1]
         port = int(sys.argv[2])
         ver  = int(sys.argv[3])
-        s = DynamicServer()
-        s.run(host=host,port=port,version=ver)
+        s = DynamicServer(version=ver)
+        s.run(host=host,port=port)
 
     except IndexError:
         print("usage: server.py host port ver")

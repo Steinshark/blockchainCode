@@ -29,7 +29,7 @@ class DynamicServer:
 #                                   Run Init
 ################################################################################
 
-    def __init__(self, version=1):
+    def __init__(self,version=1):
 
         # Info
         printc(f"\tInitialize Server V.{version}",TAN)
@@ -239,4 +239,4 @@ class DynamicServer:
         printc(f"SERVER STARTED ON PORT {port}",GREEN)
 
         # Start
-        self.app.run(host=host,port=port,version=version)
+        self.app.run(host=host,port=port)
