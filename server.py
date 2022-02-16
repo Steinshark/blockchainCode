@@ -7,7 +7,7 @@ if __name__ == "__main__":
         host = sys.argv[1]
         port = int(sys.argv[2])
         ver  = int(sys.argv[3])
-        s = VersionOneServer()
+        s = DynamicServer()
         s.run(host=host,port=port,version=ver)
 
     except IndexError:
