@@ -120,7 +120,7 @@ class DynamicServer:
 
             # Check if the data is JSON decodable
             try:
-                block = JSON_to_block(received_data['block'])
+                block = loads(received_data['block'])
                 printc(f"\tdecoded to '{str(block)[:35]} ... {str(block)[-20:]}'",TAN)
 
             except JSONDecodeError as j:
@@ -132,7 +132,7 @@ class DynamicServer:
             accepting_hashes    = BlockTools.grab_cached_hashes(version=self.version)
 
             # Check if valid
-            if not check_fields(    block,
+            if not BlockTools.check_fields(    block,
                                     allowed_versions = accepting_ver,
                                     allowed_hashes   = accepting_hashes):
 
