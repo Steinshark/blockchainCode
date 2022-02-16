@@ -42,7 +42,7 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
     except ConnectionException as c:
         raise BlockChainRetrievalError(f"Error retrieving head hash\n{c}")
 
-
+    index = 0
     # Continue grabbing new blocks until the genesis block is reached
     index = 0
     while not block_hash== '':
@@ -72,6 +72,7 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
         try:
             next_block = BlockTools.retrieve_block(block['prev_hash'],host=hostname,port=port)
             hashed_to =sha_256_hash(next_block.encode())
+
         except HashRetrievalException as h:
             print(h)
             raise BlockChainError(h)
