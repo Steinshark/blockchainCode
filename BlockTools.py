@@ -116,7 +116,7 @@ def iter_local_chain(block_hash,version=0):
 
     while not block_hash == '':
         length += 1
-        filename = f"cache/{hash}.json"
+        filename = f"cache/{block_hash}.json"
         with open(filename,'r') as file:
             block_as_JSON = file.read()
             block = JSON_to_block(block_as_JSON)
