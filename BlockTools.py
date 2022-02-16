@@ -121,7 +121,7 @@ def iter_local_chain(block_hash,version=0):
             block_as_JSON = file.read()
             block = JSON_to_block(block_as_JSON)
             block_hash = block['prev_hash']
-            if version == 1 and not block['verison'] == 1:
+            if version == 1 and not block['version'] == 1:
                 return length
 
     return length
