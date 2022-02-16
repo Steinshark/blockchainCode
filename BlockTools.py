@@ -100,10 +100,9 @@ def grab_cached_hashes(cache_location='cache',version=0):
         block_hash          = fname.split('.')[0]
         block_ext           = fname.split('.')[-1]
         block_dictionary    = loads(open(f"{cache_location}/{fname}",'r').read())
-        print(block_dictionary)
 
         if version == 0:
-            if block_dictionary['version'] == 1:
+            if not block_hash == 'current' and block_dictionary['version'] == 1:
                 continue
 
         if not block_hash == 'current' and block_ext == 'json':
