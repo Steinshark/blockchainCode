@@ -160,7 +160,7 @@ class DynamicServer:
 
 
         # Find all hashes that exist in 'cache'
-        self.chains                 =       {h : 0 for h in BlockTools.grab_cached_hashes(1) + BlockTools.grab_cached_hashes(0)}
+        self.chains                 =       {h : 0 for h in BlockTools.grab_cached_hashes(version=1) + BlockTools.grab_cached_hashes(version=0)}
         self.max_chain['v0']        =       {'head' : '', 'length' : 0}
 
         if self.version == 1:
