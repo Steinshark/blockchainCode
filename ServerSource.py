@@ -36,7 +36,7 @@ class DynamicServer:
         self.app = flask.Flask(__name__)
         self.empty = True
         self.version = version
-        self.scan_chains(version=version)       # Builds the initial chains list
+        self.scan_chains()                  # Builds the initial chains list
         printc(f"\tInitialized, Starting server V.{version}\n\n\n",GREEN)
 
 
