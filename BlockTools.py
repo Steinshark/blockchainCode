@@ -99,7 +99,7 @@ def grab_cached_hashes(cache_location='cache',version=0):
         fname               = fname.strip()
         block_hash          = fname.split('.')[0]
         block_ext           = fname.split('.')[-1]
-        block_dictionary    = loads(open(fname,'r').read())
+        block_dictionary    = loads(open(f"cache_location/{fname}",'r').read())
 
         if version == 0:
             if block_dictionary['version'] == 1:
