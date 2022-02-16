@@ -2,7 +2,6 @@
 import flask
 import BlockTools
 import BlockchainUtilities
-
 from os.path import isfile, isdir
 from fcntl import flock, LOCK_SH,LOCK_EX, LOCK_UN
 from json import dumps, loads
@@ -263,7 +262,7 @@ class DynamicServer:
             hash_len[''] = 0
 
         # Write the longset chain
-        self.write_current()prev_hash
+        self.write_current()
 
         # Info
         printc(f"\t\thead is now at {self.head_hash} of len {self.longest_chain}", GREEN)
