@@ -102,9 +102,20 @@ class DynamicServer:
         @self.app.route('/push', methods=['POST'])
         def push_block():
 
+            # Open, lock, read the head file, and send the info back
+            with open('cache/current.json') as file :
+                flock(file,LOCK_SH)
+                info = loads(file.read())
+                flock(file,LOCK_UN)
+
+
+            head_hash = info['head']
+            chain_len = info['length']
+
+
             # Get data from form
             received_data = flask.request.form
-            printc(f"\twhile head is {self.head_hash[:5]}",TAN,endl='')
+            printc(f"\twhile head is {head_hash[:10]}",TAN,endl='')
             printc(f"\trecieved '{str(received_data)[:35]} ... {str(received_data)[-20:]}'",TAN)
 
             # Check if the data is JSON decodable
