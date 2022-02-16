@@ -63,7 +63,7 @@ class DynamicServer:
             chain_len = info['length']
 
             # Some simple info code
-            printc(f"\thead requested, sending {head_hash[:10]}",TAN)
+            printc(f"\thead requested, sending '{head_hash[:10]}'",TAN)
             printc(f"\thead accounting for actual length {chain_len}",TAN)
 
             # Can't imagine how this would not return 200
