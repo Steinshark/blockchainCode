@@ -173,7 +173,7 @@ class DynamicServer:
         for local_hash in self.chains:
 
             # Add to chains regardless of version
-            chain_len               = iter_local_chain(local_hash)
+            chain_len               = BlockTools.iter_local_chain(local_hash)
             self.chains[local_hash] = chain_len
 
             # If valid version 1 hash, check for longest chain
