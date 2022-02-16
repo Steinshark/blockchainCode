@@ -223,7 +223,7 @@ class DynamicServer:
             flock(file,LOCK_SH)
             if self.version == 1:
                 file.write(dumps(self.max_chain['v1']))
-            else self.version == 0:
+            elif self.version == 0:
                 file.write(dumps(self.max_chain['v0']))
             flock(file,LOCK_UN)
 
