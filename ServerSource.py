@@ -33,9 +33,10 @@ class DynamicServer:
 
         # Info
         printc(f"\tInitialize Server V.{version}",TAN)
-        self.app = flask.Flask(__name__)
-        self.empty = True
-        self.version = version
+        self.app        =   flask.Flask(__name__)
+        self.empty      =   True
+        self.version    =   version
+        self.max_chain  =   {}
         self.scan_chains()                  # Builds the initial chains list
         printc(f"\tInitialized, Starting server V.{version}\n\n\n",GREEN)
 
@@ -160,6 +161,7 @@ class DynamicServer:
 
 
         # Find all hashes that exist in 'cache'
+
         self.chains                 =       {h : 0 for h in BlockTools.grab_cached_hashes(version=1) + BlockTools.grab_cached_hashes(version=0)}
         self.max_chain['v0']        =       {'head' : '', 'length' : 0}
 
