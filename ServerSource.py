@@ -49,11 +49,8 @@ class DynamicServer:
 
         @self.app.route('/head')
         def head():
-            pp(self.all_chains)
 
-            # Some simple debug code
-            printc(f"\thead requested, sending {self.head_hash[:10]}",TAN)
-            printc(f"\thead accounting for actual length {iter_local_chain(self.head_hash)}",TAN)
+            pp(self.all_chains)
 
             # Open, lock, read the head file, and send the info back
             with open('cache/current.json') as file :
@@ -61,8 +58,16 @@ class DynamicServer:
                 info = loads(file.read())
                 flock(file,LOCK_UN)
 
+
+            head_hash = info['head']
+            chain_len = info['length']
+
+            # Some simple info code
+            printc(f"\thead requested, sending {head_hash[:10]}",TAN)
+            printc(f"\thead accounting for actual length {chain_len}",TAN)
+
             # Can't imagine how this would not return 200
-            return info['head'], 200
+            return head_hash, 200
 
 
 ################################################################################
@@ -79,8 +84,7 @@ class DynamicServer:
             filename = f'cache/{digest}.json'
 
             # Handle an error - 404 == not found here
-            if not isfile(filename):
-                return f'{RED}{filename} not found in cache{RED}', 404
+            if not isfile(filename):    return f'{RED}{filename} not found in cache{RED}', 404
 
             # Open up that file up (with locks!) and shoot it back to them
             else:
