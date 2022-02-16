@@ -150,7 +150,7 @@ class Node:
             try:
                 return_code = http_post(peer, 5002, payload)
                 if return_code.status_code == 200:
-                printc(f"Block accepted! {len(stack)} left!",GREEN)
+                    printc(f"Block accepted! {len(stack)} left!",GREEN)
 
             # If their server isn't up, then forget it
             except ConnectionException:
