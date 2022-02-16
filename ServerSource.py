@@ -227,7 +227,7 @@ class DynamicServer:
                 self.max_chain['v0']['length']  = block_chain_len
                 self.max_chain['v0']['head']    = block_h
 
-        write_current()
+        self.write_current()
 
 
 ################################################################################
