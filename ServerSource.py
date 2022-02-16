@@ -177,7 +177,7 @@ class DynamicServer:
             self.chains[local_hash] = chain_len
 
             # If valid version 1 hash, check for longest chain
-            if version == 1 and local_hash[:6] == '000000':
+            if self.version == 1 and local_hash[:6] == '000000':
                 self.chains_v1[local_hash] = chain_len
 
                 if chain_len > self.max_chain['v1']['length']:
@@ -185,7 +185,7 @@ class DynamicServer:
                     self.max_chain['v1']['head']    = local_hash
 
             # If version 0 hash, check for longest version 0 chain
-            if version == 0:
+            if self.version == 0:
                 if chain_len > self.max_chain['v0']['length']:
                     self.max_chain['v0']['length']  = chain_len
                     self.max_chain['v0']['head']    = local_hash
