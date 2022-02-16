@@ -3,67 +3,96 @@
 #########################################################################################
 from hashlib import sha256, sha3_256
 from json import loads, dumps, JSONDecodeError
-from requests import get, post, Timeout, RequestException, ConnectionError
-from BlockTools import *
+from requests import get, post, Timeout
+import BlockTools
 from BlockchainErrors import *
-
+from os.path import isfile, isdir, join
+from os import mkdir
+from fcntl import flock, LOCK_SH,LOCK_EX, LOCK_UN
 
 #########################################################################################
 ############################### FUNCTIONS FOR CRYPTOGRAPHY ##############################
 #########################################################################################
 
 # hash function wrapper
-def hash(format,bytes):
+def sha_256_hash(bytes):
     hasher = sha3_256()
     hasher.update(bytes)
     digest = hasher.digest()
-    if format == 'hex':
-        return digest.hex()
-    elif format == 'bytes':
-        return digest
+    return digest.hex()
 
 
 # encodes the blockchain found at a given hostname and port into a list
 # of tuples: (hash, blockAsPythonDict)
-def get_blockchain(hostname='cat',port='5000'):
-    blockchain = []
+def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cache', last_verified='',version=0):
 
-    this_block = None
-    next_block = None
-    this_hash = None
-    next_hash = None
+    # if caching, then check if the folder exists, and create if not
+    if caching:
+        if not isdir(cache_location):
+            mkdir(cache_location)
+
+
+    # init all variables we will use
+    blockchain = []
+    block_hash= None
+
+    # Grab the hash
     try:
-        this_hash = retrieve_head_hash(host=hostname,port=port)
+        block_hash= BlockTools.retrieve_head_hash(host=hostname,port=port)
     except ConnectionException as c:
-        raise BlockChainRetrievalError(str(c))
+        raise BlockChainRetrievalError(f"Error retrieving head hash\n{c}")
 
     index = 0
     # Continue grabbing new blocks until the genesis block is reached
-    while not this_hash == '':
+    index = 0
+    while not block_hash== '':
         index += 1
-        # try the whole thing
+        # check if this block exists in cache
+        block_filename  = f"{cache_location}/{block_hash}.json"
+        block_exists    = isfile(block_filename)
+
+        # get the block in python form
+        if block_exists:
+            with open(block_filename, 'r') as file:
+                flock(file,LOCK_SH)
+                block = BlockTools.JSON_to_block(file.read())
+                flock(file,LOCK_UN)
+
+        else:
+            try:
+                block = BlockTools.retrieve_block(block_hash,host=hostname,port=port)
+                block = loads(block)
+            except JSONDecodeError as j:
+                raise BlockChainError(f"{Color.RED}Error decoding JSON text fetched from server: {block[:30]}{Color.END}")
+            except HashRetrievalException as h:
+                print(h)
+                raise BlockChainError(h)
+
+        # verify the block
         try:
-            # Acquire the necessary items
-            this_block_as_JSON = retrieve_block(this_hash,host=hostname,port=port)
-            this_block = JSON_to_block(this_block_as_JSON)
-            next_hash = retrieve_block_hash(this_block_as_JSON)
-            next_block = retrieve_block(next_hash,host=hostname,port=port)
+            next_block = BlockTools.retrieve_block(block['prev_hash'],host=hostname,port=port)
+            hashed_to =sha_256_hash(next_block.encode())
 
-            # Ensure that this block is valid
-            if not check_fields(next_block,allowed_hashes=['',next_hash]):
-                raise BlockChainVerifyError(f"{Color.RED}Error: bad block found in position {index}{Color.END}")
-
-            # If everything checks out, then add this block and continue
-            blockchain.insert(0,(this_hash,next_block))
-            this_hash = next_hash
-
-
-        except ConnectionException as c:
-            raise BlockChainRetrievalError(str(c))
-        except DecodeException as d:
-            raise BlockChainRetrievalError(str(d))
         except HashRetrievalException as h:
-            raise BlockChainRetrievalError(str(h))
+            print(h)
+            raise BlockChainError(h)
+
+        check = BlockTools.check_fields(block,allowed_versions=[version],allowed_hashes=['',hashed_to],trust=False)
+
+        if check:
+            # add it to the chain
+            blockchain.insert(0,(block_hash,block))
+            #if not already, write the block to file
+            if not block_exists:
+                with open(block_filename,'w') as file:
+                    flock(file,LOCK_EX)
+                    file.write(dumps(block))
+                    flock(file,LOCK_UN)
+        else:
+            raise BlockChainVerifyError(f"{Color.RED}bad block at position {index}{Color.END}")
+        block_hash = block['prev_hash']
+        print(block_hash)
+
 
     return blockchain
 
@@ -82,7 +111,7 @@ def verify_blockchain(blockchain):
         if index == len(blockchain) - 1:
             prev_hash = ''
         else:
-            prev_hash = hash('hex',block_to_JSON(blockchain[index+1][1]).encode())
+            prev_hash =sha_256_hash(block_to_JSON(blockchain[index+1][1]).encode())
 
         # Check the fields of the block for errors
         if not check_fields(block,allowed_hashes=[prev_hash]):

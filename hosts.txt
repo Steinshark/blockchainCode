@@ -4,6 +4,7 @@ bear
 bison
 buffalo
 camel
+cat
 chipmunk
 deer
 dog
