@@ -73,8 +73,8 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
 
         # verify the block
         try:
-            next_block = BlockTools.retrieve_block(block['prev_hash'],host=hostname,port=port)
-            hashed_to =sha_256_hash(next_block.encode())
+            next_block  =   BlockTools.retrieve_block(block['prev_hash'],host=hostname,port=port)
+            hashed_to   =   BlockTools.sha_256_hash(next_block.encode())
 
         except HashRetrievalException as h:
             print(h)
@@ -114,9 +114,9 @@ def verify_blockchain(blockchain):
         if index == len(blockchain) - 1:
             prev_hash = ''
         else:
-            prev_hash =sha_256_hash(block_to_JSON(blockchain[index+1][1]).encode())
+            prev_hash = BlockTools.sha_256_hash(block_to_JSON(blockchain[index+1][1]).encode())
 
         # Check the fields of the block for errors
-        if not check_fields(block,allowed_hashes=[prev_hash]):
+        if not BlockToosl.check_fields(block,allowed_hashes=[prev_hash]):
             raise BlockChainVerifyError(f"{Color.RED}Error: bad block found in position {index}{Color.END}")
     return len(blockchain)

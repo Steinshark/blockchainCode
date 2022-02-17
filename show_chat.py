@@ -2,12 +2,11 @@
 # And Everett Stenberg
 
 
-from BlockchainUtilities import *
+import BlockchainUtilities
 import BlockTools
 from BlockchainErrors import *
 from json import dumps, loads
 from os.path import isfile
-import argparse
 from fcntl import flock, LOCK_SH,LOCK_EX, LOCK_UN
 import sys
 
@@ -25,11 +24,6 @@ class FetchService:
         self.blockchain_check = True
         self.last_hash = ''
         self.version = 1
-    def format_parser(self):
-        self.parser = argparse.ArgumentParser(description='Specify your own hostname and port',prefix_chars='-')
-        self.parser.add_argument('--host',metavar='host',required=False, type=str,help='specify a hostname',default="http://cat")
-        self.parser.add_argument('--port',metavar='port',required=False, type=str,help='specify a port',default='5000')
-        self.args = self.parser.parse_args()
 
 
     def check_for_head(self):
@@ -45,7 +39,7 @@ class FetchService:
     def fetch_blockchain(self,writing=True):
         try:
             # Download the blockchain and get info
-            self.blockchain_download = get_blockchain(self.host,self.port,caching=True,last_verified=self.last_hash,version=self.version)
+            self.blockchain_download = BlockchainUtilities.get_blockchain(self.host,self.port,caching=True,last_verified=self.last_hash,version=self.version)
             blockchain_len = len(self.blockchain_download)
             head_hash = self.blockchain_download[0][0]
 
