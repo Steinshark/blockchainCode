@@ -1,4 +1,7 @@
-#comment
+# Written by Daniel Edmond
+# And Everett Stenberg
+
+
 import flask
 import BlockTools
 import BlockchainUtilities

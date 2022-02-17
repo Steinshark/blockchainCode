@@ -1,3 +1,6 @@
+# Written by Daniel Edmond
+# And Everett Stenberg
+
 from ServerSource import *
 from BlockTools import *
 import sys

@@ -1,3 +1,7 @@
+# Written by Daniel Edmond
+# And Everett Stenberg
+
+
 from BlockchainUtilities import *
 import BlockTools
 from BlockchainErrors import *

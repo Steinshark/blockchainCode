@@ -1,3 +1,7 @@
+# Written by Daniel Edmond
+# And Everett Stenberg
+
+
 from BlockchainUtilities import *
 from BlockchainErrors import *
 
@@ -9,7 +13,6 @@ try:
 except ModuleNotFoundError:
     sys.path.append("/home/m226252/classes")
     from Toolchain.terminal import *
-
 
 hosts = [line.strip() for line in open('hosts.txt').readlines()]
 ports = ["5000","5001","5002"]
