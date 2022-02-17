@@ -37,7 +37,7 @@ class FetchService:
     def fetch_blockchain(self,writing=True):
         try:
             # Download the blockchain and get info
-            terminal.printc(f"checking host: {self.host} port: {self.port}",TAN)
+            terminal.printc(f"checking host: {self.host} port: {self.port}",terminal.TAN)
             self.blockchain_download = BlockchainUtilities.get_blockchain(self.host,self.port,caching=True,last_verified=self.last_hash,version=self.version)
             blockchain_len = len(self.blockchain_download)
             head_hash = self.blockchain_download[0][0]
