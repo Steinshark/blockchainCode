@@ -138,7 +138,7 @@ def check_fields(block,allowed_versions=[0],allowed_hashes=[''],trust=False):
         raise BlockChainVerifyError("missing prev_hash")
 
     if not block['prev_hash'] in allowed_hashes:
-        raise BlockChainVerifyError(f"{block['prev_hash'][:10]} not in hashes")
+        raise BlockChainVerifyError(f"{block['prev_hash']} not in hashes")
 
     if not 'payload' in block:
         raise BlockChainVerifyError("missing payload")
