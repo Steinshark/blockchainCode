@@ -57,7 +57,7 @@ class FetchService:
         except BlockChainError as b:
             self.blockchain_download = None
             self.blockchain_check = False
-            terminal.printc(f"{b}",RED)
+            terminal.printc(f"{b}",terminal.RED)
 
 
     def print_blockchain(self):
