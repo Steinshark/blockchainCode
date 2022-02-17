@@ -11,6 +11,7 @@ import requests
 from os import mkdir, listdir
 import sys
 import Toolchain.terminal
+import hashlib
 
 #########################################################################################
 ############################ FUNCTIONS FOR PROCESSING BLOCKS ############################
@@ -18,7 +19,7 @@ import Toolchain.terminal
 
 # hash function wrapper
 def sha_256_hash(bytes):
-    hasher = sha3_256()
+    hasher = haslib.sha3_256()
     hasher.update(bytes)
     digest = hasher.digest()
     return digest.hex()
