@@ -58,13 +58,14 @@ class FetchService:
             self.blockchain_download = None
             self.blockchain_check = False
             terminal.printc(f"{b}",terminal.RED)
+            exit(1)
+
 
 
     def print_blockchain(self):
         # Dont try to print an empty blockchain
         if self.blockchain_download is None:
-            print("no blockain")
-            return
+            terminal.printc(f"this should not have happened.... im going to die now",terminal.RED)
 
         # Print the blockchain
         else:
