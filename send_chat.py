@@ -2,12 +2,11 @@
 # And Everett Stenberg
 
 
-from BlockTools import *
-from BlockchainErrors import *
-from json import dumps
+import  BlockTools
+import BlockchainErrors
+import json
 from show_chat import FetchService
-from requests import get
-from requests.exceptions import ConnectionError, ReadTimeout
+import requests
 import sys
 
 
@@ -52,24 +51,24 @@ class Node:
 
                 # Port is assumed to be 5002
                 url = f"http://{host}:5002/head"
-                head_hash = get(url,timeout=3).content.decode()
+                head_hash = requests.get(url,timeout=3).content.decode()
 
                 # Update the peer's information
                 self.peer_nodes[host]['head'] = head_hash
 
             # Catches everything
-            except ConnectionRefusedError:
+        except requests.exceptions.ConnectionRefusedError:
                 printc(f"\tError retreiving {host}'s' head_hash: ConectionRefused\n\n",RED)
-                continue
-            except ReadTimeout:
+                exit(1)
+            except requests.exceptions.ReadTimeout:
                 printc(f"\tError retreiving {host}'s' head_hash: Timeout\n\n",RED)
-                continue
-            except ConnectionError:
+                exit(1)
+            except requests.exceptions.ConnectionError:
                 printc(f"\tError retreiving {host}'s' head_hash: ConnectionError\n\n",RED)
-                continue
+                exit(1)
             except:
                 printc(f"\tError retreiving {host}'s' head_hash: unknown reason\n\n",RED)
-                continue
+                exit(1)
 
             # Attempt to fetch the blockchain of that node
             try:
@@ -85,7 +84,7 @@ class Node:
                 self.peer_nodes[host]['length'] = node_chain_len
 
                 # Info
-                printc(f"\tConnection to {host} succeeded! Chain of length {node_chain_len} found\n\n",GREEN)
+                terminal.printc(f"\tConnection to {host} succeeded! Chain of length {node_chain_len} found\n\n",terminal.GREEN)
 
                 # Update global chain tracker if this is the longest
                 if node_chain_len > self.peer_nodes[self.top_peer]['length']:
@@ -93,11 +92,11 @@ class Node:
 
             # Catch the BlockChainRetrievalError that fetch_blockchain might raise
             except BlockChainRetrievalError as b:
-                printc(f"\t{b}",TAN)
-                printc(f"\tError in fetch blockchain on host {host}\n\n", RED)
+                terminal.printc(f"\t{b}",terminal.TAN)
+                terminal.printc(f"\tError in fetch blockchain on host {host}\n\n", terminal.RED)
                 continue
 
-        printc(f"longest chain is len: {self.peer_nodes[self.top_peer]['length']} on host {self.top_peer}",BLUE)
+        terminal.printc(f"longest chain is len: {self.peer_nodes[self.top_peer]['length']} on host {self.top_peer}",terminal.BLUE)
 
     # Update peer nodes that do not have the current longest chain
     def update_peers(self):
@@ -110,7 +109,7 @@ class Node:
             if peer_len < longest_len:
 
                 # Info
-                printc(f"Updating peer {peer}",TAN)
+                terminal.printc(f"Updating peer {peer}",terminal.TAN)
 
                 # Update the peer node to the longest chain found
                 full_blockchain = self.peer_nodes[self.top_peer]['fetcher'].blockchain_download
@@ -126,21 +125,21 @@ class Node:
         for (block_hash,block) in full_blockchain:
 
             # Create the payload
-            payload = {'block' : block_to_JSON(block)}
+            payload = {'block' : BlockTools.block_to_JSON(block)}
 
             # Attempt to give it to the peer
             try:
-                return_code = http_post(peer, 5002, payload)
+                return_code = BlockTools.http_post(peer, 5002, payload)
 
             # If their server isn't up, then forget it
-            except ConnectionException:
+        except requests.exceptions.ConnectionException:
                 return
 
             # If this block worked, head back up the stack
             # (this is super inefficient I realize, but I
             # dont have the time to rewrite)
             if return_code.status_code == 200:
-                printc(f"Block accepted! Sending stack!",GREEN)
+                terminal.printc(f"Block accepted! Sending stack!",terminal.GREEN)
                 break
             else:
                 stack.insert(0,block)
@@ -163,54 +162,16 @@ class Node:
         printc(f"Finished trying to push chain",TAN)
     # Recursively bring the peer up to date
 
-    def update_peer_node_iterative_On(self,peer,full_blockchain,stack,recursing_up):
+    #Binary Picker
+    def find_edge_block(self,peer,full_blockchain):
+        top_i = 0
+        bot_i = len(full_blockchain)
 
-        if recursing_up:
+        found_edge = False
 
-            # Create the payload
-            payload = {'block' : block_to_JSON(stack.pop(0)[1])}
-
-            # Attempt to give it to the peer
-            try:
-                return_code = http_post(peer, 5002, payload)
-
-            # If their server isn't up, then forget it
-            except ConnectionException:
-                return
-
-            if not stack:
-                return
-
-            self.update_peer_node_iterative(peer,full_blockchain,stack,True)
-
-
-   # NEED TO FIX
-        else:
-            # Iteratively try to push each block in the blockchain
-            for (block_hash,block) in full_blockchain:
-
-                # Create the payload
-                payload = {'block' : block_to_JSON(block)}
-
-                # Attempt to give it to the peer
-                try:
-                    return_code = http_post(peer, 5002, payload)
-
-                # If their server isn't up, then forget it
-                except ConnectionException:
-                    return
-
-                # If this block worked, head back up the stack
-                # (this is super inefficient I realize, but I
-                # dont have the time to rewrite)
-                if return_code.status_code == 200:
-                    self.update_peer_node_iterative(peer,stack,full_blockchain,True)
-                    printc(f"Block accepted! Trying next block in current chain",GREEN)
-                else:
-                    printc(f"{block_hash[:5]}->{return_code},  ",TAN,endl='')
-                    continue
-
-        printc(f"Finished trying to push chain",TAN)
+        while not found_edge:
+            if top_i == bot_i:
+                pass
 
 
 if __name__ == "__main__":

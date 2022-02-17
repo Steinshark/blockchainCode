@@ -16,12 +16,9 @@ CHECKPOINT_FILE = 'cache/current.json'
 
 class FetchService:
     def __init__(self,host=None,port=-1,version=1):
-        if (not host == None) and (not port == -1):
-            self.host = host
-            self.port = port
-        else:
-            self.host = self.args.host
-            self.port = self.args.port
+        self.host = host
+        self.port = port
+        self.version = version
         self.blockchain_check = True
         self.last_hash = ''
         self.version = 1
@@ -40,6 +37,7 @@ class FetchService:
     def fetch_blockchain(self,writing=True):
         try:
             # Download the blockchain and get info
+            printc(f"checking host: {self.host} port: {self.port}")
             self.blockchain_download = BlockchainUtilities.get_blockchain(self.host,self.port,caching=True,last_verified=self.last_hash,version=self.version)
             blockchain_len = len(self.blockchain_download)
             head_hash = self.blockchain_download[0][0]
@@ -86,6 +84,9 @@ if __name__ == '__main__':
         h = sys.argv[1]
         p = int(sys.argv[2])
         v = int(sys.argv[3])
+        instance = FetchService(host=h,port=p,version=v)
+        instance.fetch_blockchain()
+        instance.print_blockchain()
 
     except IndexError:
         printc("usage: python3 show_chat.py host port version",RED)
@@ -93,13 +94,3 @@ if __name__ == '__main__':
     except ValueError:
         printc(f"i cant decode either port: {p} or version: {v} as an integer",RED)
         exit(1)
-
-    # Create an instance of the class
-    instance = FetchService(host='cat',port=5002,version=1)
-
-    # Try to download the blockchain and verify at the same time
-    instance.check_for_head()
-    instance.fetch_blockchain()
-
-    # Print the newest chats
-    instance.print_blockchain()
