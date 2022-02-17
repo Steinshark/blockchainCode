@@ -8,6 +8,7 @@ import json
 from show_chat import FetchService
 import requests
 import sys
+from Toolchain import terminal
 
 
 class Node:
