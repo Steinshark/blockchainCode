@@ -6,20 +6,12 @@
 #######################################  IMPORTS  #######################################
 #########################################################################################
 from BlockchainErrors import *
-from BlockchainUtilities import *
-from json import loads, dumps, JSONDecodeError
-from requests import get, post,Timeout, RequestException
-from os.path import isfile, isdir, join
+import BlockchainUtilities
+import json
+import requests
 from os import mkdir, listdir
 import sys
-# Package import to work on windows and linux
-try:
-    sys.path.append("C:\classes")
-    sys.path.append("D:\classes")
-    from Toolchain.terminal import *
-except ModuleNotFoundError:
-    sys.path.append("/home/m226252/classes")
-    from Toolchain.terminal import *
+import Toolchain.terminal
 
 #########################################################################################
 ############################ FUNCTIONS FOR PROCESSING BLOCKS ############################
@@ -37,8 +29,8 @@ def retrieve_head_hash(host="cat",port="5000",timeout=3):
     url = f"http://{host}:{port}/head"
 
     try:
-        return get(url,timeout=timeout).content.decode()
-        #print(f"recieved {}")
+        return requests.get(url,timeout=timeout).content.decode()
+
     except Timeout:
         raise ConnectionException(f"{Color.RED}Error: timeout requesting response from {url}")
     except RequestException:
@@ -137,47 +129,37 @@ def check_fields(block,allowed_versions=[0],allowed_hashes=[''],trust=False):
         return True
 
     if not 'version' in block:
-        print("missing version")
-        return False
+        raise BlockChainVerifyError("missing version")
 
     if not block['version'] in allowed_versions:
-        print(f"bad version-{block['version']} need {allowed_versions}")
-        return False
+        raise BlockChainVerifyError(f"bad version-{block['version']} need {allowed_versions}")
 
     if not 'prev_hash' in block:
-        print("missing prev_hash")
-        return False
+        raise BlockChainVerifyError("missing prev_hash")
 
     if not block['prev_hash'] in allowed_hashes:
-        print(f"{block['prev_hash'][:10]} not in hashes")
-        return False
+        raise BlockChainVerifyError(f"{block['prev_hash'][:10]} not in hashes")
 
     if not 'payload' in block:
-        print("missing payload")
-        return False
+        raise BlockChainVerifyError("missing payload")
 
     if not isinstance(block['payload'],dict):
-        print(f"payload needs to be dict, is {type(block['payload'])}")
-        return False
+        raise BlockChainVerifyError(f"payload needs to be dict, is {type(block['payload'])}")
 
     if 'chat' in block['payload'] and not isinstance(block['payload']['chat'], str):
-        print("payload of 'chat' must be a str")
-        return False
+        raise BlockChainVerifyError(f"payload of 'chat' must be str, is {type(block['payload'])}")
 
     # Ensure block length req is met <= 1KB
     if len(block_to_JSON(block)) > 1024:
-        print("bad len")
-        return False
+        raise BlockChainVerifyError(f"bad len: {len(block_to_JSON(block))}")
 
     if (block['version'] == 1):
         if (not 'nonce' in block):
-            print("nonce not found")
-            return False
+            raise BlockChainVerifyError("nonce not found")
 
         block_hash = sha_256_hash(dumps(block).encode())
         if (not block_hash[:6] == '000000'):
-            print(f"hash not correct: {block_hash} ")
-            return False
+            raise BlockChainVerifyError(f"hash not correct: '{block_hash}' ")
 
     return True
 

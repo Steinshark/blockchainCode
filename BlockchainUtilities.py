@@ -13,7 +13,7 @@ from BlockchainErrors import *
 from os.path import isfile, isdir, join
 from os import mkdir
 from fcntl import flock, LOCK_SH,LOCK_EX, LOCK_UN
-
+from Toolchain import terminal
 #########################################################################################
 ############################### FUNCTIONS FOR CRYPTOGRAPHY ##############################
 #########################################################################################
@@ -79,7 +79,12 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
         except HashRetrievalException as h:
             raise BlockChainError(h)
 
-        check = BlockTools.check_fields(block,allowed_versions=[version],allowed_hashes=['',hashed_to],trust=False)
+        try:
+            BlockTools.check_fields(block,allowed_versions=[version],allowed_hashes=['',hashed_to],trust=False)
+        except BlockChainVerifyError as b:
+            raise BlockChainVerifyError(f"bad block at position {index}:\n\t{b}")
+
+
 
         if check:
             # add it to the chain
