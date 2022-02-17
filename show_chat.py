@@ -9,7 +9,7 @@ from json import dumps, loads
 from os.path import isfile
 import argparse
 from fcntl import flock, LOCK_SH,LOCK_EX, LOCK_UN
-
+import sys
 
 CHECKPOINT_FILE = 'cache/current.json'
 
@@ -85,11 +85,21 @@ class FetchService:
 
 if __name__ == '__main__':
 
+    # Grab arguments
+    try:
+        h = sys.argv[1]
+        p = int(sys.argv[2])
+        v = int(sys.argv[3])
+
+    except IndexError:
+        printc("usage: python3 show_chat.py host port version",RED)
+        exit(1)
+    except ValueError:
+        printc(f"i cant decode either port: {p} or version: {v} as an integer",RED)
+        exit(1)
+
     # Create an instance of the class
     instance = FetchService(host='cat',port=5002,version=1)
-
-    # Format the arguments
-    #instance.format_parser()
 
     # Try to download the blockchain and verify at the same time
     instance.check_for_head()

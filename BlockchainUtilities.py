@@ -33,7 +33,7 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
     # init all variables we will use
     blockchain = []
     block_hash= None
-
+    trust = False
     # Grab the hash
     try:
         block_hash= BlockTools.retrieve_head_hash(host=hostname,port=port)
@@ -45,6 +45,11 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
     index = 0
     while not block_hash== '':
         index += 1
+
+        # Trust blocks we have verified already
+        if block_hash == last_verified:
+            trust = True
+
         # check if this block exists in cache
         block_filename  = f"{cache_location}/{block_hash}.json"
         block_exists    = isfile(block_filename)
