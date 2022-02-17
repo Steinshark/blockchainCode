@@ -138,11 +138,11 @@ class Node:
             # If this block worked, head back up the stack
             # (this is super inefficient I realize, but I
             # dont have the time to rewrite)
-            if return_code.status_code == 200:
-                terminal.printc(f"Block accepted! Sending stack!",terminal.GREEN)
-                break
-            else:
-                stack.insert(0,block)
+        #    if return_code.status_code == 200:
+        #        terminal.printc(f"Block accepted! Sending stack!",terminal.GREEN)
+        #        break
+        #    else:
+        #        stack.insert(0,block)
 
         # Try pushing the rest of the blocks in reverse order
         for b_hash,block in reversed(full_blockchain[start_chain_from(peer,full_blockchain)]):
