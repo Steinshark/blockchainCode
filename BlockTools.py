@@ -171,7 +171,7 @@ def send_chat(msg,host,port,version=0):
 
     # Grab the current head hash
     head_hash = requests.get(URL['head']).content.decode()
-    print(f"received {head_hash}")
+    print(f"host {host} is broadcasting head: {head_hash}")
     # Create the block
     json_encoded_block = build_block(head_hash,{'chat' : msg},version)
 
