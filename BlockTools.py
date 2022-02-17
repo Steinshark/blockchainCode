@@ -179,16 +179,16 @@ def send_chat(msg,host,port,version=0):
     push_data = {'block' : json_encoded_block}
 
     # Send it
-    printc(f"\tSending block to {host}",TAN)
+    terminal.printc(f"\tSending block to {host}",terminal.TAN)
     try:
         post = http_post(host,5002,payload=push_data)
         if post.status_code == 200:
-            printc(f"\tBlock sent successfully",GREEN)
+            terminal.printc(f"\tBlock sent successfully",terminal.GREEN)
         else:
-            printc(f"\tCode recieved: {post} of type {type(post)}",TAN)
+            terminal.printc(f"\tCode recieved: {post} of type {type(post)}",terminal.TAN)
     except TypeError as t:
-        printc(t,RED)
-        printc(f"\tRecieved Null response...",TAN)
+        terminal.printc(t,terminal.RED)
+        terminal.printc(f"\tRecieved Null response...",terminal.TAN)
 
 
 def mine_block(block):
