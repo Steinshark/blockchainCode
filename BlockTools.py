@@ -181,7 +181,7 @@ def send_chat(msg,host,port,version=0):
     # Send it
     terminal.printc(f"\tSending block to {host}",terminal.TAN)
     try:
-        post = BlockTools.http_post(host,5002,payload=push_data)
+        post = http_post(host,5002,push_data)
         if post.status_code == 200:
             terminal.printc(f"\tBlock sent successfully",terminal.GREEN)
         else:
