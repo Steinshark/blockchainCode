@@ -10,7 +10,7 @@ import json
 import requests
 from os import mkdir, listdir
 import sys
-import Toolchain.terminal
+from Toolchain import terminal
 import hashlib
 
 #########################################################################################
