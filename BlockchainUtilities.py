@@ -81,12 +81,6 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
 
         try:
             BlockTools.check_fields(block,allowed_versions=[version],allowed_hashes=['',hashed_to],trust=False)
-        except BlockChainVerifyError as b:
-            raise BlockChainVerifyError(f"bad block at position {index}:\n\t{b}")
-
-
-
-        if check:
             # add it to the chain
             blockchain.insert(0,(block_hash,block))
             #if not already, write the block to file
@@ -95,8 +89,13 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
                     flock(file,LOCK_EX)
                     file.write(dumps(block))
                     flock(file,LOCK_UN)
-        else:
-            raise BlockChainVerifyError(f"bad block at position {index}")
+                    
+        except BlockChainVerifyError as b:
+            raise BlockChainVerifyError(f"bad block at position {index}:\n\t{b}")
+
+
+
+
         block_hash = block['prev_hash']
         print(block_hash)
 
