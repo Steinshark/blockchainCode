@@ -54,20 +54,20 @@ def retrieve_block(hash_decoded,host="cat",port="5000",timeout=3):
     try:
         return get(url,timeout=timeout).content.decode()
     except Timeout:
-        raise ConnectionException(f"{Color.RED}Error: timeout requesting response from {url}{Color.END}")
+        raise requests.exceptions.ConnectionException(f"{Color.RED}Error: timeout requesting response from {url}{Color.END}")
     except RequestException:
-        raise ConnectionException(f"{Color.RED}Error: something went wrong connecting to {url}{Color.END}")
+        raise requests.exceptions.ConnectionException(f"{Color.RED}Error: something went wrong connecting to {url}{Color.END}")
     except ConnectionError:
-        raise ConnectionException(f"{Color.RED}Error: something went wrong connecting to {url}{Color.END}")
+        raise requests.exceptions.ConnectionException(f"{Color.RED}Error: something went wrong connecting to {url}{Color.END}")
 
 # Wrapper function for post
 def http_post(host,port,payload,timeout=2):
     try:
         url = f"http://{host}:{port}/push"
         return post(url,data=payload,timeout=timeout)
-    except Timeout:
+    except requests.exceptions.Timeout:
         raise ConnectionException(f"{Color.RED}error: timeout requesting response from {url}")
-    except RequestException:
+    except requests.exceptions.RequestException:
         raise ConnectionException(f"{Color.RED}Error: something went wrong connecting to {url}{Color.END}")
 
 # builds a block given the three fields and returns as JSON
