@@ -119,7 +119,7 @@ class Node:
     def update_peer_node_iterative(self,peer,full_blockchain):
 
         # Keep track of which blocks need to be pushed
-        stack = []
+        #stack = []
 
         # Try pushing blocks until we peer accepts one
         #for (block_hash,block) in full_blockchain:
@@ -128,8 +128,8 @@ class Node:
         #    payload = {'block' : BlockTools.block_to_JSON(block)}
 
         #    # Attempt texcept requests.exceptions.ConnectionRefusedError:
-                    printc(f"\tError retreiving {host}'s' head_hash: ConectionRefused\n\n",RED)
-                    exit(1)o give it to the peer
+        #            printc(f"\tError retreiving {host}'s' head_hash: ConectionRefused\n\n",RED)
+        #            exit(1)o give it to the peer
         #    try:
         #        return_code = BlockTools.http_post(peer, 5002, payload)
 
