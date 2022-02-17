@@ -9,6 +9,7 @@ from json import dumps, loads
 from os.path import isfile
 from fcntl import flock, LOCK_SH,LOCK_EX, LOCK_UN
 import sys
+from Toolchain import terminal
 
 CHECKPOINT_FILE = 'cache/current.json'
 
@@ -56,7 +57,7 @@ class FetchService:
         except BlockChainError as b:
             self.blockchain_download = None
             self.blockchain_check = False
-            printc(f"{b}",RED)
+            terminal.printc(f"{b}",RED)
 
 
     def print_blockchain(self):
