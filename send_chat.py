@@ -122,18 +122,18 @@ class Node:
         stack = []
 
         # Try pushing blocks until we peer accepts one
-        for (block_hash,block) in full_blockchain:
+        #for (block_hash,block) in full_blockchain:
 
-            # Create the payload
-            payload = {'block' : BlockTools.block_to_JSON(block)}
+        #    # Create the payload
+        #    payload = {'block' : BlockTools.block_to_JSON(block)}
 
-            # Attempt to give it to the peer
-            try:
-                return_code = BlockTools.http_post(peer, 5002, payload)
+        #    # Attempt to give it to the peer
+        #    try:
+        #        return_code = BlockTools.http_post(peer, 5002, payload)
 
             # If their server isn't up, then forget it
-        except requests.exceptions.ConnectionException:
-                return
+        #except requests.exceptions.ConnectionException:
+        #        return
 
             # If this block worked, head back up the stack
             # (this is super inefficient I realize, but I
@@ -145,7 +145,7 @@ class Node:
                 stack.insert(0,block)
 
         # Try pushing the rest of the blocks in reverse order
-        for block in stack:
+        for b_hash,block in reversed(full_blockchain[start_chain_from(peer,full_blockchain)]):
             # Create the payload
             payload = {'block' : block_to_JSON(block)}
 
@@ -163,15 +163,12 @@ class Node:
     # Recursively bring the peer up to date
 
     #Binary Picker
-    def find_edge_block(self,peer,full_blockchain):
-        top_i = 0
-        bot_i = len(full_blockchain)
+    def start_chain_from(self,peer,full_blockchain):
+        peer_head_hash = BlockTools.retrieve_head_hash(host=peer,port=5002)
 
-        found_edge = False
-
-        while not found_edge:
-            if top_i == bot_i:
-                pass
+        for i, tup in enumerate(full_blockchain):
+            if i == tup[0]:
+                return i
 
 
 if __name__ == "__main__":
