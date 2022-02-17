@@ -37,7 +37,7 @@ class FetchService:
     def fetch_blockchain(self,writing=True):
         try:
             # Download the blockchain and get info
-            printc(f"checking host: {self.host} port: {self.port}")
+            terminal.printc(f"checking host: {self.host} port: {self.port}",TAN)
             self.blockchain_download = BlockchainUtilities.get_blockchain(self.host,self.port,caching=True,last_verified=self.last_hash,version=self.version)
             blockchain_len = len(self.blockchain_download)
             head_hash = self.blockchain_download[0][0]
@@ -89,8 +89,8 @@ if __name__ == '__main__':
         instance.print_blockchain()
 
     except IndexError:
-        printc("usage: python3 show_chat.py host port version",RED)
+        terminal.printc("usage: python3 show_chat.py host port version",terminal.RED)
         exit(1)
     except ValueError:
-        printc(f"i cant decode either port: {p} or version: {v} as an integer",RED)
+        terminal.printc(f"i cant decode either port: {p} or version: {v} as an integer",terminal.RED)
         exit(1)
