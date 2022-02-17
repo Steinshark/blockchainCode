@@ -65,7 +65,7 @@ def retrieve_block(hash_decoded,host="cat",port="5000",timeout=3):
 def http_post(host,port,payload,timeout=2):
     try:
         url = f"http://{host}:{port}/push"
-        return post(url,data=payload,timeout=timeout)
+        return requests.post(url,data=payload,timeout=timeout)
     except requests.Timeout:
         raise ConnectionException(f"{Color.RED}error: timeout requesting response from {url}")
     except requests.RequestException:
