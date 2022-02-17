@@ -38,13 +38,13 @@ class Node:
     def check_peer_servers(self):
 
         # Info
-        printc(f"Checking Peer Nodes",BLUE)
+        terminal.printc(f"Checking Peer Nodes",terminal.BLUE)
 
         # Scan every peer
         for host in self.peers:
 
             # Info
-            printc(f"\tTrying to connect to host: {host}", TAN)
+            terminal.printc(f"\tTrying to connect to host: {host}", terminal.TAN)
 
             # Attempt to get the head hash that the peer is on
             try:
