@@ -19,7 +19,7 @@ import hashlib
 
 # hash function wrapper
 def sha_256_hash(bytes):
-    hasher = haslib.sha3_256()
+    hasher = hashlib.sha3_256()
     hasher.update(bytes)
     digest = hasher.digest()
     return digest.hex()
