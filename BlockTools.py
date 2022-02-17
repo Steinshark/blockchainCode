@@ -157,7 +157,7 @@ def check_fields(block,allowed_versions=[0],allowed_hashes=[''],trust=False):
         if (not 'nonce' in block):
             raise BlockChainVerifyError("nonce not found")
 
-        block_hash = sha_256_hash(dumps(block).encode())
+        block_hash = sha_256_hash(json.dumps(block).encode())
         if (not block_hash[:6] == '000000'):
             raise BlockChainVerifyError(f"hash not correct: '{block_hash}' ")
 
