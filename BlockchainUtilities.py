@@ -66,6 +66,7 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
                 block = BlockTools.retrieve_block(block_hash,host=hostname,port=port)
                 block = loads(block)
             except JSONDecodeError as j:
+                print(j)
                 raise BlockChainError(f"{Color.RED}Error decoding JSON text fetched from server: {block}{Color.END}")
             except HashRetrievalException as h:
                 print(h)
