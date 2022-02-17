@@ -12,7 +12,7 @@ from os import listdir, mkdir
 import argparse
 import sys
 from pprint import pp
-
+from collections import OrderedDict
 # Package import to work on windows and linux
 # Allows for nice text writing
 try:
@@ -82,7 +82,7 @@ class StaticServer:
 
         self.app.run(host=host,port=port)
 
-        
+
 class DynamicServer:
 
 
