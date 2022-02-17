@@ -77,7 +77,6 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
             hashed_to   =   BlockTools.sha_256_hash(next_block.encode())
 
         except HashRetrievalException as h:
-            print(h)
             raise BlockChainError(h)
 
         check = BlockTools.check_fields(block,allowed_versions=[version],allowed_hashes=['',hashed_to],trust=False)
