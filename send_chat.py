@@ -173,6 +173,6 @@ class Node:
 
 if __name__ == "__main__":
     n = Node()
-    send_chat(input("msg: "), input("host: "), 5002,version=int(input("version: ")))
+    Block_Tools.send_chat(input("msg: "), input("host: "), 5002,version=int(input("version: ")))
     n.check_peer_servers()
     n.update_peers()
