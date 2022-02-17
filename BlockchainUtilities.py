@@ -118,7 +118,7 @@ def verify_blockchain(blockchain):
         if index == len(blockchain) - 1:
             prev_hash = ''
         else:
-            prev_hash = BlockTools.sha_256_hash(block_to_JSON(blockchain[index+1][1]).encode())
+            prev_hash = BlockTools.sha_256_hash(BlockTools.block_to_JSON(blockchain[index+1][1]).encode())
 
         # Check the fields of the block for errors
         if not BlockToosl.check_fields(block,allowed_hashes=[prev_hash]):
