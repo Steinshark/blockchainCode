@@ -52,7 +52,7 @@ def block_to_JSON(block):
 def retrieve_block(hash_decoded,host="cat",port="5000",timeout=3):
     url = f"http://{host}:{port}/fetch/{hash_decoded}"
     try:
-        return get(url,timeout=timeout).content.decode()
+        return requests.get(url,timeout=timeout).content.decode()
     except requests.exceptions.Timeout:
         raise ConnectionException(f"{Color.RED}Error: timeout requesting response from {url}{Color.END}")
     except requests.exceptions.RequestException:
@@ -169,7 +169,7 @@ def send_chat(msg,host,port,version=0):
             'push' : f"http://{host}:{port}/push"}
 
     # Grab the current head hash
-    head_hash = get(URL['head']).content.decode()
+    head_hash = requests.get(URL['head']).content.decode()
     print(f"received {head_hash}")
     # Create the block
     json_encoded_block = build_block(head_hash,{'chat' : msg},version)
