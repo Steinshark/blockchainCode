@@ -43,7 +43,7 @@ def JSON_to_block(JSON_text):
     try:
         return json.loads(JSON_text)
     except JSONDecodeError:
-        raise DecodeException(f"{Color.RED}Error Decoding JSON: '{JSON_text[:50]}' as block{Color.END}")
+        raise DecodeException(f"{Color.RED} json.dumpsding JSON: '{JSON_text[:50]}' as block{Color.END}")
 
 # Convert python dictionary representation of a block to JSON representation of a block
 def block_to_JSON(block):

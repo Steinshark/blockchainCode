@@ -64,7 +64,7 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
         else:
             try:
                 block = BlockTools.retrieve_block(block_hash,host=hostname,port=port)
-                block = loads(block)
+                #block = loads(block)
             except JSONDecodeError as j:
                 raise BlockChainError(f"{Color.RED}Error decoding JSON text fetched from server: {block[:30]}{Color.END}")
             except HashRetrievalException as h:
@@ -89,7 +89,7 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
                     flock(file,LOCK_EX)
                     file.write(dumps(block))
                     flock(file,LOCK_UN)
-                    
+
         except BlockChainVerifyError as b:
             raise BlockChainVerifyError(f"bad block at position {index}:\n\t{b}")
 
