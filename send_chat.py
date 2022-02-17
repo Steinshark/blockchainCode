@@ -2,7 +2,7 @@
 # And Everett Stenberg
 
 
-import  BlockTools
+import BlockTools
 import BlockchainErrors
 import json
 from show_chat import FetchService
@@ -127,7 +127,9 @@ class Node:
         #    # Create the payload
         #    payload = {'block' : BlockTools.block_to_JSON(block)}
 
-        #    # Attempt to give it to the peer
+        #    # Attempt texcept requests.exceptions.ConnectionRefusedError:
+                    printc(f"\tError retreiving {host}'s' head_hash: ConectionRefused\n\n",RED)
+                    exit(1)o give it to the peer
         #    try:
         #        return_code = BlockTools.http_post(peer, 5002, payload)
 
@@ -173,6 +175,6 @@ class Node:
 
 if __name__ == "__main__":
     n = Node()
-    Block_Tools.send_chat(input("msg: "), input("host: "), 5002,version=int(input("version: ")))
+    BlockTools.send_chat(input("msg: "), input("host: "), 5002,version=int(input("version: ")))
     n.check_peer_servers()
     n.update_peers()
