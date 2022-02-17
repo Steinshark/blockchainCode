@@ -6,7 +6,6 @@
 #######################################  IMPORTS  #######################################
 #########################################################################################
 from BlockchainErrors import *
-import BlockchainUtilities
 import json
 import requests
 from os import mkdir, listdir
@@ -41,13 +40,13 @@ def retrieve_head_hash(host="cat",port="5000",timeout=3):
 # Convert JSON representation of a block to python dictionary representation of a block
 def JSON_to_block(JSON_text):
     try:
-        return loads(JSON_text)
+        return json.loads(JSON_text)
     except JSONDecodeError:
         raise DecodeException(f"{Color.RED}Error Decoding JSON: '{JSON_text[:50]}' as block{Color.END}")
 
 # Convert python dictionary representation of a block to JSON representation of a block
 def block_to_JSON(block):
-    return dumps(block)
+    return json.dumps(block)
 
 # Takes a hash and makes a request to the given URL to return the block with that hash
 def retrieve_block(hash_decoded,host="cat",port="5000",timeout=3):
@@ -81,7 +80,7 @@ def build_block(prev_hash,payload,ver):
         new_block = mine_block(new_block)
 
     try:
-        encoded_block = dumps(new_block)
+        encoded_block = json.dumps(new_block)
         return encoded_block
     except JSONEncodeException as j:
         raise BlockCreationException(j)
@@ -95,7 +94,7 @@ def grab_cached_hashes(cache_location='cache',version=0):
         fname               = fname.strip()
         block_hash          = fname.split('.')[0]
         block_ext           = fname.split('.')[-1]
-        block_dictionary    = loads(open(f"{cache_location}/{fname}",'r').read())
+        block_dictionary    = json.loads(open(f"{cache_location}/{fname}",'r').read())
 
         if version == 0:
             if not block_hash == 'current' and block_dictionary['version'] == 1:
