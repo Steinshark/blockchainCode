@@ -30,11 +30,11 @@ def retrieve_head_hash(host="cat",port="5000",timeout=3):
     try:
         return requests.get(url,timeout=timeout).content.decode()
 
-    except Timeout:
+    except requests.exceptions.Timeout:
         raise ConnectionException(f"{Color.RED}Error: timeout requesting response from {url}")
-    except RequestException:
+    except requests.exceptions.RequestException:
         raise ConnectionException(f"{Color.RED}{Color.BOLD}Error: something went wrong connecting to {url}{Color.END}")
-    except ConnectionError:
+    except requests.exceptions.ConnectionError:
         raise ConnectionException(f"{Color.RED}Error: something went wrong connecting to {url}{Color.END}")
 
 # Convert JSON representation of a block to python dictionary representation of a block
