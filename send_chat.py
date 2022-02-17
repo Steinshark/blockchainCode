@@ -57,9 +57,9 @@ class Node:
                 self.peer_nodes[host]['head'] = head_hash
 
             # Catches everything
-        except requests.exceptions.ConnectionRefusedError:
-                printc(f"\tError retreiving {host}'s' head_hash: ConectionRefused\n\n",RED)
-                exit(1)
+            except requests.exceptions.ConnectionRefusedError:
+                    printc(f"\tError retreiving {host}'s' head_hash: ConectionRefused\n\n",RED)
+                    exit(1)
             except requests.exceptions.ReadTimeout:
                 printc(f"\tError retreiving {host}'s' head_hash: Timeout\n\n",RED)
                 exit(1)
