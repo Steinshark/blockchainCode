@@ -1,8 +1,9 @@
-import os 
+import os
+import sys
 import nacl.signing 
 
 try:
-    filename = os.argv[1]
+    filename = sys.argv[1]
 except IndexError:
     print(f"usage: keygen.py filename")
 
