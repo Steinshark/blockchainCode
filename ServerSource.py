@@ -197,7 +197,7 @@ class DynamicServer:
                 BlockTools.check_fields(block,
                                         allowed_versions = accepting_ver,
                                         allowed_hashes   = accepting_hashes)
-            except BlockchainVerifyError as b:
+            except BlockChainVerifyError as b:
                 printc(f"\trejected block - invalid",RED)
                 return "bad block", 418
 
