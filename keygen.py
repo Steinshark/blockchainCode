@@ -15,7 +15,7 @@ if not os.path.isfile(filename):
     hex_priv_key = key.encode().hex()
     hex_pub_key  = key.verify_key.encode().hex()
     with open(filename,'w') as file:
-        file.write(hex_key)
+        file.write(hex_priv_key)
     print(hex_pub_key)
 else:
     with open(filename,'r') as file:
