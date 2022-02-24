@@ -176,10 +176,10 @@ def check_fields(block,allowed_versions=[0],allowed_hashes=[''],trust=False):
     # Check signatures of any blocks with a chatid 
     if ("chatid" in block['payload']  and "chatsig" in block['payload']):
         # Check if signature verifies 
-        key_hex = nacl.signing.SigningKey(block['payload']['chatid'])
+        key_hex = block['payload']['chatid']
         signature = block['payload']['chatsig']
         input(f"checking key {key_hex}\nagainst sig {signature}")
-        v_key = nacl.signing.VerifyKey(key_hex)
+        v_key = nacl.signing.VerifyKey(bytes.fromhex(key_hex))
         try:
             v_key.verify(json.dumps(block), signature)
         except nacl.exceptions.BadSignatureError:
