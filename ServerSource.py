@@ -182,6 +182,7 @@ class DynamicServer:
             try:
                 block = loads(received_data['block'])
                 printc(f"\tdecoded to '{str(block)[:35]} ... {str(block)[-20:]}'",TAN)
+                printc(f"BLOCK IS:\n",BLUE)
                 pp(block)
             except JSONDecodeError as j:
                 printc(f"\terror decoding data",RED)
@@ -199,7 +200,7 @@ class DynamicServer:
             except BlockChainVerifyError as b:
                 
                 printc(f"\trejected block - invalid",RED)
-                printc(f"\t\t{b}\n\n\n",TAN)
+                printc(f"\t{b}\n\n\n",TAN)
                 return "bad block", 418
 
             # Add the block if it is good
