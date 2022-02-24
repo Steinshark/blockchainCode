@@ -153,13 +153,26 @@ def check_fields(block,allowed_versions=[0],allowed_hashes=[''],trust=False):
     if len(block_to_JSON(block)) > 1024:
         raise BlockChainVerifyError(f"bad len: {len(block_to_JSON(block))}")
 
+    # Make all V1 checks
     if (block['version'] == 1):
+        
+        # Check for nonce 
         if (not 'nonce' in block):
-            raise BlockChainVerifyError("nonce not found")
-
+            raise BlockChainVerifyError("nonce not in block")
+        
+        # Check for correct difficulty
         block_hash = sha_256_hash(json.dumps(block).encode())
         if (not block_hash[:6] == '000000'):
             raise BlockChainVerifyError(f"hash not correct: '{block_hash}' ")
+        
+        # Check for chatid
+        if (not "chatid" in block):
+            raise BlockChainVerifyError(f"chatid not in block")
+        
+        # Check for chatsig
+        if (not "chatid" in block):
+            raise BlockChainVerifyError(f"chatid not in block")
+        
 
     return True
 
