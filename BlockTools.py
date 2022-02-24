@@ -181,7 +181,7 @@ def check_fields(block,allowed_versions=[0],allowed_hashes=[''],trust=False):
         input(f"checking key {key_hex}\nagainst sig {signature}")
         v_key = nacl.signing.VerifyKey(bytes.fromhex(key_hex))
         try:
-            v_key.verify(json.dumps(block), signature)
+            v_key.verify(json.dumps(block), bytes.fromhex(signature))
         except nacl.exceptions.BadSignatureError:
             raise BlockChainVerifyError("signature was not accepted")
     else:
