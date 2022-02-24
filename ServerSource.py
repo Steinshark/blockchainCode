@@ -178,8 +178,7 @@ class DynamicServer:
             # Get data from form
             received_data = flask.request.form
             printc(f"\twhile head is {head_hash[:10]}",TAN,endl='')
-            printc(f"\trecieved '{str(received_data)[:35]} ... {str(received_data)[-20:]}'",TAN)
-
+            pp(block)
             # Check if the data is JSON decodable
             try:
                 block = loads(received_data['block'])
