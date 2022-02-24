@@ -181,7 +181,7 @@ def check_fields(block,allowed_versions=[0],allowed_hashes=[''],trust=False):
     try:
         v_key.verify(json.dumps(block), signature)
     except nacl.exceptions.BadSignatureError:
-        raise BlockchainVerifyError("signature was not accepted")
+        raise BlockChainVerifyError("signature was not accepted")
 
     return True
 
