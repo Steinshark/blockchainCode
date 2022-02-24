@@ -240,7 +240,6 @@ class DynamicServer:
 
         self.chains                 =       {h : 0 for h in BlockTools.grab_cached_hashes(version=1) + BlockTools.grab_cached_hashes(version=0)}
         self.max_chain['v0']        =       {'head' : '', 'length' : 0}
-        input(f"found {len(self.chains)} blocks") 
         if self.version == 1:
             self.chains_v1          =       {}
             self.max_chain['v1']    =       {'head' : '', 'length' : 0}
