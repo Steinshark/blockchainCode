@@ -193,29 +193,30 @@ class DynamicServer:
             accepting_hashes    = BlockTools.grab_cached_hashes(version=self.version)
 
             # Check if valid
-            if not BlockTools.check_fields(    block,
-                                    allowed_versions = accepting_ver,
-                                    allowed_hashes   = accepting_hashes):
-
+            try:
+                BlockTools.check_fields(block,
+                                        allowed_versions = accepting_ver,
+                                        allowed_hashes   = accepting_hashes):
+            except BlockchainVerifyError as b:
                 printc(f"\trejected block - invalid",RED)
                 return "bad block", 418
 
             # Add the block if it is good
-            else:
+            
 
-                # Back to JSON
-                block_string = dumps(block)
+            # Back to JSON
+            block_string = dumps(block)
 
-                # hash the block
-                block_hash   = BlockTools.sha_256_hash( block_string.encode()   )
+            # hash the block
+            block_hash   = BlockTools.sha_256_hash( block_string.encode()   )
 
-                # Save file in cache folder
-                with open(f'cache/{block_hash}.json','w') as file:
-                    file.write(block_string)
+            # Save file in cache folder
+            with open(f'cache/{block_hash}.json','w') as file:
+                file.write(block_string)
 
-                printc(f"\taccepted block",GREEN)
-                self.update_chains(block)
-                return "Accepted!", 200
+            printc(f"\taccepted block",GREEN)
+            self.update_chains(block)
+            return "Accepted!", 200
 
 
 ################################################################################
