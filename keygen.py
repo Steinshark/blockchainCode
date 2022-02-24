@@ -20,5 +20,5 @@ if not os.path.isfile(filename):
 else:
     with open(filename,'r') as file:
         priv_key = file.read()
-        hex_pub_key = nacl.signing.SigningKey(bytes.fromhex(priv_key)).verify_key().encode().hex()
+        hex_pub_key = nacl.signing.SigningKey(bytes.fromhex(priv_key)).verify_key.encode().hex()
         print(hex_pub_key)
