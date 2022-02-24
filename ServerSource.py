@@ -197,7 +197,9 @@ class DynamicServer:
                                         allowed_versions = accepting_ver,
                                         allowed_hashes   = accepting_hashes)
             except BlockChainVerifyError as b:
+                
                 printc(f"\trejected block - invalid",RED)
+                printc(f"\t\t{b}")
                 return "bad block", 418
 
             # Add the block if it is good
