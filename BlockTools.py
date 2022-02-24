@@ -172,7 +172,9 @@ def check_fields(block,allowed_versions=[0],allowed_hashes=[''],trust=False):
         # Check for chatsig
         if (not "chatsig" in block):
             raise BlockChainVerifyError(f"chatsig not in block")
-        
+    
+    # Check signatures of any blocks with a chatid 
+    if ("chatid" in block and "chatsig" in block):
         # Check if signature verifies 
         key_hex = block['chatid']
         signature = block['chagsig']
