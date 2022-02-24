@@ -199,7 +199,7 @@ class DynamicServer:
             except BlockChainVerifyError as b:
                 
                 printc(f"\trejected block - invalid",RED)
-                printc(f"\t\t{b}")
+                printc(f"\t\t{b}",TAN)
                 return "bad block", 418
 
             # Add the block if it is good
