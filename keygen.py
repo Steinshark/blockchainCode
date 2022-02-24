@@ -13,7 +13,7 @@ if not os.path.isfile(filename):
     print(f"Generating key")
     key = nacl.signing.SigningKey.generate()
     hex_priv_key = key.encode.hex()
-    hex_pub_key  = key.verify_key.encode.hex()
+    hex_pub_key  = key.verify_key.encode().hex()
     with open(filename) as file:
         file.write(hex_key)
     print(hex_pub_key)
