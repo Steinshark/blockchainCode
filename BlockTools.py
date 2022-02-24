@@ -12,7 +12,7 @@ from os import mkdir, listdir
 import sys
 from Toolchain import terminal
 import hashlib
-import nacl
+import nacl.signing
 #########################################################################################
 ############################ FUNCTIONS FOR PROCESSING BLOCKS ############################
 #########################################################################################
