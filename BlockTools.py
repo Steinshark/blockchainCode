@@ -178,7 +178,7 @@ def check_fields(block,allowed_versions=[0],allowed_hashes=[''],trust=False):
         # Check if signature verifies 
         key_hex = block['payload']['chatid']
         signature = block['payload']['chatsig']
-        input(f"checking key {key_hex} against sig {signature}")
+        input(f"checking key {key_hex}\nagainst sig {signature}")
         v_key = nacl.signing.VerifyKey(key_hex)
         try:
             v_key.verify(json.dumps(block), signature)
