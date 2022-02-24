@@ -176,8 +176,8 @@ def check_fields(block,allowed_versions=[0],allowed_hashes=[''],trust=False):
     # Check signatures of any blocks with a chatid 
     if ("chatid" in block['payload']  and "chatsig" in block['payload']):
         # Check if signature verifies 
-        key_hex = block['chatid']
-        signature = block['chagsig']
+        key_hex = block['payload']['chatid']
+        signature = block['payload']['chagsig']
         input(f"checking key {key_hex} against sig {signature}")
         v_key = nacl.signing.VerifyKey(key_hex)
         try:
