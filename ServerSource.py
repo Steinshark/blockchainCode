@@ -4,6 +4,7 @@
 
 import flask
 import BlockTools
+from BlockchainErrors import *
 import BlockchainUtilities
 from os.path import isfile, isdir
 from fcntl import flock, LOCK_SH,LOCK_EX, LOCK_UN
