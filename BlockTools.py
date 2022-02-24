@@ -180,11 +180,15 @@ def check_fields(block,allowed_versions=[0],allowed_hashes=[''],trust=False):
         signature = block['payload']['chatsig']
         print(f"checking key {key_hex}\nagainst sig {signature}")
         v_key = nacl.signing.VerifyKey(bytes.fromhex(key_hex))
+        
         try:
             message = json.dumps(block).encode()
             signature_as_bytes = bytes.fromhex(signature)
+            
             v_key.verify(message, signature_as_bytes)
+        
         except nacl.exceptions.BadSignatureError:
+            print("bad sig")
             raise BlockChainVerifyError("signature was not accepted")
     else:
         print("not found in block")
