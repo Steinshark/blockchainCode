@@ -14,11 +14,11 @@ if not os.path.isfile(filename):
     key = nacl.signing.SigningKey.generate()
     hex_priv_key = key.encode().hex()
     hex_pub_key  = key.verify_key.encode().hex()
-    with open(filename) as file:
+    with open(filename,'w') as file:
         file.write(hex_key)
     print(hex_pub_key)
 else:
-    with open(filename) as file:
+    with open(filename,'r') as file:
         priv_key = file.read()
         hex_pub_key = SigningKey(priv_key).verify_key().encode().hex()
         print(hex_pub_key)
