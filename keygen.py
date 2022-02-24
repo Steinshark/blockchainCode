@@ -6,7 +6,7 @@ try:
     filename = sys.argv[1]
 except IndexError:
     print(f"usage: keygen.py filename")
-
+    exit()
 
 # Create file if not exists 
 if not os.path.isfile(filename):
