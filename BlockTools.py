@@ -184,7 +184,8 @@ def check_fields(block,allowed_versions=[0],allowed_hashes=[''],trust=False):
             v_key.verify(json.dumps(block), signature)
         except nacl.exceptions.BadSignatureError:
             raise BlockChainVerifyError("signature was not accepted")
-
+    else:
+        input("not found in block")
     return True
 
 # Sends a block containing 'msg' to 'host' on 'port'
