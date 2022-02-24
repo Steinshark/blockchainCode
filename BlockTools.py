@@ -12,7 +12,7 @@ from os import mkdir, listdir
 import sys
 from Toolchain import terminal
 import hashlib
-
+import nacl
 #########################################################################################
 ############################ FUNCTIONS FOR PROCESSING BLOCKS ############################
 #########################################################################################
@@ -170,9 +170,18 @@ def check_fields(block,allowed_versions=[0],allowed_hashes=[''],trust=False):
             raise BlockChainVerifyError(f"chatid not in block")
         
         # Check for chatsig
-        if (not "chatid" in block):
-            raise BlockChainVerifyError(f"chatid not in block")
+        if (not "chatsig" in block):
+            raise BlockChainVerifyError(f"chatsig not in block")
         
+        # Check if signature verifies 
+        key_hex = block['chatid']
+        signature = block['chagsig']
+        input(f"checking key {key_hex} against sig {signature}")
+        v_key = nacl.signing.VerifyKey(key_hex)
+        try:
+            v_key.verify(json.dumps(block), signature)
+        except nacl.exceptions.BadSignatureError:
+            raise BlockchainVerifyError("signature was not accepted")
 
     return True
 
