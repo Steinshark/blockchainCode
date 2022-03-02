@@ -138,7 +138,7 @@ class Node:
 
             # If their server isn't up, then forget it
             except ConnectionException:
-                terminal.printc(f"\tError retreiving {host}'s' head_hash: ConectionRefused\n\n",terminal.RED)
+                terminal.printc(f"\tError retreiving {peer}'s' head_hash: ConectionRefused\n\n",terminal.RED)
                 return
            
             # If this block worked, head back up the stack
