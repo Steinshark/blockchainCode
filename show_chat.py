@@ -23,7 +23,7 @@ class FetchService:
         self.last_hash = ''
         self.version = 1
         self.longest_chain = 0
-
+        self.head_hash = ''
     def check_for_head(self):
         if isfile(CHECKPOINT_FILE):
             with open(CHECKPOINT_FILE) as file :
@@ -49,11 +49,8 @@ class FetchService:
                             'length': blockchain_len}
 
             if writing and blockchain_len > self.longest_chain:
-                self.longest_chain = blockchain_len
-                terminal.printc(f"im choosing to write {self.info['length']}, longest is {self.longest_chain}",terminal.RED)
-                with open('cache/current.json','w') as file:
-                    file.write(dumps(self.info))
-
+                self.longest_chain  = blockchain_len
+                self.head_hash      = head_hash
 
         # done
         except BlockChainError as b:

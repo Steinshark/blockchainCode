@@ -62,7 +62,7 @@ def retrieve_block(hash_decoded,host="cat",port="5000",timeout=3):
         raise ConnectionException(f"{Color.RED}Error: something went wrong connecting to {url}{Color.END}")
 
 # Wrapper function for post
-def http_post(host,port,payload,timeout=2):
+def http_post(host,port,payload,timeout=5):
     try:
         url = f"http://{host}:{port}/push"
         return requests.post(url,data=payload,timeout=timeout)
@@ -72,13 +72,13 @@ def http_post(host,port,payload,timeout=2):
         raise ConnectionException(f"{Color.RED}Error: something went wrong connecting to {url}{Color.END}")
 
 # builds a block given the three fields and returns as JSON
-def build_block(prev_hash,payload,ver):
+def build_block(prev_hash,payload,ver,signing_key):
     new_block = {   'prev_hash'     : prev_hash,
                     'payload'       : payload,
                     'version'       : ver}
     if ver == 1:
         new_block['nonce'] = 0
-        new_block = mine_block(new_block)
+        new_block = mine_block(new_block,signing_key)
         
     try:
         encoded_block = json.dumps(new_block)
@@ -125,7 +125,6 @@ def iter_local_chain(block_hash,known_chains,version=0):
                 block_dict = JSON_to_block(block_string)
                 block_hash = block_dict['prev_hash']
                 if block_hash in known_chains:
-                    print(f"found {block_hash[:10]} already, size {known_chains[block_hash]} returning {known_chains[block_hash]+length}")
                     return known_chains[block_hash] + length
                 if version == 1 and not block_dict['version'] == 1:
                     return length
@@ -204,16 +203,18 @@ def check_fields(block,block_string,allowed_versions=[0],allowed_hashes=[''],tru
     return True
 
 # Sends a block containing 'msg' to 'host' on 'port'
-def send_chat(msg,host,port,version=0):
+def send_chat(msg,host,port,signing_key,version=1):
+
     #Specify all the URLs
     URL = { 'head' : f"http://{host}:{port}/head",
             'push' : f"http://{host}:{port}/push"}
 
     # Grab the current head hash
     head_hash = requests.get(URL['head']).content.decode()
-    print(f"host {host} is broadcasting head: {head_hash}")
+    print(f"host {host} is broadcasting head: '{head_hash}'")
+    
     # Create the block
-    json_encoded_block = build_block(head_hash,{'chat' : msg},version)
+    json_encoded_block = build_block(head_hash,{'chat' : msg},version,signing_key)
 
     # Build format to send over HTTP
     push_data = {'block' : json_encoded_block}
@@ -231,10 +232,15 @@ def send_chat(msg,host,port,version=0):
         terminal.printc(f"\tRecieved Null response...",terminal.TAN)
 
 
-def mine_block(block):
+def mine_block(block,signing_key):
     block_hash = '111111'
+    key = nacl.signing.SigningKey(bytes.fromhex(signing_key)) 
+    block['payload']['chatid'] = key.verify_key.encode().hex()
+    message = block['payload']['chat']
     while not block_hash[:6] == '000000':
         block['nonce'] += 1
+        block['payload']['chatsig'] = key.sign(message.encode()).signature.hex()
+        
         block_hash  = sha_256_hash(block_to_JSON(block).encode())
     input(f"found block {block}")
     input(f"kicking back block with hash {sha_256_hash(block_to_JSON(block).encode())}")

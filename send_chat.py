@@ -15,6 +15,13 @@ class Node:
 
     # Init
     def __init__(self):
+        
+        # get signing key 
+        try:
+            self.signing_key = sys.argv[1]
+        except IndexError:
+            terminal.printc(f"usage: send_chat.py signing_key",terminal.RED)
+            exit(1)
 
         # Fetch a list of peer names (hostnames)
         self.peers = list(  map(    lambda x : x.strip(),   open("hosts.txt",'r').readlines()   ))
@@ -33,7 +40,7 @@ class Node:
         self.top_peer = self.peers[0]
 
         # Scan all peer's nodes for most recent data
-        self.check_peer_servers()
+        #self.check_peer_servers()
 
     # Scan all peer nodes to get node info
     def check_peer_servers(self):
@@ -61,7 +68,7 @@ class Node:
             except requests.exceptions.ReadTimeout:
                 terminal.printc(f"\tError retreiving {host}'s' head_hash: Timeout\n\n",terminal.RED)
                 continue
-            except requests.exceptions.ConnectionError:
+            except ConnectionError:
                 terminal.printc(f"\tError retreiving {host}'s' head_hash: ConnectionError\n\n",terminal.RED)
                 continue
             except:
@@ -130,9 +137,9 @@ class Node:
                 return_code = BlockTools.http_post(peer, 5002, payload)
 
             # If their server isn't up, then forget it
-            except requests.exceptions.ConnectionException:
+            except ConnectionException:
                 terminal.printc(f"\tError retreiving {host}'s' head_hash: ConectionRefused\n\n",terminal.RED)
-                exit(1)
+                return
            
             # If this block worked, head back up the stack
             # (this is super inefficient I realize, but I
@@ -169,6 +176,6 @@ class Node:
 
 if __name__ == "__main__":
     n = Node()
-    BlockTools.send_chat(input("msg: "), input("host: "), 5002,version=int(input("version: ")))
+    BlockTools.send_chat(input("msg: "), input("host: "),5002,n.signing_key,version=int(input("version: ")))
     n.check_peer_servers()
     n.update_peers()

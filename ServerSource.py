@@ -213,6 +213,7 @@ class DynamicServer:
                 file.write(block_string)
 
             printc(f"\taccepted block",GREEN)
+            #self.scan_chains()
             self.update_chains(block_dict,block_hash)
             return "Accepted!", 200
 
@@ -278,18 +279,19 @@ class DynamicServer:
     def update_chains(self,block,block_hash):
 
         # Get the length of this chain
-        block_chain_len = BlockTools.iter_local_chain(  block['prev_hash'], self.version)
+        blockchain_len = 1 + BlockTools.iter_local_chain(  block['prev_hash'], self.chain_caching,version=self.version)
 
         if self.version == 1:
-            if block_chain_len > self.max_chain['v1']['length']:
-                self.max_chain['v1']['length']  = block_chain_len
+            if blockchain_len > self.max_chain['v1']['length']:
+                self.max_chain['v1']['length']  = blockchain_len
                 self.max_chain['v1']['head']    = block_hash
+                self.chain_caching[block_hash] = blockchain_len
             else:
                 printc(f"pushed chain {block_chain_len} not longer than {self.max_chain['v1']['length']}",RED)
 
         elif self.version == 0:
-            if block_chain_len > self.max_chain['v0']['length']:
-                self.max_chain['v0']['length']  = block_chain_len
+            if blockchain_len > self.max_chain['v0']['length']:
+                self.max_chain['v0']['length']  = blockchain_len
                 self.max_chain['v0']['head']    = block_h
 
         self.write_current()
