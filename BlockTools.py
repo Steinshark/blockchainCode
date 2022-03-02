@@ -79,7 +79,7 @@ def build_block(prev_hash,payload,ver):
     if ver == 1:
         new_block['nonce'] = 0
         new_block = mine_block(new_block)
-
+        
     try:
         encoded_block = json.dumps(new_block)
         return encoded_block
@@ -107,24 +107,38 @@ def grab_cached_hashes(cache_location='cache',version=0):
     return allowed_hashes
 
 # find chain length from a hash
-def iter_local_chain(block_hash,version=0):
+def iter_local_chain(block_hash,known_chains,version=0):
     length = 0
-
-    while not block_hash == '':
+    seen = []
+    i = 0
+    while not block_hash == '': 
         length += 1
         filename = f"cache/{block_hash}.json"
-        with open(filename,'r') as file:
-            block_as_JSON = file.read()
-            block = JSON_to_block(block_as_JSON)
-            block_hash = block['prev_hash']
-            if version == 1 and not block['version'] == 1:
-                return length
-
+        if not block_hash in seen:
+            seen.append(block_hash)
+        else:
+            input("found cycle")
+            return
+        try:
+            with open(filename,'r') as file:
+                block_string = file.read()
+                block_dict = JSON_to_block(block_string)
+                block_hash = block_dict['prev_hash']
+                if block_hash in known_chains:
+                    print(f"found {block_hash[:10]} already, size {known_chains[block_hash]} returning {known_chains[block_hash]+length}")
+                    return known_chains[block_hash] + length
+                if version == 1 and not block_dict['version'] == 1:
+                    return length
+        except FileNotFoundError:
+            return length
     return length
 
 # given a processed block (python dictionary), check the block for keys, then check
 # key values using the named parameters
-def check_fields(block,allowed_versions=[0],allowed_hashes=[''],trust=False):
+def check_fields(block,block_string,allowed_versions=[0],allowed_hashes=[''],trust=False):
+    
+    block_hash = sha_256_hash(block_string.encode())
+
     if trust:
         return True
 
@@ -153,6 +167,12 @@ def check_fields(block,allowed_versions=[0],allowed_hashes=[''],trust=False):
     if len(block_to_JSON(block)) > 1024:
         raise BlockChainVerifyError(f"bad len: {len(block_to_JSON(block))}")
 
+    if ("chatid" in block["payload"] and not "chatsig" in block["payload"]):
+        raise BlockChainVerifyError("missing chatsig")
+
+    if ("chatsig" in block["payload"] and not "chatid" in block["payload"]):
+        raise BlockChainVerifyError("missing chatid")
+
     # Make all V1 checks
     if (block['version'] == 1):
         
@@ -161,37 +181,26 @@ def check_fields(block,allowed_versions=[0],allowed_hashes=[''],trust=False):
             raise BlockChainVerifyError("nonce not in block")
         
         # Check for correct difficulty
-        block_hash = sha_256_hash(json.dumps(block).encode())
         if (not block_hash[:6] == '000000'):
             raise BlockChainVerifyError(f"hash not correct: '{block_hash}' ")
         
-        # Check for chatid
-        if (not "chatid" in block['payload']):
-            raise BlockChainVerifyError(f"chatid not in block")
-        
-        # Check for chatsig
-        if (not "chatsig" in block['payload']):
-            raise BlockChainVerifyError(f"chatsig not in block")
-    
+         
     # Check signatures of any blocks with a chatid 
     if ("chatid" in block['payload']  and "chatsig" in block['payload']):
+
         # Check if signature verifies 
         key_hex = block['payload']['chatid']
-        signature = block['payload']['chatsig']
-        print(f"checking key {key_hex}\nagainst sig {signature}")
+        sig_hex = block['payload']['chatsig']
         v_key = nacl.signing.VerifyKey(bytes.fromhex(key_hex))
         
         try:
-            message = json.dumps(block).encode()
-            signature_as_bytes = bytes.fromhex(signature)
-            
-            v_key.verify(message, signature_as_bytes)
+            message = block["payload"]['chat']
+            signature = bytes.fromhex(sig_hex)
+            v_key.verify(message.encode(), signature)
         
         except nacl.exceptions.BadSignatureError:
             print("bad sig")
             raise BlockChainVerifyError("signature was not accepted")
-    else:
-        print("not found in block")
     return True
 
 # Sends a block containing 'msg' to 'host' on 'port'

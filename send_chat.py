@@ -3,7 +3,7 @@
 
 
 import BlockTools
-import BlockchainErrors
+from BlockchainErrors import *
 import json
 from show_chat import FetchService
 import requests
@@ -33,7 +33,7 @@ class Node:
         self.top_peer = self.peers[0]
 
         # Scan all peer's nodes for most recent data
-        #self.check_peer_servers()
+        self.check_peer_servers()
 
     # Scan all peer nodes to get node info
     def check_peer_servers(self):
@@ -58,18 +58,15 @@ class Node:
                 self.peer_nodes[host]['head'] = head_hash
 
             # Catches everything
-            except requests.exceptions.ConnectionRefusedError:
-                    printc(f"\tError retreiving {host}'s' head_hash: ConectionRefused\n\n",RED)
-                    exit(1)
             except requests.exceptions.ReadTimeout:
-                printc(f"\tError retreiving {host}'s' head_hash: Timeout\n\n",RED)
-                exit(1)
+                terminal.printc(f"\tError retreiving {host}'s' head_hash: Timeout\n\n",terminal.RED)
+                continue
             except requests.exceptions.ConnectionError:
-                printc(f"\tError retreiving {host}'s' head_hash: ConnectionError\n\n",RED)
-                exit(1)
+                terminal.printc(f"\tError retreiving {host}'s' head_hash: ConnectionError\n\n",terminal.RED)
+                continue
             except:
-                printc(f"\tError retreiving {host}'s' head_hash: unknown reason\n\n",RED)
-                exit(1)
+                terminal.printc(f"\tError retreiving {host}'s' head_hash: unknown reason\n\n",terminal.RED)
+                continue
 
             # Attempt to fetch the blockchain of that node
             try:
@@ -85,7 +82,7 @@ class Node:
                 self.peer_nodes[host]['length'] = node_chain_len
 
                 # Info
-                terminal.printc(f"\tConnection to {host} succeeded! Chain of length {node_chain_len} found\n\n",terminal.GREEN)
+                terminal.printc(f"\tConnected to {host}! Chain len {node_chain_len} found\n\n",terminal.GREEN)
 
                 # Update global chain tracker if this is the longest
                 if node_chain_len > self.peer_nodes[self.top_peer]['length']:
@@ -97,7 +94,7 @@ class Node:
                 terminal.printc(f"\tError in fetch blockchain on host {host}\n\n", terminal.RED)
                 continue
 
-        terminal.printc(f"longest chain is len: {self.peer_nodes[self.top_peer]['length']} on host {self.top_peer}",terminal.BLUE)
+        terminal.printc(f"longest chain is {self.peer_nodes[self.top_peer]['length']} on host {self.top_peer}",terminal.BLUE)
 
     # Update peer nodes that do not have the current longest chain
     def update_peers(self):
@@ -123,29 +120,28 @@ class Node:
         #stack = []
 
         # Try pushing blocks until we peer accepts one
-        #for (block_hash,block) in full_blockchain:
+        for (block_hash,block) in full_blockchain:
 
-        #    # Create the payload
-        #    payload = {'block' : BlockTools.block_to_JSON(block)}
+            # Create the payload
+            payload = {'block' : BlockTools.block_to_JSON(block)}
 
-        #    # Attempt texcept requests.exceptions.ConnectionRefusedError:
-        #            printc(f"\tError retreiving {host}'s' head_hash: ConectionRefused\n\n",RED)
-        #            exit(1)o give it to the peer
-        #    try:
-        #        return_code = BlockTools.http_post(peer, 5002, payload)
+            # Attempt texcept requests.exceptions.ConnectionRefusedError:
+            try:
+                return_code = BlockTools.http_post(peer, 5002, payload)
 
             # If their server isn't up, then forget it
-        #except requests.exceptions.ConnectionException:
-        #        return
-
+            except requests.exceptions.ConnectionException:
+                terminal.printc(f"\tError retreiving {host}'s' head_hash: ConectionRefused\n\n",terminal.RED)
+                exit(1)
+           
             # If this block worked, head back up the stack
             # (this is super inefficient I realize, but I
             # dont have the time to rewrite)
-        #    if return_code.status_code == 200:
-        #        terminal.printc(f"Block accepted! Sending stack!",terminal.GREEN)
-        #        break
-        #    else:
-        #        stack.insert(0,block)
+            if return_code.status_code == 200:
+                terminal.printc(f"Block accepted! Sending stack!",terminal.GREEN)
+                break
+            else:
+                stack.insert(0,block)
 
         # Try pushing the rest of the blocks in reverse order
         for b_hash,block in reversed(full_blockchain[start_chain_from(peer,full_blockchain)]):
@@ -156,22 +152,19 @@ class Node:
             try:
                 return_code = http_post(peer, 5002, payload)
                 if return_code.status_code == 200:
-                    printc(f"Block accepted! {len(stack)} left!",GREEN)
+                   terminal.printc(f"Block accepted! {len(stack)} left!",terminal.GREEN)
 
             # If their server isn't up, then forget it
             except ConnectionException:
-                return
+                continue
 
-        printc(f"Finished trying to push chain",TAN)
+        terminal.printc(f"Finished trying to push chain",TAN)
     # Recursively bring the peer up to date
 
     #Binary Picker
     def start_chain_from(self,peer,full_blockchain):
         peer_head_hash = BlockTools.retrieve_head_hash(host=peer,port=5002)
 
-        for i, tup in enumerate(full_blockchain):
-            if i == tup[0]:
-                return i
 
 
 if __name__ == "__main__":

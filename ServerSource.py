@@ -112,8 +112,6 @@ class DynamicServer:
         @self.app.route('/head')
         def head():
 
-            pp(self.max_chain['v1'])
-
             # Open, lock, read the head file, and send the info back
             with open('cache/current.json') as file :
                 flock(file,LOCK_SH)
@@ -163,7 +161,7 @@ class DynamicServer:
 
         @self.app.route('/push', methods=['POST'])
         def push_block():
-
+            printc(f"\n\n\nPUSH REQUEST RECEIVED",GREEN)
             # Open, lock, read the head file, and send the info back
             with open('cache/current.json') as file :
                 flock(file,LOCK_SH)
@@ -177,13 +175,15 @@ class DynamicServer:
 
             # Get data from form
             received_data = flask.request.form
-            printc(f"\twhile head is {head_hash[:10]}",TAN,endl='')
+            printc(f"Head is '{head_hash[:10]}'",TAN)
             
             # Check if the data is JSON decodable
             try:
-                block = loads(received_data['block'])
-                printc(f"BLOCK IS:\n",BLUE)
-                pp(block)
+                block_dict      = loads(received_data['block'])
+                block_string    = received_data['block']
+                block_hash   = BlockTools.sha_256_hash( block_string.encode()   )
+                printc(f"BLOCK IS:",TAN)
+                printc(f"{block_string}\n",BLUE)
             except JSONDecodeError as j:
                 printc(f"\terror decoding data",RED)
                 return f"JSON error when decoding '{block}'", 418
@@ -191,11 +191,12 @@ class DynamicServer:
             # Check if the block fields are valid
             accepting_ver       = [0,self.version]
             accepting_hashes    = BlockTools.grab_cached_hashes(version=self.version)
-
+            
+            printc(f"hashes initially to {BlockTools.sha_256_hash(block_string.encode())}",RED)
             # Check if valid
             try:
-                BlockTools.check_fields(block,
-                                        allowed_versions = accepting_ver,
+                BlockTools.check_fields(block_dict,
+                                        block_string,allowed_versions = accepting_ver,
                                         allowed_hashes   = accepting_hashes)
             except BlockChainVerifyError as b:
                 
@@ -203,21 +204,16 @@ class DynamicServer:
                 printc(f"\t{b}\n\n\n",TAN)
                 return "bad block", 418
 
-            # Add the block if it is good
             
 
-            # Back to JSON
-            block_string = dumps(block)
 
             # hash the block
-            block_hash   = BlockTools.sha_256_hash( block_string.encode()   )
-
             # Save file in cache folder
             with open(f'cache/{block_hash}.json','w') as file:
                 file.write(block_string)
 
             printc(f"\taccepted block",GREEN)
-            self.update_chains(block)
+            self.update_chains(block_dict,block_hash)
             return "Accepted!", 200
 
 
@@ -242,18 +238,23 @@ class DynamicServer:
         # Find all hashes that exist in 'cache'
 
         self.chains                 =       {h : 0 for h in BlockTools.grab_cached_hashes(version=1) + BlockTools.grab_cached_hashes(version=0)}
+        self.chain_caching          =       {}
         self.max_chain['v0']        =       {'head' : '', 'length' : 0}
         if self.version == 1:
             self.chains_v1          =       {}
             self.max_chain['v1']    =       {'head' : '', 'length' : 0}
-
+        
+        # Find all previous hashes in 
+        i = 0
         # make chains and max chains
         for local_hash in self.chains:
-
+            print(i)
+            i += 1
             # Add to chains regardless of version
-            chain_len               = BlockTools.iter_local_chain(local_hash)
+            chain_len               = BlockTools.iter_local_chain(local_hash,self.chain_caching)
             self.chains[local_hash] = chain_len
-
+            self.chain_caching[local_hash] = chain_len
+            print(chain_len)
             # If valid version 1 hash, check for longest chain
             if self.version == 1 and local_hash[:6] == '000000':
                 self.chains_v1[local_hash] = chain_len
@@ -274,16 +275,17 @@ class DynamicServer:
 #                  This is assumed to be a good block
 ################################################################################
 
-    def update_chains(self,block):
+    def update_chains(self,block,block_hash):
 
         # Get the length of this chain
         block_chain_len = BlockTools.iter_local_chain(  block['prev_hash'], self.version)
-        block_hash      = BlockTools.sha_256_hash(      dumps(block).encode() )
 
         if self.version == 1:
             if block_chain_len > self.max_chain['v1']['length']:
                 self.max_chain['v1']['length']  = block_chain_len
                 self.max_chain['v1']['head']    = block_hash
+            else:
+                printc(f"pushed chain {block_chain_len} not longer than {self.max_chain['v1']['length']}",RED)
 
         elif self.version == 0:
             if block_chain_len > self.max_chain['v0']['length']:

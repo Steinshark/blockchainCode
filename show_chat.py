@@ -22,7 +22,7 @@ class FetchService:
         self.blockchain_check = True
         self.last_hash = ''
         self.version = 1
-
+        self.longest_chain = 0
 
     def check_for_head(self):
         if isfile(CHECKPOINT_FILE):
@@ -40,13 +40,17 @@ class FetchService:
             terminal.printc(f"checking host: {self.host} port: {self.port}",terminal.TAN)
             self.blockchain_download = BlockchainUtilities.get_blockchain(self.host,self.port,caching=True,last_verified=self.last_hash,version=self.version)
             blockchain_len = len(self.blockchain_download)
-            head_hash = self.blockchain_download[0][0]
-
+            if blockchain_len:
+                head_hash = self.blockchain_download[0][0]
+            else:
+                raise BlockChainRetrievalError("no blockchain here: len was 0")
             # save info and write to file
             self.info = {   'head'  : head_hash,\
                             'length': blockchain_len}
 
-            if writing:
+            if writing and blockchain_len > self.longest_chain:
+                self.longest_chain = blockchain_len
+                terminal.printc(f"im choosing to write {self.info['length']}, longest is {self.longest_chain}",terminal.RED)
                 with open('cache/current.json','w') as file:
                     file.write(dumps(self.info))
 
@@ -56,7 +60,7 @@ class FetchService:
             self.blockchain_download = None
             self.blockchain_check = False
             terminal.printc(f"{b}",terminal.RED)
-            exit(1)
+            raise BlockChainRetrievalError(b)
 
 
 
