@@ -181,7 +181,11 @@ if __name__ == "__main__":
 
     # Prepare and send our block (finally!)
     msg     = input("message: ")
-    host    = input("host: ")
-    ver     = int(input("version: "))
-
-    BlockTools.send_chat(msg,host,5002,n.signing_key,version=ver)
+    host    = n.top_peer
+    ver     = 1
+    
+    head_hash = BlockTools.retrieve_head_hash(host=n.top_peer,port=5002,timeout=3)
+    payload   = BlockTools.build_payload(msg,n.signing_key,ver)
+    new_block = BlockTools.build_block(head_hash,payload,ver)
+    input(new_block())
+    BlockTools.send_chat(msg,host,5002,n.signing_key,versioni=ver)

@@ -13,6 +13,7 @@ import sys
 from Toolchain import terminal
 import hashlib
 import nacl.signing
+import subprocess
 #########################################################################################
 ############################ FUNCTIONS FOR PROCESSING BLOCKS ############################
 #########################################################################################
@@ -201,8 +202,8 @@ def check_fields(block,block_string,allowed_versions=[0],allowed_hashes=[''],tru
             raise BlockChainVerifyError("signature was not accepted")
     return True
 
-# Sends a block containing 'msg' to 'host' on 'port'
-def send_chat(msg,host,port,signing_key,version=1):
+# Sends a block containing to 'host' on 'port'
+def send_block(block_dict,host,port,version=1):
 
     #Specify all the URLs
     URL = { 'head' : f"http://{host}:{port}/head",
@@ -213,7 +214,7 @@ def send_chat(msg,host,port,signing_key,version=1):
     print(f"host {host} is broadcasting head: '{head_hash}'")
     
     # Create the block
-    json_encoded_block = build_block(head_hash,{'chat' : msg},version,signing_key)
+    json_encoded_block = json.dumps(block_dict)
 
     # Build format to send over HTTP
     push_data = {'block' : json_encoded_block}
@@ -221,7 +222,7 @@ def send_chat(msg,host,port,signing_key,version=1):
     # Send it
     terminal.printc(f"\tSending block to {host}",terminal.TAN)
     try:
-        post = http_post(host,5002,push_data)
+        post = http_post(host,port,push_data)
         if post.status_code == 200:
             terminal.printc(f"\tBlock sent successfully",terminal.GREEN)
         else:
@@ -233,13 +234,26 @@ def send_chat(msg,host,port,signing_key,version=1):
 
 def mine_block(block,signing_key):
     block_hash = '111111'
-    key = nacl.signing.SigningKey(bytes.fromhex(signing_key)) 
-    block['payload']['chatid'] = key.verify_key.encode().hex()
-    message = block['payload']['chat']
-    while not block_hash[:6] == '000000':
-        block['nonce'] += 1
-        block['payload']['chatsig'] = key.sign(message.encode()).signature.hex()
-        
-        block_hash  = sha_256_hash(block_to_JSON(block).encode())
-    print(f"found block {block}")
-    return block
+    #key = nacl.signing.SigningKey(bytes.fromhex(signing_key)) 
+    #block['payload']['chatid'] = key.verify_key.encode().hex()
+    #message = block['payload']['chat']
+    #block['payload']['chatsig'] = key.sign(message.encode()).signature.hex()
+    #while not block_hash[:6] == '000000':
+    #    block['nonce'] += 1
+    #    block_hash  = sha_256_hash(block_to_JSON(block).encode())
+    #print(f"found block {block}")
+    block_string = block_to_JSON(block)
+
+    block_hash = subprocess.run(['goatminer','6'],input=block_string,text=True,capture_output=True,check=True)
+    input(f"returned {block_hash}")
+    return block_hash
+
+def build_payload(msg,key,ver):
+    payload = {"chat": msg}
+
+    key = nacl.signing.SigningKey(bytes.fromhex(key))
+    payload['chatid'] = key.verify_key.encode().hex()
+    payload['chatsig'] = key.sign(msg.encode()).signature.hex()
+    
+    print(f"payload is {payload}")
+    return payload
