@@ -135,7 +135,6 @@ def iter_local_chain(block_hash,known_chains,version=0):
 # given a processed block (python dictionary), check the block for keys, then check
 # key values using the named parameters
 def check_fields(block,block_string,allowed_versions=[0],allowed_hashes=[''],trust=False):
-    
     block_hash = sha_256_hash(block_string.encode())
 
     if trust:

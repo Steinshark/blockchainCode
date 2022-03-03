@@ -23,32 +23,32 @@ class Node:
             terminal.printc(f"usage: send_chat.py signing_key",terminal.RED)
             exit(1)
 
-        # Fetch a list of peer names (hostnames)
+        # Fetch the list of peer names (hostnames)
         self.peers = list(  map(    lambda x : x.strip(),   open("hosts.txt",'r').readlines()   ))
 
         # Create a dict for each host holding relevant information
         self.peer_nodes = {
             host :   {
-                'length' : 0,
-                'host' : None,
-                'fetcher' : None,
-                'head' : None}
+                        'length' : 0,
+                        'host' : None,
+                        'fetcher' : None,
+                        'head' : None}
             for host in self.peers
         }
 
-        # The peer who's chain is the best - init as the first peer
+        # Track the peer who's chain is the best (assume first peer at first)
         self.top_peer = self.peers[0]
 
         # Scan all peer's nodes for most recent data
-        #self.check_peer_servers()
+        self.check_peer_servers()
 
-    # Scan all peer nodes to get node info
+
+
     def check_peer_servers(self):
 
         # Info
         terminal.printc(f"Checking Peer Nodes",terminal.BLUE)
 
-        # Scan every peer
         for host in self.peers:
 
             # Info
@@ -60,8 +60,6 @@ class Node:
                 # Port is assumed to be 5002
                 url = f"http://{host}:5002/head"
                 head_hash = requests.get(url,timeout=3).content.decode()
-
-                # Update the peer's information
                 self.peer_nodes[host]['head'] = head_hash
 
             # Catches everything
