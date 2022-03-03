@@ -73,15 +73,16 @@ def http_post(host,port,payload,timeout=5):
         raise ConnectionException(f"{Color.RED}Error: something went wrong connecting to {url}{Color.END}")
 
 # builds a block given the three fields and returns as JSON
-def build_block(prev_hash,payload,ver,signing_key):
+def build_block(prev_hash,payload,ver):
     new_block = {   'prev_hash'     : prev_hash,
                     'payload'       : payload,
                     'version'       : ver}
     if ver == 1:
         new_block['nonce'] = 0
-        new_block = mine_block(new_block,signing_key)
+        new_block = mine_block(new_block)
         
     try:
+        return new_block
         encoded_block = json.dumps(new_block)
         return encoded_block
     except JSONEncodeException as j:
@@ -203,8 +204,7 @@ def check_fields(block,block_string,allowed_versions=[0],allowed_hashes=[''],tru
     return True
 
 # Sends a block containing to 'host' on 'port'
-def send_block(block_dict,host,port,version=1):
-
+def send_block(json_encoded_block,host,port,version=1):
     #Specify all the URLs
     URL = { 'head' : f"http://{host}:{port}/head",
             'push' : f"http://{host}:{port}/push"}
@@ -213,9 +213,6 @@ def send_block(block_dict,host,port,version=1):
     head_hash = requests.get(URL['head']).content.decode()
     print(f"host {host} is broadcasting head: '{head_hash}'")
     
-    # Create the block
-    json_encoded_block = json.dumps(block_dict)
-
     # Build format to send over HTTP
     push_data = {'block' : json_encoded_block}
 
@@ -232,28 +229,15 @@ def send_block(block_dict,host,port,version=1):
         terminal.printc(f"\tRecieved Null response...",terminal.TAN)
 
 
-def mine_block(block,signing_key):
-    block_hash = '111111'
-    #key = nacl.signing.SigningKey(bytes.fromhex(signing_key)) 
-    #block['payload']['chatid'] = key.verify_key.encode().hex()
-    #message = block['payload']['chat']
-    #block['payload']['chatsig'] = key.sign(message.encode()).signature.hex()
-    #while not block_hash[:6] == '000000':
-    #    block['nonce'] += 1
-    #    block_hash  = sha_256_hash(block_to_JSON(block).encode())
-    #print(f"found block {block}")
+def mine_block(block):
     block_string = block_to_JSON(block)
-
-    block_hash = subprocess.run(['goatminer','6'],input=block_string,text=True,capture_output=True,check=True)
-    input(f"returned {block_hash}")
-    return block_hash
+    mined_hash = subprocess.run(['goatminer','24'],input=block_string,text=True,capture_output=True,check=True).stdout
+    return mined_block
 
 def build_payload(msg,key,ver):
     payload = {"chat": msg}
 
     key = nacl.signing.SigningKey(bytes.fromhex(key))
     payload['chatid'] = key.verify_key.encode().hex()
-    payload['chatsig'] = key.sign(msg.encode()).signature.hex()
-    
-    print(f"payload is {payload}")
+    payload['chatsig'] = key.sign(msg.encode()).signature.hex()  
     return payload

@@ -176,8 +176,8 @@ if __name__ == "__main__":
 
     # Get everyone up to date
     n = Node()
-    n.check_peer_servers()
-    n.update_peers()
+    #n.check_peer_servers()
+    #n.update_peers()
 
     # Prepare and send our block (finally!)
     msg     = input("message: ")
@@ -187,5 +187,6 @@ if __name__ == "__main__":
     head_hash = BlockTools.retrieve_head_hash(host=n.top_peer,port=5002,timeout=3)
     payload   = BlockTools.build_payload(msg,n.signing_key,ver)
     new_block = BlockTools.build_block(head_hash,payload,ver)
-    input(new_block())
-    BlockTools.send_chat(msg,host,5002,n.signing_key,versioni=ver)
+    input(f"block is type {type(new_block)}")
+    print(new_block)
+    BlockTools.send_block(new_block,host,5002,version=ver)
