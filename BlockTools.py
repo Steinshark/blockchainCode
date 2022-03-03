@@ -117,7 +117,7 @@ def iter_local_chain(block_hash,known_chains,version=0):
         if not block_hash in seen:
             seen.append(block_hash)
         else:
-            input("found cycle")
+            print("found cycle")
             return
         try:
             with open(filename,'r') as file:
@@ -241,6 +241,5 @@ def mine_block(block,signing_key):
         block['payload']['chatsig'] = key.sign(message.encode()).signature.hex()
         
         block_hash  = sha_256_hash(block_to_JSON(block).encode())
-    input(f"found block {block}")
-    input(f"kicking back block with hash {sha_256_hash(block_to_JSON(block).encode())}")
+    print(f"found block {block}")
     return block

@@ -94,14 +94,15 @@ class DynamicServer:
     def __init__(self,version=1):
 
         # Info
-        printc(f"\tInitialize Server V.{version}",TAN)
+        printc(f"Initialize Server V.{version}",TAN)
         self.app        =   flask.Flask(__name__)
         self.empty      =   True
         self.version    =   version
         self.max_chain  =   {}
         self.scan_chains()                  # Builds the initial chains list
-        printc(f"\tInitialized, Starting server V.{version}\n\n\n",GREEN)
-
+        printc(f"Initialized, Starting server V.{version}",GREEN)
+        printc(f"Current head: {self.max_chain['v'+str(self.version)]['head'][:10]}",GREEN)
+        printc(f"Current length: {self.max_chain['v'+str(self.version)]['length']}\n\n\n",GREEN)
 
 
 
@@ -161,7 +162,7 @@ class DynamicServer:
 
         @self.app.route('/push', methods=['POST'])
         def push_block():
-            printc(f"\n\n\nPUSH REQUEST RECEIVED",GREEN)
+            printc(f"PUSH REQUEST RECEIVED",GREEN)
             # Open, lock, read the head file, and send the info back
             with open('cache/current.json') as file :
                 flock(file,LOCK_SH)
@@ -183,7 +184,7 @@ class DynamicServer:
                 block_string    = received_data['block']
                 block_hash   = BlockTools.sha_256_hash( block_string.encode()   )
                 printc(f"BLOCK IS:",TAN)
-                printc(f"{block_string}\n",BLUE)
+                printc(f"{block_string}",BLUE)
             except JSONDecodeError as j:
                 printc(f"\terror decoding data",RED)
                 return f"JSON error when decoding '{block}'", 418
@@ -212,8 +213,7 @@ class DynamicServer:
             with open(f'cache/{block_hash}.json','w') as file:
                 file.write(block_string)
 
-            printc(f"\taccepted block",GREEN)
-            #self.scan_chains()
+            printc(f"accepted block",GREEN)
             self.update_chains(block_dict,block_hash)
             return "Accepted!", 200
 
@@ -249,13 +249,11 @@ class DynamicServer:
         i = 0
         # make chains and max chains
         for local_hash in self.chains:
-            print(i)
             i += 1
             # Add to chains regardless of version
             chain_len               = BlockTools.iter_local_chain(local_hash,self.chain_caching)
             self.chains[local_hash] = chain_len
             self.chain_caching[local_hash] = chain_len
-            print(chain_len)
             # If valid version 1 hash, check for longest chain
             if self.version == 1 and local_hash[:6] == '000000':
                 self.chains_v1[local_hash] = chain_len
@@ -279,15 +277,18 @@ class DynamicServer:
     def update_chains(self,block,block_hash):
 
         # Get the length of this chain
-        blockchain_len = 1 + BlockTools.iter_local_chain(  block['prev_hash'], self.chain_caching,version=self.version)
+        blockchain_len = 2 + BlockTools.iter_local_chain(  block['prev_hash'], self.chain_caching,version=self.version)
 
         if self.version == 1:
+            if not block['version'] == 1:
+                printc(f"not updating a V.1 server with a a V.0 block/n/n/n",RED)
+                return
             if blockchain_len > self.max_chain['v1']['length']:
                 self.max_chain['v1']['length']  = blockchain_len
                 self.max_chain['v1']['head']    = block_hash
-                self.chain_caching[block_hash] = blockchain_len
+                self.chain_caching[block_hash]  = blockchain_len
             else:
-                printc(f"pushed chain {block_chain_len} not longer than {self.max_chain['v1']['length']}",RED)
+                printc(f"pushed chain {blockchain_len} not longer than {self.max_chain['v1']['length']}",RED)
 
         elif self.version == 0:
             if blockchain_len > self.max_chain['v0']['length']:

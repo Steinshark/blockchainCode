@@ -10,7 +10,7 @@ from os.path import isfile
 from fcntl import flock, LOCK_SH,LOCK_EX, LOCK_UN
 import sys
 from Toolchain import terminal
-import time 
+
 CHECKPOINT_FILE = 'cache/current.json'
 
 
@@ -24,7 +24,6 @@ class FetchService:
         self.version = 1
         self.longest_chain = 0
         self.head_hash = ''
-    
 
     def check_for_head(self):
         if isfile(CHECKPOINT_FILE):
@@ -35,18 +34,19 @@ class FetchService:
                 self.last_hash = info['head']
                 flock(file,LOCK_UN)
 
-
     def fetch_blockchain(self,writing=True):
         try:
-            t1 = time.time()
             # Download the blockchain and get info
-            terminal.printc(f"checking host: {self.host} port: {self.port}",terminal.TAN,endl=' ')
+            terminal.printc(f"checking host: {self.host} port: {self.port}",terminal.TAN)
             self.blockchain_download = BlockchainUtilities.get_blockchain(self.host,self.port,caching=True,last_verified=self.last_hash,version=self.version)
             blockchain_len = len(self.blockchain_download)
+            
             if blockchain_len:
                 head_hash = self.blockchain_download[0][0]
+            
             else:
                 raise BlockChainRetrievalError("no blockchain here: len was 0")
+            
             # save info and write to file
             self.info = {   'head'  : head_hash,\
                             'length': blockchain_len}
@@ -54,14 +54,13 @@ class FetchService:
             if writing and blockchain_len > self.longest_chain:
                 self.longest_chain  = blockchain_len
                 self.head_hash      = head_hash
-            terminal.printc(f"-fetch took {(time.time()-t1):.3f} seconds",terminal.TAN)
+
         # done
         except BlockChainError as b:
             self.blockchain_download = None
             self.blockchain_check = False
-            terminal.printc(f"\t{b}",terminal.RED)
+            terminal.printc(f"{b}",terminal.RED)
             raise BlockChainRetrievalError(b)
-
 
 
     def print_blockchain(self):
@@ -71,14 +70,12 @@ class FetchService:
 
         # Print the blockchain
         else:
-            seen = False
-            for hash,block in self.blockchain_download:
-                if hash == self.last_hash:
-                    seen = True
-                    if not seen:
-                        print(f"{block['payload']['chat']}")
-
-
+            print(f"a chain of len {len(self.blockchain_download)} was found")
+            for block_hash, block in self.blockchain_download:
+                if 'chatsig' in block['payload'] and 'chatid' in block['payload']:
+                    print(f"chat: {block['payload']['chat']}")
+                    print(f"key: {block['payload']['chatid']}")
+                    print("\n")
 
 
 if __name__ == '__main__':

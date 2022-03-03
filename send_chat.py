@@ -38,8 +38,6 @@ class Node:
         # Track the peer who's chain is the best (assume first peer at first)
         self.top_peer = self.peers[0]
 
-        # Scan all peer's nodes for most recent data
-        self.check_peer_servers()
 
 
 
@@ -102,7 +100,7 @@ class Node:
 
     # Update peer nodes that do not have the current longest chain
     def update_peers(self):
-
+        terminal.printc(f"UPDATING",terminal.BLUE)
         for peer in self.peers:
 
             peer_len    = self.peer_nodes[peer]['length']

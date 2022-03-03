@@ -68,7 +68,7 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
                 block_string    = BlockTools.retrieve_block(block_hash,host=hostname,port=port)
                 block_dict      = loads(block_string)
             except JSONDecodeError as j:
-                raise BlockChainError(f"{Color.RED}Error in json conversion on block {index}{Color.END}")
+                raise BlockChainError(j)
             except HashRetrievalException as h:
                 print(h)
                 raise BlockChainError(h)
@@ -86,7 +86,7 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
         try:
             BlockTools.check_fields(block_dict,block_string,allowed_versions=[0,version],allowed_hashes=['',hashed_to],trust=trust)
             # add it to the chain
-            blockchain.insert(0,(block_hash,block_string))
+            blockchain.insert(0,(block_hash,block_dict))
             #if not already, write the block to file
             if not block_exists:
                 with open(block_filename,'w') as file:
@@ -95,7 +95,7 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
                     flock(file,LOCK_UN)
 
         except BlockChainVerifyError as b:
-            raise BlockChainVerifyError(f"bad block at position {index}:\n\t{b}")
+            raise BlockChainVerifyError(f"\tbad block at position {index}:\n\t{b}")
 
 
 
