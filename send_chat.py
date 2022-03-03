@@ -33,8 +33,7 @@ class Node:
                         'host' : None,
                         'fetcher' : None,
                         'head' : None}
-            for host in self.peers
-        }
+            for host in self.peers}
 
         # Track the peer who's chain is the best (assume first peer at first)
         self.top_peer = self.peers[0]
@@ -173,7 +172,15 @@ class Node:
 
 
 if __name__ == "__main__":
+
+    # Get everyone up to date
     n = Node()
-    BlockTools.send_chat(input("msg: "), input("host: "),5002,n.signing_key,version=int(input("version: ")))
     n.check_peer_servers()
     n.update_peers()
+
+    # Prepare and send our block (finally!)
+    msg     = input("message: ")
+    host    = input("host: ")
+    ver     = int(input("version: "))
+
+    BlockTools.send_chat(msg,host,5002,n.signing_key,version=ver)
