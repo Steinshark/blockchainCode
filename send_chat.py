@@ -46,7 +46,7 @@ class Node:
     def check_peer_servers(self):
 
         # Info
-        terminal.printc(f"Checking Peer Nodes",terminal.BLUE)
+        terminal.printc(f"Checking Peer Nodes\n",terminal.BLUE)
 
         for host in self.peers:
 
@@ -119,36 +119,7 @@ class Node:
 
     # Recursively bring the peer up to date
     def update_peer_node_iterative(self,peer,full_blockchain):
-
-        # Keep track of which blocks need to be pushed
-        #stack = []
-
-        # Try pushing blocks until we peer accepts one
-        for (block_hash,block) in full_blockchain:
-
-            # Create the payload
-            payload = {'block' : BlockTools.block_to_JSON(block)}
-
-            # Attempt texcept requests.exceptions.ConnectionRefusedError:
-            try:
-                return_code = BlockTools.http_post(peer, 5002, payload)
-
-            # If their server isn't up, then forget it
-            except ConnectionException:
-                terminal.printc(f"\tError retreiving {peer}'s' head_hash: ConectionRefused\n\n",terminal.RED)
-                return
-           
-            # If this block worked, head back up the stack
-            # (this is super inefficient I realize, but I
-            # dont have the time to rewrite)
-            if return_code.status_code == 200:
-                terminal.printc(f"Block accepted! Sending stack!",terminal.GREEN)
-                break
-            else:
-                stack.insert(0,block)
-
-        # Try pushing the rest of the blocks in reverse order
-        for b_hash,block in reversed(full_blockchain[start_chain_from(peer,full_blockchain)]):
+        for b_hash,block in reversed(full_blockchain[start_chain_from(peer,full_blockchain,0,len(full_blockchain))]):
             # Create the payload
             payload = {'block' : block_to_JSON(block)}
 
@@ -166,9 +137,41 @@ class Node:
     # Recursively bring the peer up to date
 
     #Binary Picker
-    def start_chain_from(self,peer,full_blockchain):
-        peer_head_hash = BlockTools.retrieve_head_hash(host=peer,port=5002)
+    def start_chain_from(self,peer,full_blockchain,low,high):
+        print(f"({low},{high})")
+        # Check base case
+        if high >= low:
+     
+            mid = (high + low) // 2
 
+            # Try mid block
+            payload = {'block' : BlockTools.block_to_JSON(full_blockchain[mid][0])}
+
+            # Attempt texcept requests.exceptions.ConnectionRefusedError:
+            try:
+                return_code = BlockTools.http_post(peer, 5002, payload)
+
+            # If their server isn't up, then forget it
+            except ConnectionException:
+                terminal.printc(f"\tError retreiving {peer}'s' head_hash: ConectionRefused\n\n",terminal.RED)
+                return
+           
+            # If this block worked, head back up the stack
+            # (this is super inefficient I realize, but I
+            # dont have the time to rewrite)
+            if return_code.status_code == 200 and mid == low:
+                terminal.printc(f"Block accepted! Sending the rest from {mid}!",terminal.GREEN)
+                return mid
+                
+     
+            # If element is smaller than mid, then it can only
+            # be present in left subarray
+            elif return_code.status_code == 200:
+                return binary_search(arr, low, mid - 1, x) 
+        else:
+            # Element is not present in the array
+            print("not found")
+            return -1
 
 
 if __name__ == "__main__":
