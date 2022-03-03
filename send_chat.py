@@ -51,7 +51,7 @@ class Node:
         for host in self.peers:
 
             # Info
-            terminal.printc(f"\tTrying to connect to host: {host}", terminal.TAN)
+            terminal.printc(f"Trying host: {host}", terminal.TAN)
 
             # Attempt to get the head hash that the peer is on
             try:
