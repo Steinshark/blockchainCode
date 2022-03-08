@@ -290,7 +290,7 @@ def check_chain(prev_hash,input_token,sig):
                 # Check that this coin exists
                 if input_token == tj_hash:
                     found = True
-
+                    print(f"found matching input:\n{tj}")
                     # Ensure signature matches
                     pub_key = tj_dict['output']
                     v_key = nacl.signing.VerifyKey(bytes.fromhex(pub_key))
