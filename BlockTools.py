@@ -276,14 +276,13 @@ def check_chain(prev_hash,input_token):
     found = False
 
     while not prev_hash == '':
-        print(f"prev_hash: {prev_hash}")
         block_dict = grab_block_by_hash(prev_hash)
 
         # Ensure the block has transactions
         if 'txns' in block_dict['payload']:
 
             for this_transaction in block_dict['payload']['txns']:
-
+                print(f"{this_transaction['tj']}")
                 tj = this_transaction['tj']
                 tj_hash = sha_256_hash(tj.encode())
                 tj_dict = json.loads(tj)
@@ -296,6 +295,7 @@ def check_chain(prev_hash,input_token):
                 if input_token == tj_dict['input']:
                     return BlockChainVerifyError(f"input {input_token} double spent")
         prev_hash = block_dict['prev_hash']
+        print(f"prev_hash: {prev_hash}")
 
     # if no coin found, then bad!
     if not found:
