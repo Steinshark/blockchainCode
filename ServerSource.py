@@ -1,5 +1,4 @@
-# Written by Daniel Edmond
-# And Everett Stenberg
+# Written by Everett Stenberg
 
 
 import flask

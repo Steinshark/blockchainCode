@@ -132,8 +132,7 @@ class Node:
                 continue
 
         terminal.printc(f"Finished trying to push chain",TAN)
-    # Recursively bring the peer up to date
-
+    
     #Binary Picker
     def start_chain_from(self,peer,full_blockchain,low,high):
         print(f"({low},{high})")
@@ -188,7 +187,7 @@ if __name__ == "__main__":
 
     # Get everyone up to date
     n = Node()
-    #n.check_peer_servers()
+    n.check_peer_servers()
     #n.update_peers()
 
     # Prepare and send our block (finally!)

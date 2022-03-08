@@ -1,7 +1,6 @@
-# Written by Daniel Edmond
-# And Everett Stenberg
+# Witten by Everett Stenberg
 
-
+df 
 #########################################################################################
 #######################################  IMPORTS  #######################################
 #########################################################################################
@@ -104,4 +103,3 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
 
 
     return blockchain
-
