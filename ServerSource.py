@@ -177,7 +177,7 @@ class DynamicServer:
             # Get data from form
             received_data = flask.request.form
             printc(f"Head is '{head_hash[:10]}'",TAN)
-            
+
             # Check if the data is JSON decodable
             try:
                 block_dict      = loads(received_data['block'])
@@ -192,20 +192,20 @@ class DynamicServer:
             # Check if the block fields are valid
             accepting_ver       = [0,self.version]
             accepting_hashes    = BlockTools.grab_cached_hashes(version=self.version)
-            
+
             printc(f"hashes initially to {BlockTools.sha_256_hash(block_string.encode())}",RED)
             # Check if valid
             try:
-                BlockTools.check_fields(block_dict,
+                BlockTools.check_block(block_dict,
                                         block_string,allowed_versions = accepting_ver,
                                         allowed_hashes   = accepting_hashes)
             except BlockChainVerifyError as b:
-                
+
                 printc(f"\trejected block - invalid",RED)
                 printc(f"\t{b}\n\n\n",TAN)
                 return "bad block", 418
 
-            
+
 
 
             # hash the block
@@ -244,8 +244,8 @@ class DynamicServer:
         if self.version == 1:
             self.chains_v1          =       {}
             self.max_chain['v1']    =       {'head' : '', 'length' : 0}
-        
-        # Find all previous hashes in 
+
+        # Find all previous hashes in
         i = 0
         # make chains and max chains
         for local_hash in self.chains:
