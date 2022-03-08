@@ -210,6 +210,7 @@ def check_block(block,block_string,allowed_versions=[0],allowed_hashes=[''],trus
 
 # Sends a block containing to 'host' on 'port'
 def send_block(json_encoded_block,host,port,version=1):
+
     #Specify all the URLs
     URL = { 'head' : f"http://{host}:{port}/head",
             'push' : f"http://{host}:{port}/push"}
@@ -234,7 +235,7 @@ def send_block(json_encoded_block,host,port,version=1):
     except TypeError as t:
         terminal.printc(t,terminal.RED)
         terminal.printc(f"\tRecieved Null response...",terminal.TAN)
-
+    return
 
 def mine_block(block):
     block_string = block_to_JSON(block)
@@ -249,7 +250,7 @@ def build_payload(msg,key,ver):
     payload['chatsig'] = key.sign(msg.encode()).signature.hex()
     return payload
 
-def verify_block(block_dict):
+def verify_transaction(block_dict):
     prev_hash = block_dict['prev_hash']
     transactions = block_dict['txns']
 
