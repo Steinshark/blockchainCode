@@ -187,7 +187,7 @@ def check_block(block,block_string,allowed_versions=[0],allowed_hashes=[''],trus
         # Check transaction fields
         if 'txns' in block['payload']:
             try:
-                verify_transaction(block):
+                verify_transaction(block)
             except BlockChainVerifyError as e:
                 raise BlockChainVerifyError(e)
 
