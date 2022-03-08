@@ -295,6 +295,7 @@ def check_chain(prev_hash,input_token):
                 # Check for no double spend
                 if input_token == tj_dict['input']:
                     return BlockChainVerifyError(f"input {input_token} double spent")
+        prev_hash = block_dict['prev_hash']
 
     # if no coin found, then bad!
     if not found:
