@@ -265,7 +265,7 @@ def verify_transaction(block_dict):
         else:
             try:
                 input_token = json.loads(transaction['tj'])['input']
-                check_chain(prev_hash,transaction)
+                check_chain(prev_hash,input_token)
             except BlockChainVerifyError as e:
                 raise BlockChainVerifyError(e)
     return True
