@@ -265,13 +265,13 @@ def verify_transaction(block_dict):
         else:
             try:
                 input_token = json.loads(transaction['tj'])['input']
-                check_chain(prev_hash,input_token,transaction['sig'])
+                check_chain(prev_hash,input_token,transaction['sig'],transaction['tj'])
             except BlockChainVerifyError as e:
                 raise BlockChainVerifyError(e)
     return True
 
 
-def check_chain(prev_hash,input_token,sig):
+def check_chain(prev_hash,input_token,sig,this_tj):
     print(f"searching for {input_token}")
     found = False
     matching_output = None
@@ -295,7 +295,7 @@ def check_chain(prev_hash,input_token,sig):
                     pub_key = tj_dict['output']
                     v_key = nacl.signing.VerifyKey(bytes.fromhex(pub_key))
                     try:
-                        v_key.verify(tj.encode(),bytes.fromhex(sig))
+                        v_key.verify(this_tj.encode(),bytes.fromhex(sig))
                         print("Successfully verified!")
                     except nacl.exceptions.BadSignatureError:
                         raise BlockChainVerifyError(f"bad signature\npub_key: {pub_key}\nsig: {sig}")
