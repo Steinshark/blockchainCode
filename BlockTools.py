@@ -285,7 +285,7 @@ def check_chain(prev_hash,input_token):
             for this_transaction in block_dict['payload']['txns']:
 
                 tj = this_transaction['tj']
-                tj_hash = sha_256_hash(tj.encode()).hexdigest()
+                tj_hash = sha_256_hash(tj.encode())
                 tj_dict = json.loads(tj)
 
                 # Check that this coin exists
