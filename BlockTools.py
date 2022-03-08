@@ -265,16 +265,16 @@ def verify_transaction(block_dict):
         else:
             try:
                 input_token = json.loads(transaction['tj'])['input']
-                check_chain(prev_hash,input_token)
+                check_chain(prev_hash,input_token,transaction['sig'])
             except BlockChainVerifyError as e:
                 raise BlockChainVerifyError(e)
     return True
 
 
-def check_chain(prev_hash,input_token):
+def check_chain(prev_hash,input_token,sig):
     print(f"searching for {input_token}")
     found = False
-
+    matching_output = None
     while not prev_hash == '':
         block_dict = grab_block_by_hash(prev_hash)
 
@@ -290,6 +290,14 @@ def check_chain(prev_hash,input_token):
                 # Check that this coin exists
                 if input_token == tj_hash:
                     found = True
+
+                    # Ensure signature matches
+                    pub_key = tj_dict['output']
+                    v_key = nacl.signing.VerifyKey(bytes.fromhex(pub_key))
+                    try:
+                        v_key.verify(tj.encode(),bytes.fromhex(sig))
+                    except BadSignatureError:
+                        raise BlockChainVerifyError(f"bad signature\npub_key: {pub_key}\nsig: {sig}")
 
                 # Check for no double spend
                 if input_token == tj_dict['input']:
