@@ -82,7 +82,7 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
             raise BlockChainError(k)
 
         try:
-            BlockTools.check_fields(block_dict,block_string,allowed_versions=[0,version],allowed_hashes=['',hashed_to],trust=trust)
+            BlockTools.check_block(block_dict,block_string,allowed_versions=[0,version],allowed_hashes=['',hashed_to],trust=trust)
             # add it to the chain
             blockchain.insert(0,(block_hash,block_dict))
             #if not already, write the block to file
