@@ -296,7 +296,7 @@ def check_chain(prev_hash,input_token,sig):
                     v_key = nacl.signing.VerifyKey(bytes.fromhex(pub_key))
                     try:
                         v_key.verify(tj.encode(),bytes.fromhex(sig))
-                    except BadSignatureError:
+                    except nacl.exceptions.BadSignatureError:
                         raise BlockChainVerifyError(f"bad signature\npub_key: {pub_key}\nsig: {sig}")
 
                 # Check for no double spend
