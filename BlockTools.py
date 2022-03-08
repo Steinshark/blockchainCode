@@ -184,12 +184,12 @@ def check_block(block,block_string,allowed_versions=[0],allowed_hashes=[''],trus
         if (not block_hash[:diff] == '000000'):
             raise BlockChainVerifyError(f"hash not correct: '{block_hash}' ")
 
-        # Check transaction fields
-        if 'txns' in block['payload']:
-            try:
-                verify_transaction(block)
-            except BlockChainVerifyError as e:
-                raise BlockChainVerifyError(e)
+    # Check transaction fields
+    if 'txns' in block['payload']:
+        try:
+            verify_transaction(block)
+        except BlockChainVerifyError as e:
+            raise BlockChainVerifyError(e)
 
     # Check signatures of any blocks with a chatid
     if ("chatid" in block['payload']  and "chatsig" in block['payload']):
