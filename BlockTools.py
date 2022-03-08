@@ -276,7 +276,7 @@ def check_chain(prev_hash,input_token):
     found = False
 
     while not prev_hash == '':
-
+        print(f"prev_hash: {prev_hash}")
         block_dict = grab_block_by_hash(prev_hash)
 
         # Ensure the block has transactions
