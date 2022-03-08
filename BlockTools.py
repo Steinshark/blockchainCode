@@ -80,7 +80,7 @@ def build_block(prev_hash,payload,ver):
     if ver == 1:
         new_block['nonce'] = 0
         new_block = mine_block(new_block)
-        
+
     try:
         return new_block
         encoded_block = json.dumps(new_block)
@@ -108,12 +108,19 @@ def grab_cached_hashes(cache_location='cache',version=0):
 
     return allowed_hashes
 
+# fetches a block DICT by its hash
+def grab_block_by_hash(block_hash):
+    with open(f"{block_hash}.json") as file:
+        contents = file.read()
+        block_dict = json.loads(contents)
+        return block_dict
+
 # find chain length from a hash
 def iter_local_chain(block_hash,known_chains,version=0):
     length = 0
     seen = []
     i = 0
-    while not block_hash == '': 
+    while not block_hash == '':
         length += 1
         filename = f"cache/{block_hash}.json"
         if not block_hash in seen:
@@ -136,7 +143,7 @@ def iter_local_chain(block_hash,known_chains,version=0):
 
 # given a processed block (python dictionary), check the block for keys, then check
 # key values using the named parameters
-def check_block(block,block_string,allowed_versions=[0],allowed_hashes=[''],trust=False):
+def check_block(block,block_string,allowed_versions=[0],allowed_hashes=[''],trust=False,diff=6):
     block_hash = sha_256_hash(block_string.encode())
 
     if trust:
@@ -145,63 +152,60 @@ def check_block(block,block_string,allowed_versions=[0],allowed_hashes=[''],trus
     # Ensure all proper fields are in the block
     if not 'version' in block:
         raise BlockChainVerifyError("missing version")
-
+    if not 'payload' in block:
+        raise BlockChainVerifyError("missing payload")
+    if not block['prev_hash'] in allowed_hashes:
+        raise BlockChainVerifyError(f"{block['prev_hash']} not in hashes")
     if not block['version'] in allowed_versions:
         raise BlockChainVerifyError(f"bad version-{block['version']} need {allowed_versions}")
-
     if not 'prev_hash' in block:
         raise BlockChainVerifyError("missing prev_hash")
 
-    if not block['prev_hash'] in allowed_hashes:
-        raise BlockChainVerifyError(f"{block['prev_hash']} not in hashes")
-
-    if not 'payload' in block:
-        raise BlockChainVerifyError("missing payload")
-
+    # Ensure all proper fields are in payload
     if not isinstance(block['payload'],dict):
         raise BlockChainVerifyError(f"payload needs to be dict, is {type(block['payload'])}")
-
     if 'chat' in block['payload'] and not isinstance(block['payload']['chat'], str):
         raise BlockChainVerifyError(f"payload of 'chat' must be str, is {type(block['payload'])}")
+    if ("chatid" in block["payload"] and not "chatsig" in block["payload"]):
+        raise BlockChainVerifyError("missing chatsig")
+    if ("chatsig" in block["payload"] and not "chatid" in block["payload"]):
+        raise BlockChainVerifyError("missing chatid")
 
     # Ensure block length req is met <= 1KB
     if len(block_to_JSON(block)) > 1024:
         raise BlockChainVerifyError(f"bad len: {len(block_to_JSON(block))}")
 
-    if ("chatid" in block["payload"] and not "chatsig" in block["payload"]):
-        raise BlockChainVerifyError("missing chatsig")
-
-    if ("chatsig" in block["payload"] and not "chatid" in block["payload"]):
-        raise BlockChainVerifyError("missing chatid")
-
     # Make all V1 checks
     if (block['version'] == 1):
-        
-        # Check for nonce 
+
+        # Check nonce and difficulty
         if (not 'nonce' in block):
             raise BlockChainVerifyError("nonce not in block")
-        
-        # Check for correct difficulty
-        if (not block_hash[:6] == '000000'):
+        if (not block_hash[:diff] == '000000'):
             raise BlockChainVerifyError(f"hash not correct: '{block_hash}' ")
-        
-         
-    # Check signatures of any blocks with a chatid 
-    if ("chatid" in block['payload']  and "chatsig" in block['payload']):
 
-        # Check if signature verifies 
+        # Check transaction fields
+        if 'txns' in block['payload']:
+            try:
+                verify_transaction(block):
+            except BlockChainVerifyError as e:
+                raise BlockChainVerifyError(e)
+
+    # Check signatures of any blocks with a chatid
+    if ("chatid" in block['payload']  and "chatsig" in block['payload']):
+        # Check if signature verifies
         key_hex = block['payload']['chatid']
         sig_hex = block['payload']['chatsig']
         v_key = nacl.signing.VerifyKey(bytes.fromhex(key_hex))
-        
         try:
             message = block["payload"]['chat']
             signature = bytes.fromhex(sig_hex)
             v_key.verify(message.encode(), signature)
-        
         except nacl.exceptions.BadSignatureError:
             print("bad sig")
             raise BlockChainVerifyError("signature was not accepted")
+
+    # Check all
     return True
 
 # Sends a block containing to 'host' on 'port'
@@ -213,7 +217,7 @@ def send_block(json_encoded_block,host,port,version=1):
     # Grab the current head hash
     head_hash = requests.get(URL['head']).content.decode()
     print(f"\t{host} is broadcasting head: '{head_hash[:10]}'")
-    
+
     # Build format to send over HTTP
     push_data = {'block' : json_encoded_block}
 
@@ -242,5 +246,57 @@ def build_payload(msg,key,ver):
 
     key = nacl.signing.SigningKey(bytes.fromhex(key))
     payload['chatid'] = key.verify_key.encode().hex()
-    payload['chatsig'] = key.sign(msg.encode()).signature.hex()  
+    payload['chatsig'] = key.sign(msg.encode()).signature.hex()
     return payload
+
+def verify_block(block_dict):
+    prev_hash = block_dict['prev_hash']
+    transactions = block_dict['txns']
+
+    for i, transaction in enumerate(transactions):
+
+        # Check coinbase
+        if i == 0:
+            if not transaction['sig'] == 'coinbase':
+                raise BlockChainVerifyError(f"First transaction not coinbase transaction")
+
+        # Ensure the remaining transactions check out
+        else:
+            try:
+                input_token = json.loads(transaction['tj'])['input']
+                check_chain(prev_hash,transaction)
+            except BlockChainVerifyError as e:
+                raise BlockChainVerifyError(e)
+    return True
+
+
+def check_chain(prev_hash,input_token):
+    print(f"searching for {input_token}")
+    found = False
+
+    while not prev_hash == '':
+
+        block_dict = grab_block_by_hash(prev_hash)
+
+        # Ensure the block has transactions
+        if 'txns' in block_dict['payload']:
+
+            for this_transaction in block_dict['payload']['txns']:
+
+                tj = this_transaction['tj']
+                tj_hash = sha_256_hash(tj.encode()).hexdigest()
+                tj_dict = json.loads(tj)
+
+                # Check that this coin exists
+                if input_token == tj_hash:
+                    found = True
+
+                # Check for no double spend
+                if input_token == tj_dict['input']:
+                    return BlockChainVerifyError(f"input {input_token} double spent")
+
+    # if no coin found, then bad!
+    if not found:
+        raise BlockChainVerifyError(f"no matching transaction for {input_token}")
+    else:
+        return
