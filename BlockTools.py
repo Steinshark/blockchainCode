@@ -110,7 +110,7 @@ def grab_cached_hashes(cache_location='cache',version=0):
 
 # fetches a block DICT by its hash
 def grab_block_by_hash(block_hash):
-    with open(f"{block_hash}.json") as file:
+    with open(f"cache/{block_hash}.json") as file:
         contents = file.read()
         block_dict = json.loads(contents)
         return block_dict
