@@ -272,7 +272,6 @@ def verify_transaction(block_dict):
 
 
 def check_chain(prev_hash,input_token,sig,this_tj):
-    print(f"searching for {input_token}")
     found = False
     matching_output = None
     while not prev_hash == '':
@@ -282,7 +281,6 @@ def check_chain(prev_hash,input_token,sig,this_tj):
         if 'txns' in block_dict['payload']:
 
             for this_transaction in block_dict['payload']['txns']:
-                print(f"{this_transaction['tj']}")
                 tj = this_transaction['tj']
                 tj_hash = sha_256_hash(tj.encode())
                 tj_dict = json.loads(tj)
@@ -290,7 +288,6 @@ def check_chain(prev_hash,input_token,sig,this_tj):
                 # Check that this coin exists
                 if input_token == tj_hash:
                     found = True
-                    print(f"found matching input:\n{tj}")
                     # Ensure signature matches
                     pub_key = tj_dict['output']
                     v_key = nacl.signing.VerifyKey(bytes.fromhex(pub_key))
