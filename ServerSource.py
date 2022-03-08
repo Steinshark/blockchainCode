@@ -169,7 +169,7 @@ class DynamicServer:
                 info = loads(file.read())
                 flock(file,LOCK_UN)
 
-
+            # Get current info
             head_hash = info['head']
             chain_len = info['length']
 
@@ -194,6 +194,7 @@ class DynamicServer:
             accepting_hashes    = BlockTools.grab_cached_hashes(version=self.version)
 
             printc(f"hashes initially to {BlockTools.sha_256_hash(block_string.encode())}",RED)
+
             # Check if valid
             try:
                 BlockTools.check_block(block_dict,
@@ -269,6 +270,7 @@ class DynamicServer:
                     self.max_chain['v0']['head']    = local_hash
 
         self.write_current()
+
 
 ################################################################################
 #                  This is assumed to be a good block

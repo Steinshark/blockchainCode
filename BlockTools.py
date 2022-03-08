@@ -187,7 +187,7 @@ def check_block(block,block_string,allowed_versions=[0],allowed_hashes=[''],trus
     # Check transaction fields
     if 'txns' in block['payload']:
         try:
-            verify_transaction(block)
+            verify_transaction(block,block_hash)
         except BlockChainVerifyError as e:
             raise BlockChainVerifyError(e)
 
@@ -250,7 +250,7 @@ def build_payload(msg,key,ver):
     payload['chatsig'] = key.sign(msg.encode()).signature.hex()
     return payload
 
-def verify_transaction(block_dict):
+def verify_transaction(block_dict,block_hash):
     prev_hash = block_dict['prev_hash']
     transactions = block_dict['payload']['txns']
 
@@ -265,7 +265,7 @@ def verify_transaction(block_dict):
         else:
             try:
                 input_token = json.loads(transaction['tj'])['input']
-                check_chain(prev_hash,input_token,transaction['sig'],transaction['tj'])
+                check_chain(block_hash,input_token,transaction['sig'],transaction['tj'])
             except BlockChainVerifyError as e:
                 raise BlockChainVerifyError(e)
     return True
@@ -288,12 +288,13 @@ def check_chain(prev_hash,input_token,sig,this_tj):
                 # Check that this coin exists
                 if input_token == tj_hash:
                     found = True
+
                     # Ensure signature matches
                     pub_key = tj_dict['output']
                     v_key = nacl.signing.VerifyKey(bytes.fromhex(pub_key))
+
                     try:
                         v_key.verify(this_tj.encode(),bytes.fromhex(sig))
-                        print("Successfully verified!")
                     except nacl.exceptions.BadSignatureError:
                         raise BlockChainVerifyError(f"bad signature\npub_key: {pub_key}\nsig: {sig}")
 
