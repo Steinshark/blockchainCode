@@ -252,7 +252,7 @@ def build_payload(msg,key,ver):
 
 def verify_transaction(block_dict):
     prev_hash = block_dict['prev_hash']
-    transactions = block_dict['txns']
+    transactions = block_dict['payload']['txns']
 
     for i, transaction in enumerate(transactions):
 
