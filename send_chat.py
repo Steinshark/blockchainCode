@@ -171,7 +171,19 @@ class Node:
             print("not found")
             return -1
 
-
+    def broadcast_block(self):
+         
+        msg     = "hi freinds, its everett"
+        ver = 1 
+        for host in n.peers:
+            try:
+                terminal.printc(f"\ntrying peer {host}",terminal.BLUE)
+                head_hash = BlockTools.retrieve_head_hash(host=host,port=5002,timeout=3)
+                payload   = BlockTools.build_payload(msg,self.signing_key,ver)
+                new_block = BlockTools.build_block(head_hash,payload,ver)
+                BlockTools.send_block(new_block,host,5002,version=ver)
+            except ConnectionException as ce:
+                print(ce)
 if __name__ == "__main__":
 
     # Get everyone up to date
@@ -180,13 +192,4 @@ if __name__ == "__main__":
     #n.update_peers()
 
     # Prepare and send our block (finally!)
-    msg     = input("message: ")
-    host    = n.top_peer
-    ver     = 1
-    
-    head_hash = BlockTools.retrieve_head_hash(host=n.top_peer,port=5002,timeout=3)
-    payload   = BlockTools.build_payload(msg,n.signing_key,ver)
-    new_block = BlockTools.build_block(head_hash,payload,ver)
-    input(f"block is type {type(new_block)}")
-    print(new_block)
-    BlockTools.send_block(new_block,host,5002,version=ver)
+    n.broadcast_block() 

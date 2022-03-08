@@ -136,12 +136,13 @@ def iter_local_chain(block_hash,known_chains,version=0):
 
 # given a processed block (python dictionary), check the block for keys, then check
 # key values using the named parameters
-def check_fields(block,block_string,allowed_versions=[0],allowed_hashes=[''],trust=False):
+def check_block(block,block_string,allowed_versions=[0],allowed_hashes=[''],trust=False):
     block_hash = sha_256_hash(block_string.encode())
 
     if trust:
         return True
 
+    # Ensure all proper fields are in the block
     if not 'version' in block:
         raise BlockChainVerifyError("missing version")
 
@@ -211,7 +212,7 @@ def send_block(json_encoded_block,host,port,version=1):
 
     # Grab the current head hash
     head_hash = requests.get(URL['head']).content.decode()
-    print(f"host {host} is broadcasting head: '{head_hash}'")
+    print(f"\t{host} is broadcasting head: '{head_hash[:10]}'")
     
     # Build format to send over HTTP
     push_data = {'block' : json_encoded_block}
@@ -220,10 +221,12 @@ def send_block(json_encoded_block,host,port,version=1):
     terminal.printc(f"\tSending block to {host}",terminal.TAN)
     try:
         post = http_post(host,port,push_data)
+        code = post.status_code
         if post.status_code == 200:
             terminal.printc(f"\tBlock sent successfully",terminal.GREEN)
         else:
-            terminal.printc(f"\tCode recieved: {post} of type {type(post)}",terminal.TAN)
+            terminal.printc(f"\tCode recieved: {code}",terminal.TAN)
+            terminal.printc(f"\tServer said: {post.text}",terminal.TAN)
     except TypeError as t:
         terminal.printc(t,terminal.RED)
         terminal.printc(f"\tRecieved Null response...",terminal.TAN)
@@ -231,7 +234,7 @@ def send_block(json_encoded_block,host,port,version=1):
 
 def mine_block(block):
     block_string = block_to_JSON(block)
-    mined_hash = subprocess.run(['goatminer','24'],input=block_string,text=True,capture_output=True,check=True).stdout
+    mined_block = subprocess.run(['goatminer','24'],input=block_string,text=True,capture_output=True,check=True).stdout
     return mined_block
 
 def build_payload(msg,key,ver):
