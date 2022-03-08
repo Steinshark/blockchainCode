@@ -294,6 +294,7 @@ def check_chain(prev_hash,input_token):
                 # Check for no double spend
                 if input_token == tj_dict['input']:
                     return BlockChainVerifyError(f"input {input_token} double spent")
+                print(f"{input_token} != {tj_dict['input']}")
         prev_hash = block_dict['prev_hash']
         print(f"prev_hash: {prev_hash}")
 
