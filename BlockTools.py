@@ -248,8 +248,8 @@ def build_payload(msg,key,ver):
     payload = {"chat": msg}
 
     key = nacl.signing.SigningKey(bytes.fromhex(key))
-    payload['chatid'] = key.verify_key.encode().hex()
-    payload['chatsig'] = key.sign(msg.encode()).signature.hex()
+    payload["chatid"] = key.verify_key.encode().hex()
+    payload["chatsig"] = key.sign(msg.encode()).signature.hex()
     return payload
 
 # Verify transactions on an incoming block
@@ -261,7 +261,7 @@ def verify_transaction(block_dict,block_hash):
         
         # Ensure transaction is properly promatted 
         if not "tj" in transaction or not "sig" in transaction:
-            raise TransactionVerifyError(f"Missing tj or sig field in transaction\n{terminal.BLUE}{transaction}{terminal.END}")
+            raise TransactionVerifyError(f"Missing tj or sig field in transaction\n{terminal.BLUE}{transaction}{terminal.ENDd}")
         
         tj_dict = transaction['tj']
 

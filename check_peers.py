@@ -4,6 +4,11 @@
 import  BlockchainUtilities
 from    BlockchainErrors import *
 from    Toolchain import terminal
+import sys 
+
+# Check for command line arguments 
+if sys.argv[1]:
+    hosts = [sys.argv[1].strip()]
 
 hosts = [line.strip() for line in open('hosts.txt').readlines()]
 ports = ["5000","5001","5002"]

@@ -32,6 +32,7 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
     blockchain = []
     block_hash= None
     trust = False
+
     # Grab the hash
     try:
         block_hash= BlockTools.retrieve_head_hash(host=hostname,port=port)
@@ -41,6 +42,7 @@ def get_blockchain(hostname='cat',port='5000',caching=False,cache_location='cach
     # Continue grabbing new blocks until the genesis block is reached
     index = 0
     while not block_hash== '':
+        
         if verbose:
             terminal.printc(f"{block_hash[:10]}->",terminal.TAN)
         index += 1
