@@ -261,10 +261,10 @@ def verify_transaction(block_dict,block_hash):
         
         # Ensure transaction is properly promatted 
         if not "tj" in transaction or not "sig" in transaction:
-            raise TransactionVerifyError(f"Missing tj or sig field in transaction\n{transaction}")
+            raise TransactionVerifyError(f"Missing tj or sig field in transaction\n{terminal.BLUE}{transaction}{terminal.END}")
         
         tj_dict = transaction['tj']
-        
+
         
 
         # Ensure tj is formatted properly 
