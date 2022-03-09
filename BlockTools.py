@@ -244,12 +244,22 @@ def mine_block(block):
     return mined_block
 
 # Build the payload for a block
-def build_payload(msg,key,ver):
-    payload = {"chat": msg}
+def build_payload(msg=None,key=None,ver=None,txns=None):
+
+    # Init empty payload 
+    payload = {}
+
+    # Add chat if given
+    if not msg is None and isinstance(msg,str):
+        payload["chat"] = msg
+
+    # Add signature if given 
+    if not key is None and isinstance(key,nacl.signing.VerifyKey):
+    # Add txns if given 
 
     key = nacl.signing.SigningKey(bytes.fromhex(key))
-    payload["chatid"] = key.verify_key.encode().hex()
-    payload["chatsig"] = key.sign(msg.encode()).signature.hex()
+    payload['chatid'] = key.verify_key.encode().hex()
+    payload['chatsig'] = key.sign(msg.encode()).signature.hex()
     return payload
 
 # Verify transactions on an incoming block
@@ -261,7 +271,7 @@ def verify_transaction(block_dict,block_hash):
         
         # Ensure transaction is properly promatted 
         if not "tj" in transaction or not "sig" in transaction:
-            raise TransactionVerifyError(f"Missing tj or sig field in transaction\n{terminal.BLUE}{transaction}{terminal.ENDd}")
+            raise TransactionVerifyError(f"Missing tj or sig field in transaction\n{terminal.BLUE}{transaction}{terminal.END}")
         
         tj_dict = transaction['tj']
 

@@ -242,35 +242,44 @@ class DynamicServer:
         # Find all hashes that exist in 'cache'
 
         self.chains                 =       {h : 0 for h in BlockTools.grab_cached_hashes(version=1) + BlockTools.grab_cached_hashes(version=0)}
-        self.chain_caching          =       {}
+        self.chain_caching          =       {}#for memoizing
+
+        # Always track version 0 chain heads
         self.max_chain['v0']        =       {'head' : '', 'length' : 0}
+
+        # Keep track of both versions if V.1  
         if self.version == 1:
             self.chains_v1          =       {}
             self.max_chain['v1']    =       {'head' : '', 'length' : 0}
 
-        # Find all previous hashes in
-        i = 0
-        # make chains and max chains
-        for local_hash in self.chains:
-            i += 1
-            # Add to chains regardless of version
+        # Find the chain starting from each block and track max chains
+        for i, local_hash in enumerate(self.chains):
+
+            # Find the len of the chain starting from this hash 
             chain_len               = BlockTools.iter_local_chain(local_hash,self.chain_caching)
+
+            # Update the len of this hash's chain 
             self.chains[local_hash] = chain_len
+
+            # Update our memoizing dict
             self.chain_caching[local_hash] = chain_len
-            # If valid version 1 hash, check for longest chain
+            
+            # If valid version 1 hash, add it to the v1 chains dict 
             if self.version == 1 and local_hash[:6] == '000000':
                 self.chains_v1[local_hash] = chain_len
 
+                # Keep a running track of longest v1 chain
                 if chain_len > self.max_chain['v1']['length']:
                     self.max_chain['v1']['length']  = chain_len
                     self.max_chain['v1']['head']    = local_hash
 
-            # If version 0 hash, check for longest version 0 chain
+            # If version 0 hash, Keep a running track of longest v0 chain
             if self.version == 0:
                 if chain_len > self.max_chain['v0']['length']:
                     self.max_chain['v0']['length']  = chain_len
                     self.max_chain['v0']['head']    = local_hash
 
+        # Write the top chain to 'current.json'
         self.write_current()
 
 
@@ -280,25 +289,37 @@ class DynamicServer:
 
     def update_chains(self,block,block_hash):
 
-        # Get the length of this chain
-        blockchain_len = 2 + BlockTools.iter_local_chain(  block['prev_hash'], self.chain_caching,version=self.version)
+        # Get the length of this chain manually (i.e. looping until genesis block)
+        blockchain_len = 2 + BlockTools.iter_local_chain(block['prev_hash'], self.chain_caching,version=self.version)
 
+        # No matter what, keep track of this chain 
+        self.chains[block_hash]         = blockchain_len
+        self.chain_caching[block_hash]  = blockchain_len
+
+        # Update based on v1 rules  
         if self.version == 1:
+
+            # If v0 block was added to a v1 chain, DO NOT update the head hash, but keep track of the chain 
             if not block['version'] == 1:
                 printc(f"not updating a V.1 server with a a V.0 block/n/n/n",RED)
                 return
+            
+            # If v1 block and chain is longer than our current len, update accordingly
             if blockchain_len > self.max_chain['v1']['length']:
                 self.max_chain['v1']['length']  = blockchain_len
                 self.max_chain['v1']['head']    = block_hash
-                self.chain_caching[block_hash]  = blockchain_len
+            
+            # Else we do nothing but still keep track of it 
             else:
                 printc(f"pushed chain {blockchain_len} not longer than {self.max_chain['v1']['length']}",RED)
 
+        # Update based on v0 rules
         elif self.version == 0:
             if blockchain_len > self.max_chain['v0']['length']:
                 self.max_chain['v0']['length']  = blockchain_len
                 self.max_chain['v0']['head']    = block_h
 
+        # Update 'current.json'
         self.write_current()
 
 
