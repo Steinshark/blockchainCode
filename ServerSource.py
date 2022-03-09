@@ -11,6 +11,7 @@ from json import dumps, loads
 from os import listdir, mkdir
 import argparse
 import sys
+import time 
 from pprint import pp
 from collections import OrderedDict
 # Package import to work on windows and linux
@@ -93,15 +94,17 @@ class DynamicServer:
     def __init__(self,version=1):
 
         # Info
-        printc(f"Initialize Server V.{version}",TAN)
+        printc(f"Initialize Server V.{version}",TAN) and (t1 := time.time())
         self.app        =   flask.Flask(__name__)
         self.empty      =   True
         self.version    =   version
         self.max_chain  =   {}
-        self.scan_chains()                  # Builds the initial chains list
-        printc(f"Initialized, Starting server V.{version}",GREEN)
-        printc(f"Current head: {self.max_chain['v'+str(self.version)]['head'][:10]}",GREEN)
-        printc(f"Current length: {self.max_chain['v'+str(self.version)]['length']}\n\n\n",GREEN)
+        self.scan_chains()                  
+        printc(f"Initialized, Started server!",GREEN)
+        printc(f"Server Startup in {(time.time()-t1):.2f} seconds", TAN)
+        printc(f"Current Ver: V.{version}",TAN)
+        printc(f"Current head: {self.max_chain['v'+str(self.version)]['head'][:10]}",TAN)
+        printc(f"Current length: {self.max_chain['v'+str(self.version)]['length']}\n\n\n",TAN)
 
 
 
