@@ -94,7 +94,7 @@ class DynamicServer:
     def __init__(self,version=1):
 
         # Info
-        printc(f"Initialize Server V.{version}",TAN) and (t1 := time.time())
+        printc(f"Initialize Server V.{version}",TAN) or (t1 := time.time())
         self.app        =   flask.Flask(__name__)
         self.empty      =   True
         self.version    =   version
