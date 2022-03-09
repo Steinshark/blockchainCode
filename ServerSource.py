@@ -94,7 +94,7 @@ class DynamicServer:
     def __init__(self,version=1):
 
         # Info
-        printc(f"Initialize Server V.{version}",TAN) or (t1 := time.time())
+        printc(f"Initialize Server V.{version}",GREEN) or (t1 := time.time())
         self.app        =   flask.Flask(__name__)
         self.empty      =   True
         self.version    =   version
@@ -228,7 +228,7 @@ class DynamicServer:
     def scan_chains(self):
 
         # Info
-        printc(f"Fetching local chains",TAN)
+        printc(f"-Fetching local chains",TAN)
 
         # Make sure 'cache' folder exists
         if not isdir('cache'):  mkdir('cache')
