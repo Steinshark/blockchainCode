@@ -39,8 +39,6 @@ class Node:
         self.top_peer = self.peers[0]
 
 
-
-
     def check_peer_servers(self):
 
         # Info
@@ -98,6 +96,7 @@ class Node:
 
         terminal.printc(f"longest chain is {self.peer_nodes[self.top_peer]['length']} on host {self.top_peer}",terminal.BLUE)
 
+
     # Update peer nodes that do not have the current longest chain
     def update_peers(self):
         terminal.printc(f"UPDATING",terminal.BLUE)
@@ -115,6 +114,7 @@ class Node:
                 full_blockchain = self.peer_nodes[self.top_peer]['fetcher'].blockchain_download
                 self.update_peer_node_iterative(peer,full_blockchain)
 
+
     # Recursively bring the peer up to date
     def update_peer_node_iterative(self,peer,full_blockchain):
         for b_hash,block in reversed(full_blockchain[start_chain_from(peer,full_blockchain,0,len(full_blockchain))]):
@@ -130,9 +130,9 @@ class Node:
             # If their server isn't up, then forget it
             except ConnectionException:
                 continue
-
         terminal.printc(f"Finished trying to push chain",TAN)
     
+
     #Binary Picker
     def start_chain_from(self,peer,full_blockchain,low,high):
         print(f"({low},{high})")
