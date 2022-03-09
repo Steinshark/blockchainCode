@@ -258,11 +258,18 @@ def verify_transaction(block_dict,block_hash):
     transactions = block_dict['payload']['txns']
 
     for i, transaction in enumerate(transactions):
+        
+        # Ensure transaction is properly promatted 
+        if not "tj" in transaction or not "sig" in transaction:
+            raise TransactionVerifyError(f"Missing tj or sig field in transaction\n{transaction}")
+        
         tj_dict = transaction['tj']
+        
+        
 
-        # Ensure this transaction is formatted properly 
+        # Ensure tj is formatted properly 
         if not "input" in tj_dict or not "output" in tj_dict or not "message" in tj_dict:
-            raise TransactionVerifyError(f"Improperly formatted tj field\n {tj_dict}") 
+            raise TransactionVerifyError(f"Improperly formatted tj field\n{tj_dict}") 
 
         # Check coinbase
         if i == 0:
