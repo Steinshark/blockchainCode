@@ -172,7 +172,7 @@ def check_block(block,block_string,allowed_versions=[0],allowed_hashes=[''],trus
         raise BlockChainVerifyError("missing chatid")
 
     # Ensure block length req is met <= 1KB
-    if len(block_to_JSON(block)) > 2024:
+    if len(block_to_JSON(block)) > 1024:
         raise BlockChainVerifyError(f"bad len: {len(block_to_JSON(block))}")
 
     # Make all V1 checks
