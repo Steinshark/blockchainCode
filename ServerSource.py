@@ -225,7 +225,7 @@ class DynamicServer:
     def scan_chains(self):
 
         # Info
-        printc(f"\tFetching local chains",TAN)
+        printc(f"Fetching local chains",TAN)
 
         # Make sure 'cache' folder exists
         if not isdir('cache'):  mkdir('cache')
