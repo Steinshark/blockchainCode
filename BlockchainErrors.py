@@ -42,6 +42,10 @@ class BlockCreationException(Exception):
     def __init__(self,msg):
         super().__init__(msg)
 
+class TransactionVerifyError(Exception):
+    def __init__(self,msg):
+        super().__init__(msg)
+
 
 #########################################################################################
 ###################################  BLOCKCHAIN ERRORS  #################################

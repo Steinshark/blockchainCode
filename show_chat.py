@@ -56,10 +56,11 @@ class FetchService:
                 self.head_hash      = head_hash
             terminal.printc(f"-fetch took {(time.time()-t1):.3f} seconds",terminal.TAN)
         # done
+
         except BlockChainError as b:
             self.blockchain_download = None
             self.blockchain_check = False
-            terminal.printc(f"\t{b}",terminal.RED)
+            terminal.printc(f"{b}",terminal.RED)
             raise BlockChainRetrievalError(b)
 
 

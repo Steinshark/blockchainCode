@@ -188,8 +188,8 @@ def check_block(block,block_string,allowed_versions=[0],allowed_hashes=[''],trus
     if 'txns' in block['payload']:
         try:
             verify_transaction(block,block_hash)
-        except BlockChainVerifyError as e:
-            raise BlockChainVerifyError(e)
+        except TransactionVerifyError as t:
+            raise BlockChainVerifyError(t)
 
     # Check signatures of any blocks with a chatid
     if ("chatid" in block['payload']  and "chatsig" in block['payload']):
@@ -237,11 +237,13 @@ def send_block(json_encoded_block,host,port,version=1):
         terminal.printc(f"\tRecieved Null response...",terminal.TAN)
     return
 
+# Mine a block to send out to other peers
 def mine_block(block):
     block_string = block_to_JSON(block)
     mined_block = subprocess.run(['goatminer','24'],input=block_string,text=True,capture_output=True,check=True).stdout
     return mined_block
 
+# Build the payload for a block
 def build_payload(msg,key,ver):
     payload = {"chat": msg}
 
@@ -250,30 +252,37 @@ def build_payload(msg,key,ver):
     payload['chatsig'] = key.sign(msg.encode()).signature.hex()
     return payload
 
+# Verify transactions on an incoming block
 def verify_transaction(block_dict,block_hash):
     prev_hash = block_dict['prev_hash']
     transactions = block_dict['payload']['txns']
 
     for i, transaction in enumerate(transactions):
+        tj_dict = transaction['tj']
+
+        # Ensure this transaction is formatted properly 
+        if not "input" in tj_dict or not "output" in tj_dict or not "message" in tj_dict:
+            raise TransactionVerifyError(f"Improperly formatted tj field\n {tj_dict}") 
 
         # Check coinbase
         if i == 0:
             if not transaction['sig'] == 'coinbase':
-                raise BlockChainVerifyError(f"First transaction not coinbase transaction")
+                raise TransactionVerifyError(f"First transaction not coinbase transaction")
 
         # Ensure the remaining transactions check out
         else:
             try:
                 input_token = json.loads(transaction['tj'])['input']
                 check_chain(prev_hash,input_token,transaction['sig'],transaction['tj'])
-            except BlockChainVerifyError as e:
-                raise BlockChainVerifyError(e)
+            except TransactionVerifyError as e:
+                raise TransactionVerifyError(e)
     return True
 
-
+# Helper function for 'verify_transaction'
 def check_chain(prev_hash,input_token,sig,this_tj):
     found = False
-    matching_output = None
+
+    # Loop through the chain and perform transaction checks 
     while not prev_hash == '':
         block_dict = grab_block_by_hash(prev_hash)
 
@@ -285,28 +294,27 @@ def check_chain(prev_hash,input_token,sig,this_tj):
                 tj_hash = sha_256_hash(tj.encode())
                 tj_dict = json.loads(tj)
 
-                # Check that this coin exists
+                # Check for the corresponding transaction
                 if input_token == tj_hash:
                     found = True
 
-                    # Ensure signature matches
-                    pub_key = tj_dict['output']
-                    v_key = nacl.signing.VerifyKey(bytes.fromhex(pub_key))
-
+                    # Ensure the signature matches
                     try:
+                        pub_key = tj_dict['output']
+                        v_key = nacl.signing.VerifyKey(bytes.fromhex(pub_key))
                         v_key.verify(this_tj.encode(),bytes.fromhex(sig))
                     except nacl.exceptions.BadSignatureError:
-                        raise BlockChainVerifyError(f"bad signature\npub_key: {pub_key}\nsig: {sig}")
+                        raise TransactionVerifyError(f"bad signature\npub_key: {pub_key}\nsig: {sig}")
 
-                # Check for no double spend
+                # Check that coin is not double spent
                 if input_token == tj_dict['input']:
-                    raise BlockChainVerifyError(f"input {input_token} double spent")
+                    raise TransactionVerifyError(f"input {input_token} double spent")
        
 
         prev_hash = block_dict['prev_hash']
 
     # if no coin found, then bad!
     if not found:
-        raise BlockChainVerifyError(f"no matching transaction for {input_token}")
+        raise TransactionVerifyError(f"no matching transaction for {input_token}")
     else:
         return
