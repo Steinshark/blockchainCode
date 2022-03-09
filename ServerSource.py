@@ -161,7 +161,7 @@ class DynamicServer:
 
         @self.app.route('/push', methods=['POST'])
         def push_block():
-            printc(f"PUSH REQUEST RECEIVED",GREEN)
+            printc(f"\n\n\nPUSH REQUEST RECEIVED",GREEN)
             # Open, lock, read the head file, and send the info back
             with open('cache/current.json') as file :
                 flock(file,LOCK_SH)
@@ -192,7 +192,7 @@ class DynamicServer:
             accepting_ver       = [0,self.version]
             accepting_hashes    = BlockTools.grab_cached_hashes(version=self.version)
 
-            printc(f"hashes initially to {BlockTools.sha_256_hash(block_string.encode())}",RED)
+            printc(f"hashes initially to {BlockTools.sha_256_hash(block_string.encode())}",TAN)
 
             # Check if valid
             try:
@@ -201,8 +201,8 @@ class DynamicServer:
                                         allowed_hashes   = accepting_hashes)
             except BlockChainVerifyError as b:
 
-                printc(f"\trejected block - invalid",RED)
-                printc(f"\t{b}\n\n\n",TAN)
+                printc(f"rejected block - invalid",RED)
+                printc(f"{b}",TAN)
                 return "bad block", 418
 
 
