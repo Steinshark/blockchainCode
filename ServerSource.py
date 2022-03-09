@@ -100,11 +100,11 @@ class DynamicServer:
         self.version    =   version
         self.max_chain  =   {}
         self.scan_chains()                  
-        printc(f"Initialized, Started server!",GREEN)
-        printc(f"Server Startup in {(time.time()-t1):.2f} seconds", TAN)
-        printc(f"Current Ver: V.{version}",TAN)
-        printc(f"Current head: {self.max_chain['v'+str(self.version)]['head'][:10]}",TAN)
-        printc(f"Current length: {self.max_chain['v'+str(self.version)]['length']}\n\n\n",TAN)
+        printc(f"\nStarted server!",GREEN)
+        printc(f"-Startup in {(time.time()-t1):.2f} seconds", TAN)
+        printc(f"-Current Ver: V.{version}",TAN)
+        printc(f"-Current head: {self.max_chain['v'+str(self.version)]['head'][:10]}",TAN)
+        printc(f"-Current length: {self.max_chain['v'+str(self.version)]['length']}\n\n\n",TAN)
 
 
 
