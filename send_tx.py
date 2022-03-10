@@ -24,7 +24,7 @@ class Node:
             exit()
 
         fname = sys.argv[1]
-        self.priv_key = subprocess.run(["python3", "keyGen.py", fname],text=True,capture_output=True,check=True).stdout
+        self.priv_key = subprocess.run(["python3", "keygen.py", fname],text=True,capture_output=True,check=True).stdout
         self.pub_key = nacl.signing.VerifyKey(bytes.fromhex(self.priv_key))
         print(f"pub: {self.pub_key}\npriv: {self.priv_key}")
         input()
