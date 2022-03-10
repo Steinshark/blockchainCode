@@ -244,8 +244,13 @@ def mine_block(block):
     return mined_block
 
 # Build the payload for a block
-def build_payload(key,txns,ver=None,coinbase_msg='anotha coin for everett'):
+def build_payload(priv_key,txns,ver=None,coinbase_msg='anotha coin for everett',msg ="fake msg"):
 
+    # generate keys 
+    signing_key = nacl.signing.SigningKey(bytes.fromhex(priv_key))
+    public_key  = signing_key.verify_key.encode().hex()
+
+    print(f"signing: {signing_key}\npub_key:{public_key}") 
     # Init empty payload 
     payload = {'txns': [], 'sig' : ''}
 
@@ -256,14 +261,13 @@ def build_payload(key,txns,ver=None,coinbase_msg='anotha coin for everett'):
 
 
     # Add the coinbase transaction
-    coinbase_tx = {}
-    coinbase_tx["input"] = sha_256_hash(random.randint().encode())
-
-    input(f"key: {key}")
-    coinbase_tx["output"] = key.encode().hex()
-    input(f"key: {key}")
+    coinbase_tj = {}
+    coinbase_tj["input"] = sha_256_hash(str(random.randint(-69,420)).encode())
+    coinbase_tj["output"] = public_key
+    coinbase_tj["message"] = coinbase_msg
+    coinbase_tj_json = json.dumps(coinbase_tj)
     
-    coinbase_tx["message"] = coinbase_msg
+    coinbase_tx = {"tj":coinbase_tj,"sig":"coinbase"}
     payload['txns'].append(coinbase_tx)
 
     for transaction in txns:
@@ -275,12 +279,13 @@ def build_payload(key,txns,ver=None,coinbase_msg='anotha coin for everett'):
         tj_json = json.dumps(new_tx)
 
         # Create sig as hex
-        tx_sig = key.sign(tj_json.encode()).signature().hex()
+        tx_sig = priv_key.sign(tj_json.encode()).signature().hex()
         print(f"signed to {tx_sig}")
 
         new_transaction = {"tj":tj_json,"sig":tx_sig}
         payload["txns"].append(new_transaction)
 
+    print(payload)
     return payload
 
 # Verify transactions on an incoming block

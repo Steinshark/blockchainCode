@@ -24,10 +24,9 @@ class Node:
             exit()
 
         fname = sys.argv[1]
-        self.priv_key = subprocess.run(["python3", "keygen.py", fname],text=True,capture_output=True,check=True).stdout
-        self.pub_key = nacl.signing.VerifyKey(bytes.fromhex(self.priv_key))
+        self.pub_key = subprocess.run(["python3", "keygen.py", fname],text=True,capture_output=True,check=True).stdout
+        self.priv_key = open(fname,"r").read()
         print(f"pub: {self.pub_key}\npriv: {self.priv_key}")
-        input()
 
 
         # Fetch the list of peer names (hostnames)
@@ -195,7 +194,7 @@ if __name__ == "__main__":
 
     # Get everyone up to date
     n = Node()
-    n.check_peer_servers()
+    #n.check_peer_servers()
     #n.update_peers()
 
     # Prepare and send our block (finally!)
