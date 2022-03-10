@@ -14,6 +14,7 @@ from Toolchain import terminal
 import hashlib
 import nacl.signing
 import subprocess
+import random
 #########################################################################################
 ############################ FUNCTIONS FOR PROCESSING BLOCKS ############################
 #########################################################################################
@@ -83,8 +84,7 @@ def build_block(prev_hash,payload,ver):
 
     try:
         return new_block
-        encoded_block = json.dumps(new_block)
-        return encoded_block
+
     except JSONEncodeException as j:
         raise BlockCreationException(j)
 
@@ -244,22 +244,43 @@ def mine_block(block):
     return mined_block
 
 # Build the payload for a block
-def build_payload(msg=None,key=None,ver=None,txns=None):
+def build_payload(key,txns,ver=None,coinbase_msg='anotha coin for everett'):
 
     # Init empty payload 
-    payload = {}
+    payload = {'txns': [], 'sig' : ''}
 
-    # Add chat if given
+    # Add message if given
     if not msg is None and isinstance(msg,str):
         payload["chat"] = msg
 
-    # Add signature if given 
-    if not key is None and isinstance(key,nacl.signing.VerifyKey):
-    # Add txns if given 
 
-    key = nacl.signing.SigningKey(bytes.fromhex(key))
-    payload['chatid'] = key.verify_key.encode().hex()
-    payload['chatsig'] = key.sign(msg.encode()).signature.hex()
+
+    # Add the coinbase transaction
+    coinbase_tx = {}
+    coinbase_tx["input"] = sha_256_hash(random.randint().encode())
+
+    input(f"key: {key}")
+    coinbase_tx["output"] = key.encode().hex()
+    input(f"key: {key}")
+    
+    coinbase_tx["message"] = coinbase_msg
+    payload['txns'].append(coinbase_tx)
+
+    for transaction in txns:
+        # Unpack tx values 
+        tx_input, tx_output, tx_msg = transaction 
+
+        # Create tj as dict, then convert to json string 
+        tj = {"input":tx_input, "output":tx_output, "msg": tx_msg}
+        tj_json = json.dumps(new_tx)
+
+        # Create sig as hex
+        tx_sig = key.sign(tj_json.encode()).signature().hex()
+        print(f"signed to {tx_sig}")
+
+        new_transaction = {"tj":tj_json,"sig":tx_sig}
+        payload["txns"].append(new_transaction)
+
     return payload
 
 # Verify transactions on an incoming block

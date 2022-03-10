@@ -9,7 +9,7 @@ from show_chat import FetchService
 import requests
 import sys
 from Toolchain import terminal
-
+import nacl.signing
 
 class Node:
 
@@ -18,7 +18,7 @@ class Node:
         
         # get signing key 
         try:
-            self.signing_key = sys.argv[1]
+            self.signing_key = nacl.signing.SigningKey(sys.argv[1])
         except IndexError:
             terminal.printc(f"usage: send_chat.py signing_key",terminal.RED)
             exit(1)
@@ -173,8 +173,9 @@ class Node:
 
     def broadcast_block(self):
          
-        msg     = "hi freinds, its everett"
+        msg     = input("msg: ")
         ver = 1 
+
         for host in n.peers:
             try:
                 terminal.printc(f"\ntrying peer {host}",terminal.BLUE)

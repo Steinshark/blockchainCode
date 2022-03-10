@@ -2,6 +2,7 @@
 # And Everett Stenberg
 
 
+from tabnanny import check
 import BlockTools
 from BlockchainErrors import *
 import json
@@ -9,19 +10,25 @@ from show_chat import FetchService
 import requests
 import sys
 from Toolchain import terminal
-
+import subprocess
+import nacl.signing 
 
 class Node:
 
     # Init
     def __init__(self):
 
-        # get signing key
-        try:
-            self.signing_key = sys.argv[1]
-        except IndexError:
-            terminal.printc(f"usage: send_chat.py signing_key",terminal.RED)
-            exit(1)
+        # get keys
+        if not sys.argv[1]:
+            terminal.printc(f"usage: python3 send_tx.py fname",terminal.RED)
+            exit()
+
+        fname = sys.argv[1]
+        self.priv_key = subprocess.run(["python3", "keyGen.py", fname],text=True,capture_output=True,check=True).stdout
+        self.pub_key = nacl.signing.VerifyKey(bytes.fromhex(self.priv_key))
+        print(f"pub: {self.pub_key}\npriv: {self.priv_key}")
+        input()
+
 
         # Fetch the list of peer names (hostnames)
         self.peers = list(  map(    lambda x : x.strip(),   open("hosts.txt",'r').readlines()   ))
