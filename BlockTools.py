@@ -396,8 +396,3 @@ def add_transaction(pub_key,address):
 
         if not spendable_hash is None:
             print(f"{spendable_hash} is spendable")
-
-        head_hash = block_dict['prev_hash']
-        print(head_hash)
-
-    for tx in all_txns:
