@@ -370,10 +370,13 @@ def add_transaction(pub_key,address):
 
 
     while not head_hash == '':
+
         block_dict = json.loads(open(f"cache/{head_hash}.json").read())
         if 'txns' in block_dict['payload']:
             for tx in block_dict['payload']['txns']:
-                all_txns.append(block_dict['payload']['txns'][''])
+                all_txns.append(tx)
+        head_hash = block_dict['prev_hash']
+        print(head_hash)
 
 
 
