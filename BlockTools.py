@@ -15,6 +15,7 @@ import hashlib
 import nacl.signing
 import subprocess
 import random
+from BlockchainUtilities import get_blockchain
 #########################################################################################
 ############################ FUNCTIONS FOR PROCESSING BLOCKS ############################
 #########################################################################################
