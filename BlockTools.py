@@ -377,9 +377,9 @@ def add_transaction(pub_key,address):
             for tx in block_dict['payload']['txns']:
 
                 # Keep track of all hashes
+                tj_string = tx['tj']
                 if not isinstance(tj_string,str):
                     continue
-                tj_string = tx['tj']
                 all_hashes.append(sha_256_hash(tj_string.encode()))
 
                 # Keep track of all inputs
