@@ -369,7 +369,7 @@ def add_transaction(pub_key,address):
     all_hashes = []
     hash_candidates = []
 
-    print("creating lists")
+    print(f"creating lists\npub_key={pub_key}")
     while not head_hash == '':
 
         block_dict = json.loads(open(f"cache/{head_hash}.json").read())
