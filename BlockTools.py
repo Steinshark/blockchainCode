@@ -364,7 +364,7 @@ def check_chain(prev_hash,input_token,sig,this_tj):
 
 def add_transaction(pub_key,address):
     # Grab the current blockchain
-    head_hash = json.loads(open("current.json").read())['head']
+    head_hash = json.loads(open("cache/current.json").read())['head']
     all_inputs = []
     all_txns = []
 
@@ -378,27 +378,5 @@ def add_transaction(pub_key,address):
         head_hash = block_dict['prev_hash']
         print(head_hash)
 
-
-
-
-    # Find one of my unused transactions
-    for block in chain:
-        if 'txns' in block['payload']:
-            for tx in block['payload']['txns']:
-                if tx['tj']['output'] == pub_key:
-                    all_txns.append(sha_256_hash(tx['tj']))
-                    print(f"found a block that belongs to you: {all_txns[-1]}")
-                all_inputs.append(tx['tj']['input'])
-
-    using_tx_hash = None
     for tx in all_txns:
-        if not tx in all_inputs:
-            using_tx_hash = tx
-
-    if not using_tx_hash is None:
-        terminal.printc(f"found {using_tx_hash} as valid pull",terminal.RED)
-    else:
-        print('BAD BAD BAD')
-        print(all_txns[:5])
-        print(all_inputs[:5])
-        exit(1)
+        jt_string = tx['tj']
