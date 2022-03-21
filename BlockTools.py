@@ -362,7 +362,7 @@ def check_chain(prev_hash,input_token,sig,this_tj):
 
 def add_transaction(pub_key,address):
     # Grab the current blockchain
-    chain = get_blockchain("cat",5002,caching=False,version=1)
+    chain = get_blockchain("cat",5002,caching=True,version=1)
     chain = [c[1] for c in chain]
 
     # Find one of my unused transactions
