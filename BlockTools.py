@@ -396,4 +396,7 @@ def add_transaction(pub_key,address):
             break
 
     if not spendable_hash is None:
-        print(f"{spendable_hash} is spendable")
+        inp = spendable_hash
+        output = address
+        msg = "I sent this to myself"
+        return (inp, output, msg)

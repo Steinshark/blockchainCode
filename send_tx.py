@@ -190,12 +190,12 @@ class Node:
             try:
                 terminal.printc(f"\ntrying peer {host}",terminal.BLUE)
                 head_hash = BlockTools.retrieve_head_hash(host=host,port=5002,timeout=3)
-                payload   = BlockTools.build_payload(self.priv_key,txns=[],ver=ver,msg=msg)
+                new_txn = BlockTools.add_transaction(self.pub_key,self.pub_key)
+                payload   = BlockTools.build_payload(self.priv_key,txns=[new_txn],ver=ver,msg=msg)
                 new_block = BlockTools.build_block(head_hash,payload,ver)
                 print(f"Block hashed to {BlockTools.sha_256_hash(new_block.encode())}")
                 terminal.printc(f"this block:\n{new_block}",terminal.BLUE)
 
-                new_txn = BlockTools.add_transaction(self.pub_key,None)
                 BlockTools.send_block(new_block,host,5002,version=ver)
             except ConnectionException as ce:
                 print(ce)
