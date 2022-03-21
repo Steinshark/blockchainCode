@@ -205,7 +205,7 @@ if __name__ == "__main__":
 
     # Get everyone up to date
     n = Node()
-    #n.check_peer_servers()
+    n.check_peer_servers()
     #n.update_peers()
 
     # Prepare and send our block (finally!)
