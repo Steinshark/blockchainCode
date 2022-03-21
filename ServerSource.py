@@ -218,7 +218,7 @@ class DynamicServer:
 
             printc(f"accepted block",GREEN)
             self.update_chains(block_dict,block_hash)
-            printc(f"chain_len now {self.max_chain['v0']['length']}",BLUE)
+            printc(f"chain_len now {self.max_chain['v1']['length']}",BLUE)
             return "Accepted!", 200
 
 
