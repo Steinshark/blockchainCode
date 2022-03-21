@@ -181,7 +181,7 @@ class Node:
 
     def broadcast_block(self):
 
-        msg     = "hi freinds, its everett"
+        msg     = "trying another block"
         ver = 1
 
 
