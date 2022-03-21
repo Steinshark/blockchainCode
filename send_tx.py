@@ -11,15 +11,17 @@ import requests
 import sys
 from Toolchain import terminal
 import subprocess
-import nacl.signing 
+import nacl.signing
 
 class Node:
 
     # Init
     def __init__(self):
 
-        # get keys
-        if not sys.argv[1]:
+        try:
+            # get keys
+            sys.argv[1]
+        except:
             terminal.printc(f"usage: python3 send_tx.py fname",terminal.RED)
             exit()
 
@@ -137,7 +139,7 @@ class Node:
             except ConnectionException:
                 continue
         terminal.printc(f"Finished trying to push chain",TAN)
-    
+
 
     #Binary Picker
     def start_chain_from(self,peer,full_blockchain,low,high):
@@ -182,6 +184,7 @@ class Node:
         msg     = "hi freinds, its everett"
         ver = 1
         for host in n.peers:
+
             try:
                 terminal.printc(f"\ntrying peer {host}",terminal.BLUE)
                 head_hash = BlockTools.retrieve_head_hash(host=host,port=5002,timeout=3)
@@ -190,6 +193,8 @@ class Node:
                 BlockTools.send_block(new_block,host,5002,version=ver)
             except ConnectionException as ce:
                 print(ce)
+
+
 if __name__ == "__main__":
 
     # Get everyone up to date
