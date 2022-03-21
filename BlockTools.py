@@ -392,7 +392,7 @@ def add_transaction(pub_key,address):
                     print(f"found!: {all_hashes[-1]}")
         else:
             print(f"no go on {head_hash[:10]}")
-        input()
+        input(f"thorugh {head_hash}")
         head_hash = block_dict['prev_hash']
     spendable_hash = None
     for h in hash_candidates:
