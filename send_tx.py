@@ -26,7 +26,7 @@ class Node:
             exit()
 
         fname = sys.argv[1]
-        self.pub_key = subprocess.run(["python3", "keygen.py", fname],text=True,capture_output=True,check=True).stdout
+        self.pub_key = subprocess.run(["python3", "keygen.py", fname],text=True,capture_output=True,check=True).stdout.strip()
         self.priv_key = open(fname,"r").read()
         print(f"pub:  {self.pub_key}\npriv: {self.priv_key}")
 
