@@ -279,7 +279,7 @@ def build_payload(priv_key,txns,ver=None,coinbase_msg='anotha coin for everett',
         tj_json = json.dumps(tj)
 
         # Create sig as hex
-        tx_sig = priv_key.sign(tj_json.encode()).signature().hex()
+        tx_sig = signing_key.sign(tj_json.encode()).signature().hex()
 
         new_transaction = {"tj":tj_json,"sig":tx_sig}
         payload["txns"].append(new_transaction)
@@ -399,4 +399,5 @@ def add_transaction(pub_key,address):
         inp = spendable_hash
         output = address
         msg = "I sent this to myself"
+        print(f"returning input as {inp}")
         return (inp, output, msg)
