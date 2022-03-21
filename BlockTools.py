@@ -246,12 +246,12 @@ def mine_block(block):
 # Build the payload for a block
 def build_payload(priv_key,txns,ver=None,coinbase_msg='anotha coin for everett',msg ="fake msg"):
 
-    # generate keys 
+    # generate keys
     signing_key = nacl.signing.SigningKey(bytes.fromhex(priv_key))
     public_key  = signing_key.verify_key.encode().hex()
 
-    print(f"signing: {signing_key}\npub_key:{public_key}") 
-    # Init empty payload 
+    print(f"signing: {signing_key}\npub_key:{public_key}")
+    # Init empty payload
     payload = {'txns': [], 'sig' : ''}
 
     # Add message if given
@@ -266,26 +266,23 @@ def build_payload(priv_key,txns,ver=None,coinbase_msg='anotha coin for everett',
     coinbase_tj["output"] = public_key
     coinbase_tj["message"] = coinbase_msg
     coinbase_tj_json = json.dumps(coinbase_tj)
-    
+
     coinbase_tx = {"tj":coinbase_tj,"sig":"coinbase"}
     payload['txns'].append(coinbase_tx)
 
     for transaction in txns:
-        # Unpack tx values 
-        tx_input, tx_output, tx_msg = transaction 
+        # Unpack tx values
+        tx_input, tx_output, tx_msg = transaction
 
-        # Create tj as dict, then convert to json string 
+        # Create tj as dict, then convert to json string
         tj = {"input":tx_input, "output":tx_output, "msg": tx_msg}
         tj_json = json.dumps(new_tx)
 
         # Create sig as hex
         tx_sig = priv_key.sign(tj_json.encode()).signature().hex()
-        print(f"signed to {tx_sig}")
 
         new_transaction = {"tj":tj_json,"sig":tx_sig}
         payload["txns"].append(new_transaction)
-
-    print(payload)
     return payload
 
 # Verify transactions on an incoming block
@@ -294,18 +291,18 @@ def verify_transaction(block_dict,block_hash):
     transactions = block_dict['payload']['txns']
 
     for i, transaction in enumerate(transactions):
-        
-        # Ensure transaction is properly promatted 
+
+        # Ensure transaction is properly promatted
         if not "tj" in transaction or not "sig" in transaction:
             raise TransactionVerifyError(f"Missing tj or sig field in transaction\n{terminal.BLUE}{transaction}{terminal.END}")
-        
+
         tj_dict = transaction['tj']
 
-        
 
-        # Ensure tj is formatted properly 
+
+        # Ensure tj is formatted properly
         if not "input" in tj_dict or not "output" in tj_dict or not "message" in tj_dict:
-            raise TransactionVerifyError(f"Improperly formatted tj field\n{tj_dict}") 
+            raise TransactionVerifyError(f"Improperly formatted tj field\n{tj_dict}")
 
         # Check coinbase
         if i == 0:
@@ -325,7 +322,7 @@ def verify_transaction(block_dict,block_hash):
 def check_chain(prev_hash,input_token,sig,this_tj):
     found = False
 
-    # Loop through the chain and perform transaction checks 
+    # Loop through the chain and perform transaction checks
     while not prev_hash == '':
         block_dict = grab_block_by_hash(prev_hash)
 
@@ -352,7 +349,7 @@ def check_chain(prev_hash,input_token,sig,this_tj):
                 # Check that coin is not double spent
                 if input_token == tj_dict['input']:
                     raise TransactionVerifyError(f"input {input_token} double spent")
-       
+
 
         prev_hash = block_dict['prev_hash']
 
