@@ -252,7 +252,7 @@ def build_payload(priv_key,txns,ver=None,coinbase_msg='anotha coin for everett',
     public_key  = signing_key.verify_key.encode().hex()
 
     # Init empty payload
-    payload = {'txns': [], 'sig' : ''}
+    payload = {'txns': []}
 
     # Add message if given
     if not msg is None and isinstance(msg,str):
@@ -267,7 +267,7 @@ def build_payload(priv_key,txns,ver=None,coinbase_msg='anotha coin for everett',
     coinbase_tj["message"] = coinbase_msg
     coinbase_tj_json = json.dumps(coinbase_tj)
 
-    coinbase_tx = {"tj":coinbase_tj,"sig":"coinbase"}
+    coinbase_tx = {"tj":coinbase_tj_json,"sig":"coinbase"}
     payload['txns'].append(coinbase_tx)
 
     for transaction in txns:
