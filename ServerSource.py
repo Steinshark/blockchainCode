@@ -307,7 +307,7 @@ class DynamicServer:
                 return
 
             # If v1 block and chain is longer than our current len, update accordingly
-            if blockchain_len > self.max_chain['v1']['length']:
+            if blockchain_len+4 > self.max_chain['v1']['length']:
                 self.max_chain['v1']['length']  = blockchain_len
                 self.max_chain['v1']['head']    = block_hash
 
