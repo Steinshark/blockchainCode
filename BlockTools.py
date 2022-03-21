@@ -368,15 +368,18 @@ def add_transaction(pub_key,address):
     chain = get_blockchain("lion",5002,caching=True,version=1)
     chain = [c[1] for c in chain]
 
+
+
     # Find one of my unused transactions
     all_inputs = []
     all_txns = []
     for block in chain:
-        for tx in block['payload']['txns']:
-            if tx['tj']['output'] == pub_key:
-                all_txns.append(sha_256_hash(tx['tj']))
-                print(f"found a block that belongs to you: {all_txns[-1]}")
-            all_inputs.append(tx['tj']['input'])
+        if 'txns' in block['payload']:
+            for tx in block['payload']['txns']:
+                if tx['tj']['output'] == pub_key:
+                    all_txns.append(sha_256_hash(tx['tj']))
+                    print(f"found a block that belongs to you: {all_txns[-1]}")
+                all_inputs.append(tx['tj']['input'])
 
     using_tx_hash = None
     for tx in all_txns:
