@@ -369,7 +369,7 @@ def add_transaction(pub_key,address):
     all_hashes = []
     hash_candidates = []
 
-
+    print("creating lists")
     while not head_hash == '':
 
         block_dict = json.loads(open(f"cache/{head_hash}.json").read())
@@ -389,12 +389,12 @@ def add_transaction(pub_key,address):
                 # Find a list of all coins that have ever gone to me
                 if tj_dict['output'] == pub_key:
                     hash_candidates.append(all_hashes[-1])
+        head_hash = block_dict['prev_hash']
+    spendable_hash = None
+    for h in hash_candidates:
+        if not h in all_inputs:
+            spendable_hash = h
+            break
 
-        spendable_hash = None
-        for h in hash_candidates:
-            if not h in all_inputs:
-                spendable_hash = h
-                break
-
-        if not spendable_hash is None:
-            print(f"{spendable_hash} is spendable")
+    if not spendable_hash is None:
+        print(f"{spendable_hash} is spendable")
