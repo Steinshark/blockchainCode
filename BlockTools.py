@@ -385,15 +385,9 @@ def add_transaction(pub_key,address):
                 # Keep track of all inputs
                 tj_dict = json.loads(tj_string)
                 all_inputs.append(tj_dict['input'])
-                print(f"discovered an out: {tj_dict['output']}")
                 # Find a list of all coins that have ever gone to me
-                print(tj_dict['output'] == pub_key)
                 if tj_dict['output'].strip() == pub_key.strip():
                     hash_candidates.append(all_hashes[-1])
-                    print(f"found!: {all_hashes[-1]}")
-        else:
-            print(f"no go on {head_hash[:10]}")
-        input(f"thorugh {head_hash}")
         head_hash = block_dict['prev_hash']
     spendable_hash = None
     for h in hash_candidates:
