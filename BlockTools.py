@@ -326,7 +326,6 @@ def check_chain(prev_hash,input_token,sig,this_tj):
 
     # Loop through the chain and perform transaction checks
     while not prev_hash == '':
-        print(f"fetching: {prev_hash[:10]}->\n")
         block_dict = grab_block_by_hash(prev_hash)
 
         # Ensure the block has transactions
