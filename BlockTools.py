@@ -389,6 +389,9 @@ def add_transaction(pub_key,address):
                 # Find a list of all coins that have ever gone to me
                 if tj_dict['output'] == pub_key:
                     hash_candidates.append(all_hashes[-1])
+        else:
+            print(f"no go on {head_hash[:10]}")
+        input()
         head_hash = block_dict['prev_hash']
     spendable_hash = None
     for h in hash_candidates:
