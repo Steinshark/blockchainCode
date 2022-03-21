@@ -28,7 +28,7 @@ class Node:
         fname = sys.argv[1]
         self.pub_key = subprocess.run(["python3", "keygen.py", fname],text=True,capture_output=True,check=True).stdout
         self.priv_key = open(fname,"r").read()
-        print(f"pub: {self.pub_key}\npriv: {self.priv_key}")
+        print(f"pub:  {self.pub_key}\npriv: {self.priv_key}")
 
 
         # Fetch the list of peer names (hostnames)

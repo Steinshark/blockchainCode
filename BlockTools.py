@@ -304,6 +304,8 @@ def verify_transaction(block_dict,block_hash):
         if not "input" in tj_dict or not "output" in tj_dict or not "message" in tj_dict:
             raise TransactionVerifyError(f"Improperly formatted tj field\n{tj_dict}")
 
+
+
         # Check coinbase
         if i == 0:
             if not transaction['sig'] == 'coinbase':
@@ -324,6 +326,7 @@ def check_chain(prev_hash,input_token,sig,this_tj):
 
     # Loop through the chain and perform transaction checks
     while not prev_hash == '':
+        print(f"fetching: {prev_hash[:10]}->\n")
         block_dict = grab_block_by_hash(prev_hash)
 
         # Ensure the block has transactions
