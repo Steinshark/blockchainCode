@@ -192,6 +192,7 @@ class Node:
                 head_hash = BlockTools.retrieve_head_hash(host=host,port=5002,timeout=3)
                 payload   = BlockTools.build_payload(self.priv_key,txns=[],ver=ver,msg=msg)
                 new_block = BlockTools.build_block(head_hash,payload,ver)
+                new_txn = BlockTools.add_transaction(self.pub_key,None)
                 terminal.printc(f"this block:\n{new_block}",terminal.BLUE)
                 BlockTools.send_block(new_block,host,5002,version=ver)
             except ConnectionException as ce:
