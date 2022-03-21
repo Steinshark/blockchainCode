@@ -136,8 +136,8 @@ def iter_local_chain(block_hash,known_chains,version=0):
                 block_hash = block_dict['prev_hash']
                 if block_hash in known_chains:
                     return known_chains[block_hash] + length
-                if version == 1 and not block_dict['version'] == 1:
-                    return length
+                #if version == 1 and not block_dict['version'] == 1:
+                #    return length
         except FileNotFoundError:
             return length
     return length
