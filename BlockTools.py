@@ -385,7 +385,7 @@ def add_transaction(pub_key,address):
                 # Keep track of all inputs
                 tj_dict = json.loads(tj_string)
                 all_inputs.append(tj_dict['input'])
-
+                print(f"discovered an out: {tj_dict['output']}")
                 # Find a list of all coins that have ever gone to me
                 if tj_dict['output'] == pub_key:
                     hash_candidates.append(all_hashes[-1])
