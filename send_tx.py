@@ -188,7 +188,7 @@ class Node:
             try:
                 terminal.printc(f"\ntrying peer {host}",terminal.BLUE)
                 head_hash = BlockTools.retrieve_head_hash(host=host,port=5002,timeout=3)
-                payload   = BlockTools.build_payload(msg,self.priv_key,ver)
+                payload   = BlockTools.build_payload(self.priv_key,ver=ver,msg=msg)
                 new_block = BlockTools.build_block(head_hash,payload,ver)
                 BlockTools.send_block(new_block,host,5002,version=ver)
             except ConnectionException as ce:
