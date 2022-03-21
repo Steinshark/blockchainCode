@@ -288,7 +288,7 @@ class DynamicServer:
 ################################################################################
 
     def update_chains(self,block,block_hash):
-        if self.version == 1 and self.block['version'] == 0:
+        if self.version == 1 and block['version'] == 0:
             return
         # Get the length of this chain manually (i.e. looping until genesis block)
         blockchain_len = 2 + BlockTools.iter_local_chain(block['prev_hash'], self.chain_caching,version=self.version)
