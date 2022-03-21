@@ -276,7 +276,7 @@ def build_payload(priv_key,txns,ver=None,coinbase_msg='anotha coin for everett',
 
         # Create tj as dict, then convert to json string
         tj = {"input":tx_input, "output":tx_output, "msg": tx_msg}
-        tj_json = json.dumps(new_tx)
+        tj_json = json.dumps(tj)
 
         # Create sig as hex
         tx_sig = priv_key.sign(tj_json.encode()).signature().hex()
@@ -364,14 +364,21 @@ def check_chain(prev_hash,input_token,sig,this_tj):
 
 def add_transaction(pub_key,address):
     # Grab the current blockchain
-    chain = get_blockchain("lion",5002,caching=True,version=1)
-    chain = [c[1] for c in chain]
+    head_hash = json.loads(open("current.json").read())['head']
+    all_inputs = []
+    all_txns = []
+
+
+    while not head_hash == '':
+        block_dict = json.loads(open(f"cache/{head_hash}.json").read())
+        if 'txns' in block_dict['payload']:
+            for tx in block_dict['payload']['txns']:
+                all_txns.append(block_dict['payload']['txns'][''])
+
 
 
 
     # Find one of my unused transactions
-    all_inputs = []
-    all_txns = []
     for block in chain:
         if 'txns' in block['payload']:
             for tx in block['payload']['txns']:
