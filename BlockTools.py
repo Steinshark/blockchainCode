@@ -250,7 +250,6 @@ def build_payload(priv_key,txns,ver=None,coinbase_msg='anotha coin for everett',
     signing_key = nacl.signing.SigningKey(bytes.fromhex(priv_key))
     public_key  = signing_key.verify_key.encode().hex()
 
-    print(f"signing: {signing_key}\npub_key:{public_key}")
     # Init empty payload
     payload = {'txns': [], 'sig' : ''}
 
