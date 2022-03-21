@@ -366,7 +366,8 @@ def add_transaction(pub_key,address):
     # Grab the current blockchain
     head_hash = json.loads(open("cache/current.json").read())['head']
     all_inputs = []
-    all_txns = []
+    all_hashes = []
+    hash_candidates = []
 
 
     while not head_hash == '':
@@ -374,9 +375,29 @@ def add_transaction(pub_key,address):
         block_dict = json.loads(open(f"cache/{head_hash}.json").read())
         if 'txns' in block_dict['payload']:
             for tx in block_dict['payload']['txns']:
-                all_txns.append(tx)
+
+                # Keep track of all hashes
+                tj_string = tx['tj']
+                all_hashes.append(sha_256_hash(tj_string.encode()))
+
+                # Keep track of all inputs
+                tj_dict = json.loads(tj_string)
+                all_inputs.append(tj_dict['input'])
+
+                # Find a list of all coins that have ever gone to me
+                if tj_dict['output'] == pub_key:
+                    hash_candidates.append(all_hashes[-1])
+
+        spendable_hash = None
+        for h in hash_candidates:
+            if not h in all_inputs:
+                spendable_hash = h
+                break
+
+        if not spendable_hash is None:
+            print(f"{spendable_hash} is spendable")
+
         head_hash = block_dict['prev_hash']
         print(head_hash)
 
     for tx in all_txns:
-        jt_string = tx['tj']
