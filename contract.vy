@@ -32,6 +32,7 @@ struct vehicle_bid:
     current_bid:        uint256
     current_highest_bidder: address
     sold:               bool
+    available_for_sale: bool
 
 struct owner:
     phone_number:       String[15]
@@ -73,13 +74,17 @@ def put_up_for_sale(vid: String[64], min_price: uint256, zip: uint256, exp_date:
     assert exp_date > block.timestamp
     assert msg.amount == min_price
 
+    if vid in market:
+        assert market[vid].available_for_sale
     # Setup bid
     new_contract = vehicle_bid
     new_contract.current_owner      = msg.sender
+    new_contract.current_highest_bidder = 0
     new_contract.min_price          = min_price
     new_contract.zip_code           = zip
     new_contract.expiration_date    = exp_date
     new_contract.sold               = False
+    new_contract.available_for_sale = False
     # Add to the market
     market[vid] = new_contract
 
@@ -124,6 +129,9 @@ def end_auction(vid: uint256):
     # Make sure the contract has ended
     assert block.timestamp >= market[vid].expiration_date
 
+    # Make sure this is the first time
+    assert not market[vid].sold
+
     # Ensure that the current bid is greater than the min accepted value
     if market[vid].current_bid >= market[vid].min_value:
 
@@ -132,9 +140,11 @@ def end_auction(vid: uint256):
 
         # Remove car from marketplace
         market[vid].sold = True
+        market[vid].available_for_sale = True
+
     #Just remove if no one bought the vehicle
     else:
-        del(market[vid])
+        market[vid].available_for_sale = True
 
 
 @external
